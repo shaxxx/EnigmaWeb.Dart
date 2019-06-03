@@ -81,7 +81,7 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
       String snr, String acg, String ber, bool locked, bool sync) {
     IE1Signal signal = _factory.e1Signal();
 
-    if (snr.length == 0) {
+    if (snr.isEmpty) {
       signal.snr = -1;
       signal.acg = -1;
       signal.ber = -1;
@@ -149,7 +149,7 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
             .replaceAll(",", ds)
             .replaceAll(".", ds));
 
-    if (snr.length == 0 || db.length == 0) {
+    if (snr.isEmpty || db.isEmpty) {
       signal.db = -1;
       signal.snr = -1;
       signal.acg = -1;

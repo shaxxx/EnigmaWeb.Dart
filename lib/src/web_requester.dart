@@ -35,18 +35,14 @@ class WebRequester implements IWebRequester {
   }
 
   @override
-  Future<List<int>> getBinaryResponseAsync(String url, IProfile profile,
-      {CancelToken cancelToken}) async {
-    var response = await _getResponse(url, profile, ResponseType.bytes,
-        cancelToken: cancelToken);
+  Future<List<int>> getBinaryResponseAsync(String url, IProfile profile, {CancelToken cancelToken}) async {
+    var response = await _getResponse(url, profile, ResponseType.bytes, cancelToken: cancelToken);
     return response.data;
   }
 
   @override
-  Future<String> getResponseAsync(String url, IProfile profile,
-      {CancelToken cancelToken}) async {
-    var response = await _getResponse(url, profile, ResponseType.plain,
-        cancelToken: cancelToken);
+  Future<String> getResponseAsync(String url, IProfile profile, {CancelToken cancelToken}) async {
+    var response = await _getResponse(url, profile, ResponseType.plain, cancelToken: cancelToken);
     return response.toString();
   }
 
@@ -62,10 +58,8 @@ class WebRequester implements IWebRequester {
     _setBasicAuthHeader(dio, profile);
     _setXRequesteWithHeader(dio);
     _setUserAgentHeader(dio);
-    dio.options.contentType =
-        ContentType.parse(_contentTypeByEnigmaVersion(profile.enigma));
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (HttpClient client) {
+    dio.options.contentType = ContentType.parse(_contentTypeByEnigmaVersion(profile.enigma));
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
       //_setHttpFiddlerProxy(client);
       _setHttpCertificateValidaton(client);
     };
@@ -74,20 +68,19 @@ class WebRequester implements IWebRequester {
   }
 
   String _createUrl(String url, IProfile profile) {
-    var addressWithoutHttpPrefix =
-        "${profile.address}:${profile.httpPort}/$url";
-    if (profile.useSsl)
+    var addressWithoutHttpPrefix = "${profile.address}:${profile.httpPort}/$url";
+    if (profile.useSsl) {
       return "https://" + addressWithoutHttpPrefix;
-    else
+    } else {
       return "http://" + addressWithoutHttpPrefix;
+    }
   }
 
   String _getBasicAuthHeader(String username, String password) {
     return 'Basic ' + base64Encode(utf8.encode('$username:$password'));
   }
 
-  Future<Response> _getResponse(
-      String url, IProfile profile, ResponseType responseType,
+  Future<Response> _getResponse(String url, IProfile profile, ResponseType responseType,
       {CancelToken cancelToken, bool authorize = false}) async {
     var completeUrl = _createUrl(url, profile);
     _log.fine("Initializing request to $url");
@@ -108,24 +101,22 @@ class WebRequester implements IWebRequester {
       throw new WebRequestException.withException(e.message, e);
     } on Exception catch (e) {
       if (e is KnownException) rethrow;
-      if (e is Exception)
-        throw new WebRequestException.withException(
-            "Request for $completeUrl failed.", e);
+      if (e is Exception) throw new WebRequestException.withException("Request for $completeUrl failed.", e);
     }
     return response;
   }
 
   void _logResponse(Response response, String url, ResponseType responseType) {
     if (response == null) {
-      _log.warning("Response to $url is null!");
+      {
+        _log.warning("Response to $url is null!");
+      }
     } else {
-      if (responseType == ResponseType.json ||
-          responseType == ResponseType.plain) {
+      if (responseType == ResponseType.json || responseType == ResponseType.plain) {
         _log.finest("$url response is");
         _log.finest(response.toString());
       } else if (responseType == ResponseType.bytes) {
-        _log.finest(
-            "$url response content length is ${response.headers.contentLength} bytes.");
+        _log.finest("$url response content length is ${response.headers.contentLength} bytes.");
       }
     }
   }
@@ -140,15 +131,13 @@ class WebRequester implements IWebRequester {
     if (_profileHasValidCredentials(profile)) {
       if (dio.options.headers == null) dio.options.headers = {};
       dio.options.headers.addAll({
-        'Authorization':
-            _getBasicAuthHeader(profile.username, profile.password),
+        'Authorization': _getBasicAuthHeader(profile.username, profile.password),
       });
     }
   }
 
   void _setHttpCertificateValidaton(HttpClient client) {
-    client.badCertificateCallback =
-        (X509Certificate cert, String host, int port) => true;
+    client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 
   // void _setHttpFiddlerProxy(HttpClient client) {

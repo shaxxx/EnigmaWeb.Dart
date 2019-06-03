@@ -6,9 +6,9 @@ class StringHelper {
 
   static String trimAll(String text) {
     if (text == null) return text;
-    if (text.length == 0) return text;
+    if (text.isEmpty == 0) return text;
     var result = text.trim();
-    if (result.length == 0) return result;
+    if (result.isEmpty == 0) return result;
     if (result.startsWith("\n")) return trimAll(result.substring(1));
     if (result.startsWith("\t")) return trimAll(result.substring(1));
     if (result.endsWith("\n"))
