@@ -8,8 +8,7 @@ import '../i_profile.dart';
 import '../parsers/i_response_parser.dart';
 import '../responses/i_response.dart';
 
-class MessageCommand
-    extends EnigmaCommand<IMessageCommand, IResponse<IMessageCommand>>
+class MessageCommand extends EnigmaCommand<IMessageCommand, IResponse<IMessageCommand>>
     implements IMessageCommand {
   IResponseParser<IMessageCommand, IResponse<IMessageCommand>> _parser;
 
@@ -48,8 +47,7 @@ class MessageCommand
       url =
           "cgi-bin/xmessage?caption=$caption&timeout=$timeout&body=${Uri.encodeFull(message).replaceAll(" ", "+")}";
     } else {
-      url =
-          "web/message?text=${Uri.encodeFull(message)}&type=$type&timeout=$timeout";
+      url = "web/message?text=${Uri.encodeFull(message)}&type=$type&timeout=$timeout";
     }
     return await super.executeGenericAsync(profile, url, _parser, token: token);
   }

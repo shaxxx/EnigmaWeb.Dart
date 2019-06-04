@@ -14,8 +14,7 @@ import '../responses/i_get_bouquet_items_response.dart';
 import '../string_helper.dart';
 
 class GetBouquetItemsParser
-    implements
-        IResponseParser<IGetBouquetItemsCommand, IGetBouquetItemsResponse> {
+    implements IResponseParser<IGetBouquetItemsCommand, IGetBouquetItemsResponse> {
   IFactory _factory;
   //Logger _log;
 
@@ -28,8 +27,7 @@ class GetBouquetItemsParser
   }
 
   @override
-  Future<IGetBouquetItemsResponse> parseAsync(
-      String response, EnigmaType enigmaType) async {
+  Future<IGetBouquetItemsResponse> parseAsync(String response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -39,8 +37,7 @@ class GetBouquetItemsParser
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException.withException(
-          "Failed to parse response\n$response", ex);
+      throw ParsingException.withException("Failed to parse response\n$response", ex);
     }
   }
 
@@ -59,7 +56,7 @@ class GetBouquetItemsParser
       String name = lines[i].substring(lines[i].indexOf(";") + 1);
       name = StringHelper.trimAll(name);
 
-      if (name.indexOf(";") > -1) {
+      if (name.contains(";")) {
         name = name.substring(0, name.indexOf(";"));
         name = StringHelper.trimAll(name);
       }
@@ -86,8 +83,7 @@ class GetBouquetItemsParser
         String serviceName;
 
         if (serviceReferenceNode != null && serviceReferenceNode.isNotEmpty) {
-          serviceReference =
-              StringHelper.trimAll(serviceReferenceNode.first.text);
+          serviceReference = StringHelper.trimAll(serviceReferenceNode.first.text);
         }
 
         if (serviceNameNode != null && serviceNameNode.isNotEmpty) {

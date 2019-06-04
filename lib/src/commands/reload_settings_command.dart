@@ -8,10 +8,10 @@ import '../i_profile.dart';
 import '../parsers/i_response_parser.dart';
 import '../responses/i_response.dart';
 
-class ReloadSettingsCommand extends EnigmaCommand<IReloadSettingsCommand,
-    IResponse<IReloadSettingsCommand>> implements IReloadSettingsCommand {
-  IResponseParser<IReloadSettingsCommand, IResponse<IReloadSettingsCommand>>
-      _parser;
+class ReloadSettingsCommand
+    extends EnigmaCommand<IReloadSettingsCommand, IResponse<IReloadSettingsCommand>>
+    implements IReloadSettingsCommand {
+  IResponseParser<IReloadSettingsCommand, IResponse<IReloadSettingsCommand>> _parser;
 
   ReloadSettingsCommand(IFactory factory) : super(factory) {
     _parser = factory.reloadSettingsParser();
@@ -25,22 +25,17 @@ class ReloadSettingsCommand extends EnigmaCommand<IReloadSettingsCommand,
   }) async {
     if (profile.enigma == EnigmaType.enigma1) {
       if (type == ReloadSettingsType.All) {
-        await super.executeGenericAsync(
-            profile, "cgi-bin/reloadSettings", _parser,
-            token: token);
-        return await super.executeGenericAsync(
-            profile, "cgi-bin/reloadUserBouquets", _parser,
-            token: token);
+        await super.executeGenericAsync(profile, "cgi-bin/reloadSettings", _parser, token: token);
+        return await super
+            .executeGenericAsync(profile, "cgi-bin/reloadUserBouquets", _parser, token: token);
       }
       if (type == ReloadSettingsType.Services) {
-        return await super.executeGenericAsync(
-            profile, "cgi-bin/reloadSettings", _parser,
-            token: token);
+        return await super
+            .executeGenericAsync(profile, "cgi-bin/reloadSettings", _parser, token: token);
       }
       if (type == ReloadSettingsType.Bouquets) {
-        return await super.executeGenericAsync(
-            profile, "cgi-bin/reloadUserBouquets", _parser,
-            token: token);
+        return await super
+            .executeGenericAsync(profile, "cgi-bin/reloadUserBouquets", _parser, token: token);
       }
       throw Exception("ReloadSettingsType not supported");
     }

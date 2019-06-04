@@ -5,6 +5,5 @@ import '../i_profile.dart';
 import '../responses/i_response.dart';
 
 abstract class ISleepCommand implements ICommand {
-  Future<IResponse<ISleepCommand>> executeAsync(IProfile profile,
-      {CancelToken token});
+  Future<IResponse<ISleepCommand>> executeAsync(IProfile profile, {CancelToken token});
 }

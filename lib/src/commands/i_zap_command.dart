@@ -6,7 +6,6 @@ import '../i_profile.dart';
 import '../responses/i_response.dart';
 
 abstract class IZapCommand implements ICommand {
-  Future<IResponse<IZapCommand>> executeAsync(
-      IProfile profile, IBouquetItemService service,
+  Future<IResponse<IZapCommand>> executeAsync(IProfile profile, IBouquetItemService service,
       {CancelToken token});
 }

@@ -6,7 +6,6 @@ import '../i_profile.dart';
 import '../responses/i_response.dart';
 
 abstract class IRemoteControlCommand implements ICommand {
-  Future<IResponse<IRemoteControlCommand>> executeAsync(
-      IProfile profile, RemoteControlCode code,
+  Future<IResponse<IRemoteControlCommand>> executeAsync(IProfile profile, RemoteControlCode code,
       {CancelToken token});
 }

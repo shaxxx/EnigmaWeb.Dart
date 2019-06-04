@@ -40,13 +40,11 @@ abstract class IFactory {
 
   IGetCurrentServiceCommand getCurrentServiceCommand();
 
-  IGetCurrentServiceResponse getCurrentServiceResponseWithService(
-      IBouquetItemService service);
+  IGetCurrentServiceResponse getCurrentServiceResponseWithService(IBouquetItemService service);
 
   IGetCurrentServiceResponse getCurrentServiceResponse();
 
-  IResponseParser<IGetCurrentServiceCommand, IGetCurrentServiceResponse>
-      getCurrentServiceParser();
+  IResponseParser<IGetCurrentServiceCommand, IGetCurrentServiceResponse> getCurrentServiceParser();
 
   IBouquetItemService bouquetItemService();
 
@@ -74,11 +72,9 @@ abstract class IFactory {
 
   IGetBouquetsResponse getBouquetsResponse();
 
-  IGetBouquetsResponse getBouquetsResponseWithBouquets(
-      List<IBouquetItemBouquet> bouquets);
+  IGetBouquetsResponse getBouquetsResponseWithBouquets(List<IBouquetItemBouquet> bouquets);
 
-  IResponseParser<IGetBouquetsCommand, IGetBouquetsResponse>
-      getBouquetsParser();
+  IResponseParser<IGetBouquetsCommand, IGetBouquetsResponse> getBouquetsParser();
 
   IBouquetItemBouquet bouquetItemBouquet();
 
@@ -86,11 +82,9 @@ abstract class IFactory {
 
   IGetBouquetItemsResponse getBouquetItemsResponse();
 
-  IGetBouquetItemsResponse getBouquetItemsResponseWithItems(
-      List<IBouquetItem> items);
+  IGetBouquetItemsResponse getBouquetItemsResponseWithItems(List<IBouquetItem> items);
 
-  IResponseParser<IGetBouquetItemsCommand, IGetBouquetItemsResponse>
-      getBouquetItemsParser();
+  IResponseParser<IGetBouquetItemsCommand, IGetBouquetItemsResponse> getBouquetItemsParser();
 
   ISignalCommand signalCommand();
 
@@ -124,8 +118,7 @@ abstract class IFactory {
 
   IVolumeStatusResponse volumeStatusResponseWithResponse(IVolumeStatus status);
 
-  IResponseParser<IVolumeStatusCommand, IVolumeStatusResponse>
-      volumeStatusParser();
+  IResponseParser<IVolumeStatusCommand, IVolumeStatusResponse> volumeStatusParser();
 
   ISetVolumeCommand setVolumeCommand();
 
@@ -133,18 +126,15 @@ abstract class IFactory {
 
   IResponse<ISetVolumeCommand> setVolumeResponseWithResponse(String response);
 
-  IResponseParser<ISetVolumeCommand, IResponse<ISetVolumeCommand>>
-      setVolumeParser();
+  IResponseParser<ISetVolumeCommand, IResponse<ISetVolumeCommand>> setVolumeParser();
 
   IRemoteControlCommand remoteControlCommand();
 
   IResponse<IRemoteControlCommand> remoteControlResponse();
 
-  IResponse<IRemoteControlCommand> remoteControlResponseWithResponse(
-      String response);
+  IResponse<IRemoteControlCommand> remoteControlResponseWithResponse(String response);
 
-  IResponseParser<IRemoteControlCommand, IResponse<IRemoteControlCommand>>
-      remoteControlParser();
+  IResponseParser<IRemoteControlCommand, IResponse<IRemoteControlCommand>> remoteControlParser();
 
   IMessageCommand messageCommand();
 
@@ -158,18 +148,15 @@ abstract class IFactory {
 
   IResponse<IReloadSettingsCommand> reloadSettingsResponse();
 
-  IResponse<IReloadSettingsCommand> reloadSettingsResponseWithResponse(
-      String response);
+  IResponse<IReloadSettingsCommand> reloadSettingsResponseWithResponse(String response);
 
-  IResponseParser<IReloadSettingsCommand, IResponse<IReloadSettingsCommand>>
-      reloadSettingsParser();
+  IResponseParser<IReloadSettingsCommand, IResponse<IReloadSettingsCommand>> reloadSettingsParser();
 
   IGetStreamParametersCommand getStreamParametersCommand();
 
   IGetStreamParametersResponse getStreamParametersResponse();
 
-  IGetStreamParametersResponse getStreamParametersResponseWithResponse(
-      String response);
+  IGetStreamParametersResponse getStreamParametersResponseWithResponse(String response);
 
   IResponseParser<IGetStreamParametersCommand, IGetStreamParametersResponse>
       getStreamParametersParser();

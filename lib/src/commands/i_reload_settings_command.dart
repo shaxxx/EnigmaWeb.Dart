@@ -6,7 +6,6 @@ import '../i_profile.dart';
 import '../responses/i_response.dart';
 
 abstract class IReloadSettingsCommand implements ICommand {
-  Future<IResponse<IReloadSettingsCommand>> executeAsync(
-      IProfile profile, ReloadSettingsType type,
+  Future<IResponse<IReloadSettingsCommand>> executeAsync(IProfile profile, ReloadSettingsType type,
       {CancelToken token});
 }

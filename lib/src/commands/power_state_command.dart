@@ -8,8 +8,7 @@ import '../i_profile.dart';
 import '../parsers/i_response_parser.dart';
 import '../responses/i_power_state_response.dart';
 
-class PowerStateCommand
-    extends EnigmaCommand<IPowerStateCommand, IPowerStateResponse>
+class PowerStateCommand extends EnigmaCommand<IPowerStateCommand, IPowerStateResponse>
     implements IPowerStateCommand {
   IResponseParser<IPowerStateCommand, IPowerStateResponse> _parser;
 
@@ -18,10 +17,8 @@ class PowerStateCommand
   }
 
   @override
-  Future<IPowerStateResponse> executeAsync(IProfile profile,
-      {CancelToken token}) async {
-    String url =
-        profile.enigma == EnigmaType.enigma1 ? "data" : "web/powerstate";
+  Future<IPowerStateResponse> executeAsync(IProfile profile, {CancelToken token}) async {
+    String url = profile.enigma == EnigmaType.enigma1 ? "data" : "web/powerstate";
     return await super.executeGenericAsync(profile, url, _parser, token: token);
   }
 }

@@ -13,8 +13,7 @@ import '../parsers/parsing_exception.dart';
 import '../responses/i_power_state_response.dart';
 import '../string_helper.dart';
 
-class PowerStateParser
-    implements IResponseParser<IPowerStateCommand, IPowerStateResponse> {
+class PowerStateParser implements IResponseParser<IPowerStateCommand, IPowerStateResponse> {
   IFactory _factory;
   //Logger _log;
 
@@ -28,8 +27,7 @@ class PowerStateParser
   }
 
   @override
-  Future<IPowerStateResponse> parseAsync(
-      String response, EnigmaType enigmaType) async {
+  Future<IPowerStateResponse> parseAsync(String response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -39,16 +37,14 @@ class PowerStateParser
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException.withException(
-          "Failed to parse response\n$response", ex);
+      throw ParsingException.withException("Failed to parse response\n$response", ex);
     }
   }
 
   IPowerStateResponse parseE1(String response) {
     bool standby = false;
     String searchFor = "var standby = ";
-    String value =
-        response.substring(response.indexOf(searchFor) + searchFor.length);
+    String value = response.substring(response.indexOf(searchFor) + searchFor.length);
     value = value.substring(0, value.indexOf(";")).trim();
     value = StringHelper.trimAll(value);
     standby = value.toLowerCase() == "true" || value.toLowerCase() == "1";
@@ -65,7 +61,6 @@ class PowerStateParser
       standby = value.toLowerCase() == "true" || value.toLowerCase() == "1";
       return _factory.powerStateResponse(standby);
     }
-    throw ParsingException(
-        "Failed to parse Enigma2 powerstate. Xml tag <e2instandby> not found!");
+    throw ParsingException("Failed to parse Enigma2 powerstate. Xml tag <e2instandby> not found!");
   }
 }

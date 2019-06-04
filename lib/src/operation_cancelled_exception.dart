@@ -5,8 +5,7 @@ class OperationCanceledException implements KnownException {
   Exception innerException;
 
   OperationCanceledException(String message) : message = message;
-  OperationCanceledException.withException(
-      String message, Exception innerException)
+  OperationCanceledException.withException(String message, Exception innerException)
       : message = message,
         innerException = innerException;
 }

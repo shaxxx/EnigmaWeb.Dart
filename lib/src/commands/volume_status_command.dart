@@ -8,8 +8,7 @@ import '../i_profile.dart';
 import '../parsers/i_response_parser.dart';
 import '../responses/i_volume_status_response.dart';
 
-class VolumeStatusCommand
-    extends EnigmaCommand<IVolumeStatusCommand, IVolumeStatusResponse>
+class VolumeStatusCommand extends EnigmaCommand<IVolumeStatusCommand, IVolumeStatusResponse>
     implements IVolumeStatusCommand {
   IResponseParser<IVolumeStatusCommand, IVolumeStatusResponse> _parser;
 
@@ -18,8 +17,7 @@ class VolumeStatusCommand
   }
 
   @override
-  Future<IVolumeStatusResponse> executeAsync(IProfile profile,
-      {CancelToken token}) async {
+  Future<IVolumeStatusResponse> executeAsync(IProfile profile, {CancelToken token}) async {
     String url = profile.enigma == EnigmaType.enigma1 ? "data" : "web/vol";
     return await super.executeGenericAsync(profile, url, _parser, token: token);
   }

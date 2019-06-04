@@ -35,7 +35,8 @@ class WebRequester implements IWebRequester {
   }
 
   @override
-  Future<List<int>> getBinaryResponseAsync(String url, IProfile profile, {CancelToken cancelToken}) async {
+  Future<List<int>> getBinaryResponseAsync(String url, IProfile profile,
+      {CancelToken cancelToken}) async {
     var response = await _getResponse(url, profile, ResponseType.bytes, cancelToken: cancelToken);
     return response.data;
   }
@@ -51,7 +52,7 @@ class WebRequester implements IWebRequester {
   }
 
   Dio _createHttpClient(ResponseType responseType, IProfile profile) {
-    Dio dio = new Dio();
+    Dio dio = Dio();
     dio.options.connectTimeout = connectTimeOut;
     dio.options.receiveTimeout = receiveTimeOut;
     dio.options.responseType = responseType;
@@ -87,7 +88,7 @@ class WebRequester implements IWebRequester {
     Response response;
     try {
       var httpClient = _createHttpClient(responseType, profile);
-      var st = new Stopwatch();
+      var st = Stopwatch();
       st.start();
       response = await httpClient.get(completeUrl, cancelToken: cancelToken);
       st.stop();
@@ -96,12 +97,13 @@ class WebRequester implements IWebRequester {
       _logResponse(response, url, responseType);
     } on DioError catch (e) {
       if (e.type == DioErrorType.CANCEL) {
-        throw new OperationCanceledException.withException(e.message, e);
+        throw OperationCanceledException.withException(e.message, e);
       }
-      throw new WebRequestException.withException(e.message, e);
+      throw WebRequestException.withException(e.message, e);
     } on Exception catch (e) {
       if (e is KnownException) rethrow;
-      if (e is Exception) throw new WebRequestException.withException("Request for $completeUrl failed.", e);
+      if (e is Exception)
+        throw WebRequestException.withException("Request for $completeUrl failed.", e);
     }
     return response;
   }
@@ -159,7 +161,10 @@ class WebRequester implements IWebRequester {
   }
 
   void _throwIfCanceled(CancelToken cancelToken, String url) {
-    if (cancelToken != null) if (cancelToken.isCancelled)
-      throw new OperationCanceledException("Request for $url was canceled.");
+    if (cancelToken != null) {
+      if (cancelToken.isCancelled) {
+        throw OperationCanceledException("Request for $url was canceled.");
+      }
+    }
   }
 }

@@ -5,6 +5,5 @@ import '../i_profile.dart';
 import '../responses/i_power_state_response.dart';
 
 abstract class IPowerStateCommand implements ICommand {
-  Future<IPowerStateResponse> executeAsync(IProfile profile,
-      {CancelToken token});
+  Future<IPowerStateResponse> executeAsync(IProfile profile, {CancelToken token});
 }

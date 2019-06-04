@@ -19,16 +19,14 @@ class GetBouquetItemsCommand
   }
 
   @override
-  Future<IGetBouquetItemsResponse> executeAsync(
-      IProfile profile, IBouquetItemBouquet bouquet,
+  Future<IGetBouquetItemsResponse> executeAsync(IProfile profile, IBouquetItemBouquet bouquet,
       {CancelToken token}) async {
     if (bouquet == null) {
       throw ArgumentError.notNull("bouquet");
     }
 
-    String url = profile.enigma == EnigmaType.enigma1
-        ? "cgi-bin/getServices?ref="
-        : "web/getservices?sRef=";
+    String url =
+        profile.enigma == EnigmaType.enigma1 ? "cgi-bin/getServices?ref=" : "web/getservices?sRef=";
     url = url + bouquet.reference;
     return await super.executeGenericAsync(profile, url, _parser, token: token);
   }

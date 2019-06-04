@@ -17,10 +17,8 @@ class SignalCommand extends EnigmaCommand<ISignalCommand, ISignalResponse>
   }
 
   @override
-  Future<ISignalResponse> executeAsync(IProfile profile,
-      {CancelToken token}) async {
-    String url =
-        profile.enigma == EnigmaType.enigma1 ? "satFinder" : "web/signal";
+  Future<ISignalResponse> executeAsync(IProfile profile, {CancelToken token}) async {
+    String url = profile.enigma == EnigmaType.enigma1 ? "satFinder" : "web/signal";
     return await super.executeGenericAsync(profile, url, _parser, token: token);
   }
 }

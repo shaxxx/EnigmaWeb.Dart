@@ -13,8 +13,7 @@ import '../parsers/parsing_exception.dart';
 import '../responses/i_volume_status_response.dart';
 import '../string_helper.dart';
 
-class VolumeStatusParser
-    implements IResponseParser<IVolumeStatusCommand, IVolumeStatusResponse> {
+class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, IVolumeStatusResponse> {
   IFactory _factory;
   //Logger _log;
 
@@ -28,8 +27,7 @@ class VolumeStatusParser
   }
 
   @override
-  Future<IVolumeStatusResponse> parseAsync(
-      String response, EnigmaType enigmaType) async {
+  Future<IVolumeStatusResponse> parseAsync(String response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -41,8 +39,7 @@ class VolumeStatusParser
         rethrow;
       }
 
-      throw ParsingException.withException(
-          "Failed to parse response\n$response", ex);
+      throw ParsingException.withException("Failed to parse response\n$response", ex);
     }
   }
 
@@ -54,8 +51,7 @@ class VolumeStatusParser
     String muteString = getE1StatusValue(response, "var mute = ");
     String currentString = getE1StatusValue(response, "var volume = ");
     muteString = StringHelper.trimAll(muteString);
-    mute =
-        muteString.toLowerCase() == "true" || muteString.toLowerCase() == "1";
+    mute = muteString.toLowerCase() == "true" || muteString.toLowerCase() == "1";
     status.mute = mute;
     currentString = StringHelper.trimAll(currentString);
     current = num.tryParse(currentString);
@@ -68,8 +64,7 @@ class VolumeStatusParser
   }
 
   String getE1StatusValue(String response, String searchFor) {
-    String tmp =
-        response.substring(response.indexOf(searchFor) + searchFor.length);
+    String tmp = response.substring(response.indexOf(searchFor) + searchFor.length);
     return StringHelper.trimAll(tmp.substring(0, tmp.indexOf(";")));
   }
 
@@ -97,8 +92,7 @@ class VolumeStatusParser
           "Enigma2 volume status parsing failed. Unable to convert $currentString to integer value.");
     }
 
-    status.mute = isMutedString.toLowerCase() == "true" ||
-        isMutedString.toLowerCase() == "1";
+    status.mute = isMutedString.toLowerCase() == "true" || isMutedString.toLowerCase() == "1";
     status.level = intLevel;
 
     return _factory.volumeStatusResponseWithResponse(status);

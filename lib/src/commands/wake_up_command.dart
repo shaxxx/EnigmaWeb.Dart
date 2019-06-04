@@ -8,8 +8,7 @@ import '../i_profile.dart';
 import '../parsers/i_response_parser.dart';
 import '../responses/i_response.dart';
 
-class WakeUpCommand
-    extends EnigmaCommand<IWakeUpCommand, IResponse<IWakeUpCommand>>
+class WakeUpCommand extends EnigmaCommand<IWakeUpCommand, IResponse<IWakeUpCommand>>
     implements IWakeUpCommand {
   IResponseParser<IWakeUpCommand, IResponse<IWakeUpCommand>> _parser;
 
@@ -18,8 +17,7 @@ class WakeUpCommand
   }
 
   @override
-  Future<IResponse<IWakeUpCommand>> executeAsync(IProfile profile,
-      {CancelToken token}) async {
+  Future<IResponse<IWakeUpCommand>> executeAsync(IProfile profile, {CancelToken token}) async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/admin?command=wakeup&requester=webif"
         : "web/powerstate?newstate=4";

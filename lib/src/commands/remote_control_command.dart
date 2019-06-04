@@ -8,22 +8,20 @@ import '../i_profile.dart';
 import '../parsers/i_response_parser.dart';
 import '../responses/i_response.dart';
 
-class RemoteControlCommand extends EnigmaCommand<IRemoteControlCommand,
-    IResponse<IRemoteControlCommand>> implements IRemoteControlCommand {
-  IResponseParser<IRemoteControlCommand, IResponse<IRemoteControlCommand>>
-      _parser;
+class RemoteControlCommand
+    extends EnigmaCommand<IRemoteControlCommand, IResponse<IRemoteControlCommand>>
+    implements IRemoteControlCommand {
+  IResponseParser<IRemoteControlCommand, IResponse<IRemoteControlCommand>> _parser;
 
   RemoteControlCommand(IFactory factory) : super(factory) {
     _parser = factory.remoteControlParser();
   }
 
   @override
-  Future<IResponse<IRemoteControlCommand>> executeAsync(
-      IProfile profile, RemoteControlCode code,
+  Future<IResponse<IRemoteControlCommand>> executeAsync(IProfile profile, RemoteControlCode code,
       {CancelToken token}) async {
-    String url = profile.enigma == EnigmaType.enigma1
-        ? "cgi-bin/rc?"
-        : "web/remotecontrol?command=";
+    String url =
+        profile.enigma == EnigmaType.enigma1 ? "cgi-bin/rc?" : "web/remotecontrol?command=";
     url = url + code.value.toString();
     return await super.executeGenericAsync(profile, url, _parser, token: token);
   }

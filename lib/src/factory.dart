@@ -82,7 +82,7 @@ import 'responses/unparsed_response.dart';
 import 'web_requester.dart';
 
 class Factory implements IFactory {
-  static final Factory _factory = new Factory._internal();
+  static final Factory _factory = Factory._internal();
 
   @override
   Logger log;
@@ -93,365 +93,353 @@ class Factory implements IFactory {
 
   Factory._internal() {
     Logger.root.level = Level.ALL;
-    log = new Logger('EnigmaWeb');
+    log = Logger('EnigmaWeb');
   }
 
   @override
   IBouquetItemBouquet bouquetItemBouquet() {
-    return new BouquetItemBouquet();
+    return BouquetItemBouquet();
   }
 
   @override
   IBouquetItemMarker bouquetItemMarker() {
-    return new BouquetItemMarker();
+    return BouquetItemMarker();
   }
 
   @override
   IBouquetItemService bouquetItemService() {
-    return new BouquetItemService();
+    return BouquetItemService();
   }
 
   @override
   IBouquetItemServiceE1 bouquetItemServiceE1() {
-    return new BouquetItemServiceE1();
+    return BouquetItemServiceE1();
   }
 
   @override
   IE1Signal e1Signal() {
-    return new E1Signal();
+    return E1Signal();
   }
 
   @override
   IE2Signal e2Signal() {
-    return new E2Signal();
+    return E2Signal();
   }
 
   @override
   IGetBouquetItemsCommand getBouquetItemsCommand() {
-    return new GetBouquetItemsCommand(this);
+    return GetBouquetItemsCommand(this);
   }
 
   @override
-  IResponseParser<IGetBouquetItemsCommand, IGetBouquetItemsResponse>
-      getBouquetItemsParser() {
-    return new GetBouquetItemsParser(this);
+  IResponseParser<IGetBouquetItemsCommand, IGetBouquetItemsResponse> getBouquetItemsParser() {
+    return GetBouquetItemsParser(this);
   }
 
   @override
   IGetBouquetItemsResponse getBouquetItemsResponse() {
-    return new GetBouquetItemsResponse();
+    return GetBouquetItemsResponse();
   }
 
   @override
-  IGetBouquetItemsResponse getBouquetItemsResponseWithItems(
-      List<IBouquetItem> items) {
-    return new GetBouquetItemsResponse.withItems(items);
+  IGetBouquetItemsResponse getBouquetItemsResponseWithItems(List<IBouquetItem> items) {
+    return GetBouquetItemsResponse.withItems(items);
   }
 
   @override
   IGetBouquetsCommand getBouquetsCommand() {
-    return new GetBouquetsCommand(this);
+    return GetBouquetsCommand(this);
   }
 
   @override
-  IResponseParser<IGetBouquetsCommand, IGetBouquetsResponse>
-      getBouquetsParser() {
-    return new GetBouquetsParser(this);
+  IResponseParser<IGetBouquetsCommand, IGetBouquetsResponse> getBouquetsParser() {
+    return GetBouquetsParser(this);
   }
 
   @override
   IGetBouquetsResponse getBouquetsResponse() {
-    return new GetBouquetsResponse();
+    return GetBouquetsResponse();
   }
 
   @override
-  IGetBouquetsResponse getBouquetsResponseWithBouquets(
-      List<IBouquetItemBouquet> bouquets) {
-    return new GetBouquetsResponse.withBouquets(bouquets);
+  IGetBouquetsResponse getBouquetsResponseWithBouquets(List<IBouquetItemBouquet> bouquets) {
+    return GetBouquetsResponse.withBouquets(bouquets);
   }
 
   @override
   IGetCurrentServiceCommand getCurrentServiceCommand() {
-    return new GetCurrentServiceCommand(this);
+    return GetCurrentServiceCommand(this);
   }
 
   @override
-  IResponseParser<IGetCurrentServiceCommand, IGetCurrentServiceResponse>
-      getCurrentServiceParser() {
-    return new GetCurrentServiceParser(this);
+  IResponseParser<IGetCurrentServiceCommand, IGetCurrentServiceResponse> getCurrentServiceParser() {
+    return GetCurrentServiceParser(this);
   }
 
   @override
   IGetCurrentServiceResponse getCurrentServiceResponse() {
-    return new GetCurrentServiceResponse();
+    return GetCurrentServiceResponse();
   }
 
   @override
-  IGetCurrentServiceResponse getCurrentServiceResponseWithService(
-      IBouquetItemService service) {
-    return new GetCurrentServiceResponse.withService(service);
+  IGetCurrentServiceResponse getCurrentServiceResponseWithService(IBouquetItemService service) {
+    return GetCurrentServiceResponse.withService(service);
   }
 
   @override
   IGetStreamParametersCommand getStreamParametersCommand() {
-    return new GetStreamParametersCommand(this);
+    return GetStreamParametersCommand(this);
   }
 
   @override
   IResponseParser<IGetStreamParametersCommand, IGetStreamParametersResponse>
       getStreamParametersParser() {
-    return new GetStreamParametersParser(this);
+    return GetStreamParametersParser(this);
   }
 
   @override
   IGetStreamParametersResponse getStreamParametersResponse() {
-    return new GetStreamParametersResponse();
+    return GetStreamParametersResponse();
   }
 
   @override
-  IGetStreamParametersResponse getStreamParametersResponseWithResponse(
-      String response) {
-    return new GetStreamParametersResponse.withResponse(response);
+  IGetStreamParametersResponse getStreamParametersResponseWithResponse(String response) {
+    return GetStreamParametersResponse.withResponse(response);
   }
 
   @override
   IMessageCommand messageCommand() {
-    return new MessageCommand(this);
+    return MessageCommand(this);
   }
 
   @override
   IResponseParser<IMessageCommand, IResponse<IMessageCommand>> messageParser() {
-    return new UnparsedParser<IMessageCommand>();
+    return UnparsedParser<IMessageCommand>();
   }
 
   @override
   IResponse<IMessageCommand> messageResponse() {
-    return new UnparsedResponse<IMessageCommand>(null);
+    return UnparsedResponse<IMessageCommand>(null);
   }
 
   @override
   IResponse<IMessageCommand> messageResponseWithResponse(String response) {
-    return new UnparsedResponse<IMessageCommand>(response);
+    return UnparsedResponse<IMessageCommand>(response);
   }
 
   @override
   IPowerStateCommand powerStateCommand() {
-    return new PowerStateCommand(this);
+    return PowerStateCommand(this);
   }
 
   @override
   IResponseParser<IPowerStateCommand, IPowerStateResponse> powerStateParser() {
-    return new PowerStateParser(this);
+    return PowerStateParser(this);
   }
 
   @override
   IPowerStateResponse powerStateResponse(bool standby) {
-    return new PowerStateResponse(standby);
+    return PowerStateResponse(standby);
   }
 
   @override
   IReloadSettingsCommand reloadSettingsCommand() {
-    return new ReloadSettingsCommand(this);
+    return ReloadSettingsCommand(this);
   }
 
   @override
   IResponseParser<IReloadSettingsCommand, IResponse<IReloadSettingsCommand>>
       reloadSettingsParser() {
-    return new UnparsedParser<IReloadSettingsCommand>();
+    return UnparsedParser<IReloadSettingsCommand>();
   }
 
   @override
   IResponse<IReloadSettingsCommand> reloadSettingsResponse() {
-    return new UnparsedResponse<IReloadSettingsCommand>(null);
+    return UnparsedResponse<IReloadSettingsCommand>(null);
   }
 
   @override
-  IResponse<IReloadSettingsCommand> reloadSettingsResponseWithResponse(
-      String response) {
-    return new UnparsedResponse<IReloadSettingsCommand>(response);
+  IResponse<IReloadSettingsCommand> reloadSettingsResponseWithResponse(String response) {
+    return UnparsedResponse<IReloadSettingsCommand>(response);
   }
 
   @override
   IRemoteControlCommand remoteControlCommand() {
-    return new RemoteControlCommand(this);
+    return RemoteControlCommand(this);
   }
 
   @override
-  IResponseParser<IRemoteControlCommand, IResponse<IRemoteControlCommand>>
-      remoteControlParser() {
-    return new UnparsedParser<IRemoteControlCommand>();
+  IResponseParser<IRemoteControlCommand, IResponse<IRemoteControlCommand>> remoteControlParser() {
+    return UnparsedParser<IRemoteControlCommand>();
   }
 
   @override
   IResponse<IRemoteControlCommand> remoteControlResponse() {
-    return new UnparsedResponse<IRemoteControlCommand>(null);
+    return UnparsedResponse<IRemoteControlCommand>(null);
   }
 
   @override
-  IResponse<IRemoteControlCommand> remoteControlResponseWithResponse(
-      String response) {
-    return new UnparsedResponse<IRemoteControlCommand>(response);
+  IResponse<IRemoteControlCommand> remoteControlResponseWithResponse(String response) {
+    return UnparsedResponse<IRemoteControlCommand>(response);
   }
 
   @override
   IRestartCommand restartCommand() {
-    return new RestartCommand(this);
+    return RestartCommand(this);
   }
 
   @override
   IResponseParser<IRestartCommand, IResponse<IRestartCommand>> restartParser() {
-    return new UnparsedParser<IRestartCommand>();
+    return UnparsedParser<IRestartCommand>();
   }
 
   @override
   IResponse<IRestartCommand> restartResponse() {
-    return new UnparsedResponse<IRestartCommand>(null);
+    return UnparsedResponse<IRestartCommand>(null);
   }
 
   @override
   IResponse<IRestartCommand> restartResponseWithResponse(String response) {
-    return new UnparsedResponse<IRestartCommand>(response);
+    return UnparsedResponse<IRestartCommand>(response);
   }
 
   @override
   IScreenshotCommand screenshotCommand() {
-    return new ScreenshotCommand(this);
+    return ScreenshotCommand(this);
   }
 
   @override
   IScreenshotResponse screenshotResponse() {
-    return new ScreenshotResponse(null);
+    return ScreenshotResponse(null);
   }
 
   @override
   IScreenshotResponse screenshotResponseWithBytes(List<int> screenshot) {
-    return new ScreenshotResponse(screenshot);
+    return ScreenshotResponse(screenshot);
   }
 
   @override
   ISetVolumeCommand setVolumeCommand() {
-    return new SetVolumeCommand(this);
+    return SetVolumeCommand(this);
   }
 
   @override
-  IResponseParser<ISetVolumeCommand, IResponse<ISetVolumeCommand>>
-      setVolumeParser() {
-    return new UnparsedParser<ISetVolumeCommand>();
+  IResponseParser<ISetVolumeCommand, IResponse<ISetVolumeCommand>> setVolumeParser() {
+    return UnparsedParser<ISetVolumeCommand>();
   }
 
   @override
   IResponse<ISetVolumeCommand> setVolumeResponse() {
-    return new UnparsedResponse<ISetVolumeCommand>(null);
+    return UnparsedResponse<ISetVolumeCommand>(null);
   }
 
   @override
   IResponse<ISetVolumeCommand> setVolumeResponseWithResponse(String response) {
-    return new UnparsedResponse<ISetVolumeCommand>(response);
+    return UnparsedResponse<ISetVolumeCommand>(response);
   }
 
   @override
   ISignalCommand signalCommand() {
-    return new SignalCommand(this);
+    return SignalCommand(this);
   }
 
   @override
   IResponseParser<ISignalCommand, ISignalResponse> signalParser() {
-    return new SignalParser(this);
+    return SignalParser(this);
   }
 
   @override
   ISignalResponse signalResponse(ISignal signal) {
-    return new SignalResponse(signal);
+    return SignalResponse(signal);
   }
 
   @override
   ISleepCommand sleepCommand() {
-    return new SleepCommand(this);
+    return SleepCommand(this);
   }
 
   @override
   IResponseParser<ISleepCommand, IResponse<ISleepCommand>> sleepParser() {
-    return new UnparsedParser<ISleepCommand>();
+    return UnparsedParser<ISleepCommand>();
   }
 
   @override
   IResponse<ISleepCommand> sleepResponse() {
-    return new UnparsedResponse<ISleepCommand>(null);
+    return UnparsedResponse<ISleepCommand>(null);
   }
 
   @override
   IResponse<ISleepCommand> sleepResponseWithResponse(String response) {
-    return new UnparsedResponse<ISleepCommand>(response);
+    return UnparsedResponse<ISleepCommand>(response);
   }
 
   @override
   IVolumeStatus volumeStatus() {
-    return new VolumeStatus();
+    return VolumeStatus();
   }
 
   @override
   IVolumeStatusCommand volumeStatusCommand() {
-    return new VolumeStatusCommand(this);
+    return VolumeStatusCommand(this);
   }
 
   @override
-  IResponseParser<IVolumeStatusCommand, IVolumeStatusResponse>
-      volumeStatusParser() {
-    return new VolumeStatusParser(this);
+  IResponseParser<IVolumeStatusCommand, IVolumeStatusResponse> volumeStatusParser() {
+    return VolumeStatusParser(this);
   }
 
   @override
   IVolumeStatusResponse volumeStatusResponse() {
-    return new VolumeStatusResponse(null);
+    return VolumeStatusResponse(null);
   }
 
   @override
   IVolumeStatusResponse volumeStatusResponseWithResponse(IVolumeStatus status) {
-    return new VolumeStatusResponse(status);
+    return VolumeStatusResponse(status);
   }
 
   @override
   IWakeUpCommand wakeUpCommand() {
-    return new WakeUpCommand(this);
+    return WakeUpCommand(this);
   }
 
   @override
   IResponseParser<IWakeUpCommand, IResponse<IWakeUpCommand>> wakeUpParser() {
-    return new UnparsedParser<IWakeUpCommand>();
+    return UnparsedParser<IWakeUpCommand>();
   }
 
   @override
   IResponse<IWakeUpCommand> wakeUpResponse() {
-    return new UnparsedResponse<IWakeUpCommand>(null);
+    return UnparsedResponse<IWakeUpCommand>(null);
   }
 
   @override
   IResponse<IWakeUpCommand> wakeUpResponseWithResponse(String response) {
-    return new UnparsedResponse<IWakeUpCommand>(response);
+    return UnparsedResponse<IWakeUpCommand>(response);
   }
 
   @override
   IWebRequester webRequester() {
-    return new WebRequester(log);
+    return WebRequester(log);
   }
 
   @override
   IZapCommand zapCommand() {
-    return new ZapCommand(this);
+    return ZapCommand(this);
   }
 
   @override
   IResponseParser<IZapCommand, IResponse<IZapCommand>> zapParser() {
-    return new UnparsedParser<IZapCommand>();
+    return UnparsedParser<IZapCommand>();
   }
 
   @override
   IResponse<IZapCommand> zapResponse() {
-    return new UnparsedResponse<IZapCommand>(null);
+    return UnparsedResponse<IZapCommand>(null);
   }
 
   @override
   IResponse<IZapCommand> zapResponseWithResponse(String response) {
-    return new UnparsedResponse<IZapCommand>(response);
+    return UnparsedResponse<IZapCommand>(response);
   }
 }

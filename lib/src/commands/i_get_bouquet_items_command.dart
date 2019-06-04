@@ -6,7 +6,6 @@ import '../responses/i_get_bouquet_items_response.dart';
 import 'i_command.dart';
 
 abstract class IGetBouquetItemsCommand implements ICommand {
-  Future<IGetBouquetItemsResponse> executeAsync(
-      IProfile profile, IBouquetItemBouquet bouquet,
+  Future<IGetBouquetItemsResponse> executeAsync(IProfile profile, IBouquetItemBouquet bouquet,
       {CancelToken token});
 }

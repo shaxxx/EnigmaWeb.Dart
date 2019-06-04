@@ -10,8 +10,7 @@ import '../known_exception.dart';
 import '../operation_cancelled_exception.dart';
 import '../responses/i_screenshot_response.dart';
 
-class ScreenshotCommand
-    extends EnigmaCommand<IScreenshotCommand, IScreenshotResponse>
+class ScreenshotCommand extends EnigmaCommand<IScreenshotCommand, IScreenshotResponse>
     implements IScreenshotCommand {
   IFactory _factory;
 
@@ -20,8 +19,7 @@ class ScreenshotCommand
   }
 
   @override
-  Future<IScreenshotResponse> executeAsync(
-      IProfile profile, ScreenshotType type,
+  Future<IScreenshotResponse> executeAsync(IProfile profile, ScreenshotType type,
       {CancelToken token}) async {
     if (profile == null) {
       throw ArgumentError.notNull("profile");
@@ -34,27 +32,21 @@ class ScreenshotCommand
           {
             url = profile.enigma == EnigmaType.enigma1
                 ? "body?mode=controlScreenShot&blendtype=2"
-                : "grab?format=jpg&mode=all&filename=/tmp/" +
-                    _unixTimeStamp() +
-                    ".jpg";
+                : "grab?format=jpg&mode=all&filename=/tmp/" + _unixTimeStamp() + ".jpg";
             break;
           }
         case ScreenshotType.picture:
           {
             url = profile.enigma == EnigmaType.enigma1
                 ? "body?mode=controlScreenShot"
-                : "grab?format=jpg&mode=video&v=&filename=/tmp/" +
-                    _unixTimeStamp() +
-                    ".jpg";
+                : "grab?format=jpg&mode=video&v=&filename=/tmp/" + _unixTimeStamp() + ".jpg";
             break;
           }
         case ScreenshotType.osd:
           {
             url = profile.enigma == EnigmaType.enigma1
                 ? "body?mode=controlFBShot"
-                : "grab?format=jpg&mode=osd&o=&n=&filename=/tmp/" +
-                    _unixTimeStamp() +
-                    ".jpg";
+                : "grab?format=jpg&mode=osd&o=&n=&filename=/tmp/" + _unixTimeStamp() + ".jpg";
             break;
           }
         default:
@@ -64,8 +56,8 @@ class ScreenshotCommand
       }
 
       if (profile.enigma == EnigmaType.enigma2) {
-        return _factory.screenshotResponseWithBytes(await requester
-            .getBinaryResponseAsync(url, profile, cancelToken: token));
+        return _factory.screenshotResponseWithBytes(
+            await requester.getBinaryResponseAsync(url, profile, cancelToken: token));
       }
 
       //Enigma 1
@@ -83,13 +75,12 @@ class ScreenshotCommand
           }
       }
 
-      String response =
-          await requester.getResponseAsync(url, profile, cancelToken: token);
+      String response = await requester.getResponseAsync(url, profile, cancelToken: token);
       if (response == null) {
         return null;
       }
-      return _factory.screenshotResponseWithBytes(await requester
-          .getBinaryResponseAsync(url, profile, cancelToken: token));
+      return _factory.screenshotResponseWithBytes(
+          await requester.getBinaryResponseAsync(url, profile, cancelToken: token));
     } on Exception catch (ex) {
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;

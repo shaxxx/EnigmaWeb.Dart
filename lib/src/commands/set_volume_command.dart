@@ -8,8 +8,7 @@ import '../i_profile.dart';
 import '../parsers/i_response_parser.dart';
 import '../responses/i_response.dart';
 
-class SetVolumeCommand
-    extends EnigmaCommand<ISetVolumeCommand, IResponse<ISetVolumeCommand>>
+class SetVolumeCommand extends EnigmaCommand<ISetVolumeCommand, IResponse<ISetVolumeCommand>>
     implements ISetVolumeCommand {
   IResponseParser<ISetVolumeCommand, IResponse<ISetVolumeCommand>> _parser;
 
@@ -24,9 +23,7 @@ class SetVolumeCommand
       throw ArgumentError.notNull("level");
     }
 
-    String url = profile.enigma == EnigmaType.enigma1
-        ? "/setVolume?volume="
-        : "web/vol?set=set";
+    String url = profile.enigma == EnigmaType.enigma1 ? "/setVolume?volume=" : "web/vol?set=set";
     url = url + level.toString();
     return await super.executeGenericAsync(profile, url, _parser, token: token);
   }

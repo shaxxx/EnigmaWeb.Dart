@@ -5,6 +5,5 @@ import '../i_profile.dart';
 import '../responses/i_volume_status_response.dart';
 
 abstract class IVolumeStatusCommand implements ICommand {
-  Future<IVolumeStatusResponse> executeAsync(IProfile profile,
-      {CancelToken token});
+  Future<IVolumeStatusResponse> executeAsync(IProfile profile, {CancelToken token});
 }

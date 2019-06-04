@@ -10,8 +10,7 @@ import '../responses/i_response.dart';
 import 'command_exception.dart';
 import 'i_command.dart';
 
-abstract class EnigmaCommand<TCommand extends ICommand,
-    TResponse extends IResponse<TCommand>> {
+abstract class EnigmaCommand<TCommand extends ICommand, TResponse extends IResponse<TCommand>> {
   IWebRequester requester;
   //IFactory _factory;
 
@@ -31,8 +30,7 @@ abstract class EnigmaCommand<TCommand extends ICommand,
     if (parser == null) throw ArgumentError.notNull("parser");
 
     try {
-      String response =
-          await requester.getResponseAsync(url, profile, cancelToken: token);
+      String response = await requester.getResponseAsync(url, profile, cancelToken: token);
       if (response == null) {
         return null;
       }
@@ -41,8 +39,7 @@ abstract class EnigmaCommand<TCommand extends ICommand,
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw CommandException.withException(
-          "Command failed for profile ${profile.name}", ex);
+      throw CommandException.withException("Command failed for profile ${profile.name}", ex);
     }
   }
 }

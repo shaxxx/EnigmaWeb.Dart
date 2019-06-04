@@ -28,8 +28,7 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
   }
 
   @override
-  Future<ISignalResponse> parseAsync(
-      String response, EnigmaType enigmaType) async {
+  Future<ISignalResponse> parseAsync(String response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -40,31 +39,25 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException.withException(
-          "Failed to parse response\n$response", ex);
+      throw ParsingException.withException("Failed to parse response\n$response", ex);
     }
   }
 
   ISignalResponse parseE1(String response) {
     String searchFor = "type=\"checkbox\" value=\"";
-    String sLock =
-        response.substring(response.indexOf(searchFor) + searchFor.length);
+    String sLock = response.substring(response.indexOf(searchFor) + searchFor.length);
     sLock = sLock.substring(0, sLock.indexOf("\""));
     bool locked = (sLock.toLowerCase() == "on");
-    String sSync =
-        response.substring(response.indexOf(searchFor) + searchFor.length);
+    String sSync = response.substring(response.indexOf(searchFor) + searchFor.length);
     sSync = sSync.substring(sSync.indexOf(searchFor) + searchFor.length);
     sSync = sSync.substring(0, sSync.indexOf("\""));
     bool sync = (sSync.toLowerCase() == "on");
     searchFor = "<td align=\"center\">";
-    response =
-        response.substring(response.indexOf(searchFor) + searchFor.length);
+    response = response.substring(response.indexOf(searchFor) + searchFor.length);
     String snr = response.substring(0, response.indexOf("%"));
-    response =
-        response.substring(response.indexOf(searchFor) + searchFor.length);
+    response = response.substring(response.indexOf(searchFor) + searchFor.length);
     String acg = response.substring(0, response.indexOf("%"));
-    response =
-        response.substring(response.indexOf(searchFor) + searchFor.length);
+    response = response.substring(response.indexOf(searchFor) + searchFor.length);
 
     String ber = response.substring(0, response.indexOf("<"));
 
@@ -77,8 +70,7 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
     return _factory.signalResponse(signal);
   }
 
-  IE1Signal _initializeSignal(
-      String snr, String acg, String ber, bool locked, bool sync) {
+  IE1Signal _initializeSignal(String snr, String acg, String ber, bool locked, bool sync) {
     IE1Signal signal = _factory.e1Signal();
 
     if (snr.isEmpty) {
@@ -144,10 +136,9 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
     String realDb;
 
     snr = StringHelper.trimAll(snr.replaceAll("%", ""));
-    db = StringHelper.trimAll(
-        StringHelper.trimAll(db.toLowerCase().replaceAll("db", ""))
-            .replaceAll(",", ds)
-            .replaceAll(".", ds));
+    db = StringHelper.trimAll(StringHelper.trimAll(db.toLowerCase().replaceAll("db", ""))
+        .replaceAll(",", ds)
+        .replaceAll(".", ds));
 
     if (snr.isEmpty || db.isEmpty) {
       signal.db = -1;
@@ -158,9 +149,9 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
     }
 
     //dB is in percentage, someting is wrong
-    if (db.indexOf("%") > -1) {
+    if (db.contains("%")) {
       //if SNR is in dB we simply switch the values
-      if (snr.indexOf("db") > -1) {
+      if (snr.contains("db")) {
         realSnr = db;
         realDb = snr;
         realDb = StringHelper.trimAll(realDb.replaceAll("db", ""))
@@ -178,7 +169,7 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
     }
 
     //check if snr value is in db
-    if (snr.toLowerCase().indexOf("db") > -1) {
+    if (snr.toLowerCase().contains("db")) {
       realSnr = null;
       realDb = db;
     }

@@ -11,9 +11,7 @@ import '../responses/i_get_stream_parameters_response.dart';
 import '../string_helper.dart';
 
 class GetStreamParametersParser
-    implements
-        IResponseParser<IGetStreamParametersCommand,
-            IGetStreamParametersResponse> {
+    implements IResponseParser<IGetStreamParametersCommand, IGetStreamParametersResponse> {
   IFactory _factory;
   //Logger _log;
 
@@ -26,8 +24,7 @@ class GetStreamParametersParser
   }
 
   @override
-  Future<IGetStreamParametersResponse> parseAsync(
-      String response, EnigmaType enigmaType) async {
+  Future<IGetStreamParametersResponse> parseAsync(String response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -38,8 +35,7 @@ class GetStreamParametersParser
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException.withException(
-          "Failed to parse response\n$response", ex);
+      throw ParsingException.withException("Failed to parse response\n$response", ex);
     }
   }
 

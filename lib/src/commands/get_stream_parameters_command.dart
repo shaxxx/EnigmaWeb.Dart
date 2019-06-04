@@ -9,19 +9,17 @@ import '../i_profile.dart';
 import '../parsers/i_response_parser.dart';
 import '../responses/i_get_stream_parameters_response.dart';
 
-class GetStreamParametersCommand extends EnigmaCommand<
-    IGetStreamParametersCommand,
-    IGetStreamParametersResponse> implements IGetStreamParametersCommand {
-  IResponseParser<IGetStreamParametersCommand, IGetStreamParametersResponse>
-      _parser;
+class GetStreamParametersCommand
+    extends EnigmaCommand<IGetStreamParametersCommand, IGetStreamParametersResponse>
+    implements IGetStreamParametersCommand {
+  IResponseParser<IGetStreamParametersCommand, IGetStreamParametersResponse> _parser;
 
   GetStreamParametersCommand(IFactory factory) : super(factory) {
     _parser = factory.getStreamParametersParser();
   }
 
   @override
-  Future<IGetStreamParametersResponse> executeAsync(
-      IProfile profile, IBouquetItemService service,
+  Future<IGetStreamParametersResponse> executeAsync(IProfile profile, IBouquetItemService service,
       {CancelToken token}) async {
     if (profile == null) {
       throw ArgumentError.notNull("profile");
@@ -31,9 +29,7 @@ class GetStreamParametersCommand extends EnigmaCommand<
       throw ArgumentError.notNull("service");
     }
 
-    String url = profile.enigma == EnigmaType.enigma1
-        ? "video.m3u?ref="
-        : "web/video.m3u?sRef=";
+    String url = profile.enigma == EnigmaType.enigma1 ? "video.m3u?ref=" : "web/video.m3u?sRef=";
     url = url + service.reference;
     return await super.executeGenericAsync(profile, url, _parser, token: token);
   }

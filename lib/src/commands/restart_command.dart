@@ -8,8 +8,7 @@ import '../i_profile.dart';
 import '../parsers/i_response_parser.dart';
 import '../responses/i_response.dart';
 
-class RestartCommand
-    extends EnigmaCommand<IRestartCommand, IResponse<IRestartCommand>>
+class RestartCommand extends EnigmaCommand<IRestartCommand, IResponse<IRestartCommand>>
     implements IRestartCommand {
   IResponseParser<IRestartCommand, IResponse<IRestartCommand>> _parser;
 
@@ -18,8 +17,7 @@ class RestartCommand
   }
 
   @override
-  Future<IResponse<IRestartCommand>> executeAsync(IProfile profile,
-      {CancelToken token}) async {
+  Future<IResponse<IRestartCommand>> executeAsync(IProfile profile, {CancelToken token}) async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/admin?command=restart&requester=webif"
         : "web/powerstate?newstate=3";
