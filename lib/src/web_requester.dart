@@ -35,8 +35,7 @@ class WebRequester implements IWebRequester {
   }
 
   @override
-  Future<List<int>> getBinaryResponseAsync(String url, IProfile profile,
-      {CancelToken cancelToken}) async {
+  Future<List<int>> getBinaryResponseAsync(String url, IProfile profile, {CancelToken cancelToken}) async {
     var response = await _getResponse(url, profile, ResponseType.bytes, cancelToken: cancelToken);
     return response.data;
   }
@@ -102,8 +101,9 @@ class WebRequester implements IWebRequester {
       throw WebRequestException.withException(e.message, e);
     } on Exception catch (e) {
       if (e is KnownException) rethrow;
-      if (e is Exception)
+      if (e is Exception) {
         throw WebRequestException.withException("Request for $completeUrl failed.", e);
+      }
     }
     return response;
   }
