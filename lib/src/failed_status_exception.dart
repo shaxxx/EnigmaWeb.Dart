@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'known_exception.dart';
+import 'package:enigma_web/src/known_exception.dart';
 
 class FailedStatusCodeException implements KnownException {
   HttpStatus statusCode;
@@ -9,8 +9,7 @@ class FailedStatusCodeException implements KnownException {
     statusCode = statusCode;
   }
 
-  FailedStatusCodeException.withException(
-      String message, HttpStatus statusCode, Exception innerException) {
+  FailedStatusCodeException.withException(String message, HttpStatus statusCode, Exception innerException) {
     statusCode = statusCode;
   }
 }

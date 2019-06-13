@@ -1,40 +1,37 @@
 import 'package:dio/dio.dart';
+import 'package:enigma_web/enigma_web.dart';
+import 'package:enigma_web/src/commands/enigma_command.dart';
+import 'package:enigma_web/src/commands/i_message_command.dart';
+import 'package:enigma_web/src/enums.dart';
+import 'package:enigma_web/src/i_profile.dart';
+import 'package:enigma_web/src/parsers/i_response_parser.dart';
+import 'package:enigma_web/src/responses/i_response.dart';
 
-import '../commands/enigma_command.dart';
-import '../commands/i_message_command.dart';
-import '../enums.dart';
-import '../i_factory.dart';
-import '../i_profile.dart';
-import '../parsers/i_response_parser.dart';
-import '../responses/i_response.dart';
+class MessageCommand extends EnigmaCommand<IMessageCommand, IResponse<IMessageCommand>> implements IMessageCommand {
+  final IResponseParser<IMessageCommand, IResponse<IMessageCommand>> parser;
 
-class MessageCommand extends EnigmaCommand<IMessageCommand, IResponse<IMessageCommand>>
-    implements IMessageCommand {
-  IResponseParser<IMessageCommand, IResponse<IMessageCommand>> _parser;
-
-  MessageCommand(IFactory factory) : super(factory) {
-    _parser = factory.messageParser();
-  }
+  MessageCommand(this.parser, IWebRequester requester)
+      : assert(parser != null),
+        super(requester) {}
 
   @override
-  Future<IResponse<IMessageCommand>> executeAsync(
-      IProfile profile, MessageType type, String message, int timeout,
+  Future<IResponse<IMessageCommand>> executeAsync(IProfile profile, MessageType type, String message, int timeout,
       {CancelToken token}) async {
     String url;
     if (profile.enigma == EnigmaType.enigma1) {
       String caption;
       switch (type) {
-        case MessageType.Info:
+        case MessageType.info:
           {
             caption = "Info";
             break;
           }
-        case MessageType.Warning:
+        case MessageType.warning:
           {
             caption = "Warning";
             break;
           }
-        case MessageType.Question:
+        case MessageType.question:
           {
             caption = "Question";
             break;
@@ -44,11 +41,10 @@ class MessageCommand extends EnigmaCommand<IMessageCommand, IResponse<IMessageCo
             caption = "Message";
           }
       }
-      url =
-          "cgi-bin/xmessage?caption=$caption&timeout=$timeout&body=${Uri.encodeFull(message).replaceAll(" ", "+")}";
+      url = "cgi-bin/xmessage?caption=$caption&timeout=$timeout&body=${Uri.encodeFull(message).replaceAll(" ", "+")}";
     } else {
       url = "web/message?text=${Uri.encodeFull(message)}&type=$type&timeout=$timeout";
     }
-    return await super.executeGenericAsync(profile, url, _parser, token: token);
+    return await super.executeGenericAsync(profile, url, parser, token: token);
   }
 }

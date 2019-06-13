@@ -1,21 +1,19 @@
 import 'package:dio/dio.dart';
+import 'package:enigma_web/src/commands/enigma_command.dart';
+import 'package:enigma_web/src/commands/i_reload_settings_command.dart';
+import 'package:enigma_web/src/enums.dart';
+import 'package:enigma_web/src/i_profile.dart';
+import 'package:enigma_web/src/i_web_requester.dart';
+import 'package:enigma_web/src/parsers/i_response_parser.dart';
+import 'package:enigma_web/src/responses/i_response.dart';
 
-import '../commands/enigma_command.dart';
-import '../commands/i_reload_settings_command.dart';
-import '../enums.dart';
-import '../i_factory.dart';
-import '../i_profile.dart';
-import '../parsers/i_response_parser.dart';
-import '../responses/i_response.dart';
-
-class ReloadSettingsCommand
-    extends EnigmaCommand<IReloadSettingsCommand, IResponse<IReloadSettingsCommand>>
+class ReloadSettingsCommand extends EnigmaCommand<IReloadSettingsCommand, IResponse<IReloadSettingsCommand>>
     implements IReloadSettingsCommand {
-  IResponseParser<IReloadSettingsCommand, IResponse<IReloadSettingsCommand>> _parser;
+  final IResponseParser<IReloadSettingsCommand, IResponse<IReloadSettingsCommand>> parser;
 
-  ReloadSettingsCommand(IFactory factory) : super(factory) {
-    _parser = factory.reloadSettingsParser();
-  }
+  ReloadSettingsCommand(this.parser, IWebRequester requester)
+      : assert(parser != null),
+        super(requester) {}
 
   @override
   Future<IResponse<IReloadSettingsCommand>> executeAsync(
@@ -24,23 +22,18 @@ class ReloadSettingsCommand
     CancelToken token,
   }) async {
     if (profile.enigma == EnigmaType.enigma1) {
-      if (type == ReloadSettingsType.All) {
-        await super.executeGenericAsync(profile, "cgi-bin/reloadSettings", _parser, token: token);
-        return await super
-            .executeGenericAsync(profile, "cgi-bin/reloadUserBouquets", _parser, token: token);
+      if (type == ReloadSettingsType.all) {
+        await super.executeGenericAsync(profile, "cgi-bin/reloadSettings", parser, token: token);
+        return await super.executeGenericAsync(profile, "cgi-bin/reloadUserBouquets", parser, token: token);
       }
-      if (type == ReloadSettingsType.Services) {
-        return await super
-            .executeGenericAsync(profile, "cgi-bin/reloadSettings", _parser, token: token);
+      if (type == ReloadSettingsType.services) {
+        return await super.executeGenericAsync(profile, "cgi-bin/reloadSettings", parser, token: token);
       }
-      if (type == ReloadSettingsType.Bouquets) {
-        return await super
-            .executeGenericAsync(profile, "cgi-bin/reloadUserBouquets", _parser, token: token);
+      if (type == ReloadSettingsType.bouquets) {
+        return await super.executeGenericAsync(profile, "cgi-bin/reloadUserBouquets", parser, token: token);
       }
       throw Exception("ReloadSettingsType not supported");
     }
-    return await super.executeGenericAsync(
-        profile, "web/servicelistreload?mode=${type.index}", _parser,
-        token: token);
+    return await super.executeGenericAsync(profile, "web/servicelistreload?mode=${type.index}", parser, token: token);
   }
 }

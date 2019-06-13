@@ -1,17 +1,18 @@
-import '../commands/i_command.dart';
-import '../enums.dart';
-import '../known_exception.dart';
-import '../operation_cancelled_exception.dart';
-import '../responses/i_response.dart';
-import '../responses/unparsed_response.dart';
-import 'i_unparsed_parser.dart';
-import 'parsing_exception.dart';
+import 'package:enigma_web/src/commands/i_command.dart';
+import 'package:enigma_web/src/enums.dart';
+import 'package:enigma_web/src/known_exception.dart';
+import 'package:enigma_web/src/operation_cancelled_exception.dart';
+import 'package:enigma_web/src/parsers/i_unparsed_parser.dart';
+import 'package:enigma_web/src/parsers/parsing_exception.dart';
+import 'package:enigma_web/src/responses/i_response.dart';
+import 'package:enigma_web/src/responses/i_string_response.dart';
+import 'package:enigma_web/src/responses/unparsed_response.dart';
 
 class UnparsedParser<TCommand extends ICommand> implements IUnparsedParser<TCommand> {
   @override
-  Future<IResponse<TCommand>> parseAsync(String response, EnigmaType enigmaType) async {
+  Future<IResponse<TCommand>> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
     try {
-      return await Future(() => UnparsedResponse<TCommand>(response));
+      return await Future(() => UnparsedResponse<TCommand>(response, response.responseDuration));
     } on Exception catch (ex) {
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;

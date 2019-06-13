@@ -1,15 +1,15 @@
-import '../i_volume_status.dart';
-import '../responses/i_volume_status_response.dart';
+import 'package:enigma_web/src/i_volume_status.dart';
+import 'package:enigma_web/src/responses/i_volume_status_response.dart';
 
 class VolumeStatusResponse implements IVolumeStatusResponse {
-  VolumeStatusResponse(IVolumeStatus status) {
-    if (status == null) {
-      throw ArgumentError.notNull("status");
-    }
+  final IVolumeStatus _status;
+  final Duration _responseDuration;
 
-    this.status = status;
-  }
+  VolumeStatusResponse(this._status, this._responseDuration) : assert(_status != null, _responseDuration != null) {}
 
   @override
-  IVolumeStatus status;
+  IVolumeStatus get status => _status;
+
+  @override
+  Duration get responseDuration => _responseDuration;
 }

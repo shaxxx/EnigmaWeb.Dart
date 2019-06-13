@@ -1,4 +1,4 @@
-import 'i_signal.dart';
+import 'package:enigma_web/src/i_signal.dart';
 
 abstract class IE1Signal implements ISignal {
   bool lock = false;

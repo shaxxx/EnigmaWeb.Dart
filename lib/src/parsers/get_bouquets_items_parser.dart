@@ -1,33 +1,20 @@
 //import 'package:logging/logging.dart';
+import 'package:enigma_web/enigma_web.dart';
+import 'package:enigma_web/src/commands/i_get_bouquet_items_command.dart';
+import 'package:enigma_web/src/enums.dart';
+import 'package:enigma_web/src/i_bouquet_item.dart';
+import 'package:enigma_web/src/known_exception.dart';
+import 'package:enigma_web/src/operation_cancelled_exception.dart';
+import 'package:enigma_web/src/parsers/helpers.dart';
+import 'package:enigma_web/src/parsers/i_response_parser.dart';
+import 'package:enigma_web/src/parsers/parsing_exception.dart';
+import 'package:enigma_web/src/responses/i_string_response.dart';
+import 'package:enigma_web/src/string_helper.dart';
 import 'package:xml/xml.dart' as xml;
 
-import '../commands/i_get_bouquet_items_command.dart';
-import '../enums.dart';
-import '../i_bouquet_item.dart';
-import '../i_factory.dart';
-import '../known_exception.dart';
-import '../operation_cancelled_exception.dart';
-import '../parsers/helpers.dart';
-import '../parsers/i_response_parser.dart';
-import '../parsers/parsing_exception.dart';
-import '../responses/i_get_bouquet_items_response.dart';
-import '../string_helper.dart';
-
-class GetBouquetItemsParser
-    implements IResponseParser<IGetBouquetItemsCommand, IGetBouquetItemsResponse> {
-  IFactory _factory;
-  //Logger _log;
-
-  GetBouquetItemsParser(IFactory factory) {
-    if (factory == null) {
-      throw ArgumentError.notNull("factory");
-    }
-    _factory = factory;
-    //_log = factory.log;
-  }
-
+class GetBouquetItemsParser implements IResponseParser<IGetBouquetItemsCommand, GetBouquetItemsResponse> {
   @override
-  Future<IGetBouquetItemsResponse> parseAsync(String response, EnigmaType enigmaType) async {
+  Future<GetBouquetItemsResponse> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -41,9 +28,9 @@ class GetBouquetItemsParser
     }
   }
 
-  IGetBouquetItemsResponse parseE1(String response) {
+  GetBouquetItemsResponse parseE1(IStringResponse response) {
     var items = List<IBouquetItem>();
-    List<String> lines = response.split("\n");
+    List<String> lines = response.responseString.split("\n");
 
     for (int i = 0; i <= lines.length - 2; i++) {
       String reference = lines[i].substring(0, lines[i].indexOf(";"));
@@ -65,14 +52,14 @@ class GetBouquetItemsParser
       item.name = name;
       items.add(item);
     }
-    return _factory.getBouquetItemsResponseWithItems(items);
+    return GetBouquetItemsResponse(items, response.responseDuration);
   }
 
-  IGetBouquetItemsResponse parseE2(String response) {
-    response = Helpers.sanitizeXmlString(response);
+  GetBouquetItemsResponse parseE2(IStringResponse response) {
+    var responseString = Helpers.sanitizeXmlString(response.responseString);
     var items = List<IBouquetItem>();
 
-    var document = xml.parse(response);
+    var document = xml.parse(responseString);
     var children = document.findAllElements("e2service");
     if (children != null && children.isNotEmpty) {
       for (final node in children) {
@@ -97,7 +84,7 @@ class GetBouquetItemsParser
         }
       }
     }
-    return _factory.getBouquetItemsResponseWithItems(items);
+    return GetBouquetItemsResponse(items, response.responseDuration);
   }
 
   IBouquetItem _initializeItem(String reference, EnigmaType enigmaType) {
@@ -106,15 +93,13 @@ class GetBouquetItemsParser
     }
 
     if (reference.startsWith("1:0:1")) {
-      return enigmaType == EnigmaType.enigma2
-          ? _factory.bouquetItemService()
-          : _factory.bouquetItemServiceE1();
+      return enigmaType == EnigmaType.enigma2 ? BouquetItemService() : BouquetItemServiceE1();
     }
 
     if (reference.startsWith("1:64")) {
-      return _factory.bouquetItemMarker();
+      return BouquetItemMarker();
     }
 
-    return _factory.bouquetItemBouquet();
+    return BouquetItemBouquet();
   }
 }

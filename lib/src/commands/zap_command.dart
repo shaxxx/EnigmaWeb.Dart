@@ -1,20 +1,19 @@
 import 'package:dio/dio.dart';
-
-import '../commands/enigma_command.dart';
-import '../commands/i_zap_command.dart';
-import '../enums.dart';
-import '../i_bouquet_item_service.dart';
-import '../i_factory.dart';
-import '../i_profile.dart';
-import '../parsers/i_response_parser.dart';
-import '../responses/i_response.dart';
+import 'package:enigma_web/enigma_web.dart';
+import 'package:enigma_web/src/commands/enigma_command.dart';
+import 'package:enigma_web/src/commands/i_zap_command.dart';
+import 'package:enigma_web/src/enums.dart';
+import 'package:enigma_web/src/i_bouquet_item_service.dart';
+import 'package:enigma_web/src/i_profile.dart';
+import 'package:enigma_web/src/parsers/i_response_parser.dart';
+import 'package:enigma_web/src/responses/i_response.dart';
 
 class ZapCommand extends EnigmaCommand<IZapCommand, IResponse<IZapCommand>> implements IZapCommand {
-  IResponseParser<IZapCommand, IResponse<IZapCommand>> _parser;
+  final IResponseParser<IZapCommand, IResponse<IZapCommand>> parser;
 
-  ZapCommand(IFactory factory) : super(factory) {
-    _parser = factory.zapParser();
-  }
+  ZapCommand(this.parser, IWebRequester requester)
+      : assert(parser != null),
+        super(requester) {}
 
   @override
   Future<IResponse<IZapCommand>> executeAsync(IProfile profile, IBouquetItemService service,
@@ -25,6 +24,6 @@ class ZapCommand extends EnigmaCommand<IZapCommand, IResponse<IZapCommand>> impl
 
     String url = profile.enigma == EnigmaType.enigma1 ? "cgi-bin/zapTo?path=" : "web/zap?sRef=";
     url = url + service.reference;
-    return await super.executeGenericAsync(profile, url, _parser, token: token);
+    return await super.executeGenericAsync(profile, url, parser, token: token);
   }
 }

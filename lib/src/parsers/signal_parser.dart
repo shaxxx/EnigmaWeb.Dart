@@ -1,34 +1,23 @@
 //import 'package:logging/logging.dart';
+import 'package:enigma_web/src/commands/i_signal_command.dart';
+import 'package:enigma_web/src/e1_signal.dart';
+import 'package:enigma_web/src/e2_signal.dart';
+import 'package:enigma_web/src/enums.dart';
+import 'package:enigma_web/src/i_e1_signal.dart';
+import 'package:enigma_web/src/i_e2_signal.dart';
+import 'package:enigma_web/src/known_exception.dart';
+import 'package:enigma_web/src/operation_cancelled_exception.dart';
+import 'package:enigma_web/src/parsers/helpers.dart';
+import 'package:enigma_web/src/parsers/i_response_parser.dart';
+import 'package:enigma_web/src/parsers/parsing_exception.dart';
+import 'package:enigma_web/src/responses/i_string_response.dart';
+import 'package:enigma_web/src/responses/signal_response.dart';
+import 'package:enigma_web/src/string_helper.dart';
 import 'package:xml/xml.dart' as xml;
 
-import '../commands/i_signal_command.dart';
-import '../enums.dart';
-import '../i_e1_signal.dart';
-import '../i_e2_signal.dart';
-import '../i_factory.dart';
-import '../known_exception.dart';
-import '../operation_cancelled_exception.dart';
-import '../parsers/helpers.dart';
-import '../parsers/i_response_parser.dart';
-import '../parsers/parsing_exception.dart';
-import '../responses/i_signal_response.dart';
-import '../string_helper.dart';
-
-class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
-  IFactory _factory;
-  //Logger _log;
-
-  SignalParser(IFactory factory) {
-    if (factory == null) {
-      throw ArgumentError.notNull("factory");
-    }
-
-    _factory = factory;
-    //_log = factory.log;
-  }
-
+class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
   @override
-  Future<ISignalResponse> parseAsync(String response, EnigmaType enigmaType) async {
+  Future<SignalResponse> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -43,35 +32,36 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
     }
   }
 
-  ISignalResponse parseE1(String response) {
+  SignalResponse parseE1(IStringResponse response) {
     String searchFor = "type=\"checkbox\" value=\"";
-    String sLock = response.substring(response.indexOf(searchFor) + searchFor.length);
+    var responseString = response.responseString;
+    String sLock = responseString.substring(responseString.indexOf(searchFor) + searchFor.length);
     sLock = sLock.substring(0, sLock.indexOf("\""));
     bool locked = (sLock.toLowerCase() == "on");
-    String sSync = response.substring(response.indexOf(searchFor) + searchFor.length);
+    String sSync = responseString.substring(responseString.indexOf(searchFor) + searchFor.length);
     sSync = sSync.substring(sSync.indexOf(searchFor) + searchFor.length);
     sSync = sSync.substring(0, sSync.indexOf("\""));
     bool sync = (sSync.toLowerCase() == "on");
     searchFor = "<td align=\"center\">";
-    response = response.substring(response.indexOf(searchFor) + searchFor.length);
-    String snr = response.substring(0, response.indexOf("%"));
-    response = response.substring(response.indexOf(searchFor) + searchFor.length);
-    String acg = response.substring(0, response.indexOf("%"));
-    response = response.substring(response.indexOf(searchFor) + searchFor.length);
+    responseString = responseString.substring(responseString.indexOf(searchFor) + searchFor.length);
+    String snr = responseString.substring(0, responseString.indexOf("%"));
+    responseString = responseString.substring(responseString.indexOf(searchFor) + searchFor.length);
+    String acg = responseString.substring(0, responseString.indexOf("%"));
+    responseString = responseString.substring(responseString.indexOf(searchFor) + searchFor.length);
 
-    String ber = response.substring(0, response.indexOf("<"));
+    String ber = responseString.substring(0, responseString.indexOf("<"));
 
-    IE1Signal signal = _initializeSignal(snr, acg, ber, locked, sync);
+    var signal = _initializeSignal(snr, acg, ber, locked, sync);
 
     if (signal == null) {
       throw ParsingException("Failed to parse Enigma1 signal!");
     }
 
-    return _factory.signalResponse(signal);
+    return SignalResponse(signal, response.responseDuration);
   }
 
-  IE1Signal _initializeSignal(String snr, String acg, String ber, bool locked, bool sync) {
-    IE1Signal signal = _factory.e1Signal();
+  E1Signal _initializeSignal(String snr, String acg, String ber, bool locked, bool sync) {
+    IE1Signal signal = E1Signal();
 
     if (snr.isEmpty) {
       signal.snr = -1;
@@ -89,15 +79,15 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
     return signal;
   }
 
-  ISignalResponse parseE2(String response) {
-    response = Helpers.sanitizeXmlString(response);
+  SignalResponse parseE2(IStringResponse response) {
+    var responseString = Helpers.sanitizeXmlString(response.responseString);
 
     String snr;
     String db;
     String acg;
     String ber;
 
-    var document = xml.parse(response);
+    var document = xml.parse(responseString);
 
     var dbNodes = document.findAllElements("e2snrdb");
     if (dbNodes != null && dbNodes.isNotEmpty) {
@@ -119,26 +109,25 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
       acg = StringHelper.trimAll(acgNodes.first.text);
     }
 
-    IE2Signal signal = _initializeSignal1(snr, db, acg, ber);
+    var signal = _initializeSignal1(snr, db, acg, ber);
 
     if (signal == null) {
       throw ParsingException("Failed to parse Enigma2 signal!");
     }
 
-    return _factory.signalResponse(signal);
+    return SignalResponse(signal, response.responseDuration);
   }
 
-  IE2Signal _initializeSignal1(String snr, String db, String acg, String ber) {
-    IE2Signal signal = _factory.e2Signal();
+  E2Signal _initializeSignal1(String snr, String db, String acg, String ber) {
+    IE2Signal signal = E2Signal();
     String ds = ".";
 
     String realSnr;
     String realDb;
 
     snr = StringHelper.trimAll(snr.replaceAll("%", ""));
-    db = StringHelper.trimAll(StringHelper.trimAll(db.toLowerCase().replaceAll("db", ""))
-        .replaceAll(",", ds)
-        .replaceAll(".", ds));
+    db = StringHelper.trimAll(
+        StringHelper.trimAll(db.toLowerCase().replaceAll("db", "")).replaceAll(",", ds).replaceAll(".", ds));
 
     if (snr.isEmpty || db.isEmpty) {
       signal.db = -1;
@@ -154,9 +143,7 @@ class SignalParser implements IResponseParser<ISignalCommand, ISignalResponse> {
       if (snr.contains("db")) {
         realSnr = db;
         realDb = snr;
-        realDb = StringHelper.trimAll(realDb.replaceAll("db", ""))
-            .replaceAll(",", ds)
-            .replaceAll(".", ds);
+        realDb = StringHelper.trimAll(realDb.replaceAll("db", "")).replaceAll(",", ds).replaceAll(".", ds);
         realSnr = StringHelper.trimAll(realSnr.replaceAll("%", ""));
       } else {
         //both dB and SNR are in %, we'll have to calculate dB

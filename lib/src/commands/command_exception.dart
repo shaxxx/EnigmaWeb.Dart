@@ -1,4 +1,4 @@
-import '../known_exception.dart';
+import 'package:enigma_web/src/known_exception.dart';
 
 class CommandException implements KnownException {
   String message;

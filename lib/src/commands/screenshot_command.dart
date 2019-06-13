@@ -1,26 +1,19 @@
 import 'package:dio/dio.dart';
+import 'package:enigma_web/enigma_web.dart';
+import 'package:enigma_web/src/commands/command_exception.dart';
+import 'package:enigma_web/src/commands/enigma_command.dart';
+import 'package:enigma_web/src/commands/i_screenshot_command.dart';
+import 'package:enigma_web/src/enums.dart';
+import 'package:enigma_web/src/i_profile.dart';
+import 'package:enigma_web/src/known_exception.dart';
+import 'package:enigma_web/src/operation_cancelled_exception.dart';
+import 'package:enigma_web/src/responses/i_screenshot_response.dart';
 
-import '../commands/command_exception.dart';
-import '../commands/enigma_command.dart';
-import '../commands/i_screenshot_command.dart';
-import '../enums.dart';
-import '../i_factory.dart';
-import '../i_profile.dart';
-import '../known_exception.dart';
-import '../operation_cancelled_exception.dart';
-import '../responses/i_screenshot_response.dart';
-
-class ScreenshotCommand extends EnigmaCommand<IScreenshotCommand, IScreenshotResponse>
-    implements IScreenshotCommand {
-  IFactory _factory;
-
-  ScreenshotCommand(IFactory factory) : super(factory) {
-    _factory = factory;
-  }
+class ScreenshotCommand extends EnigmaCommand<IScreenshotCommand, IScreenshotResponse> implements IScreenshotCommand {
+  ScreenshotCommand(IWebRequester requester) : super(requester) {}
 
   @override
-  Future<IScreenshotResponse> executeAsync(IProfile profile, ScreenshotType type,
-      {CancelToken token}) async {
+  Future<IScreenshotResponse> executeAsync(IProfile profile, ScreenshotType type, {CancelToken token}) async {
     if (profile == null) {
       throw ArgumentError.notNull("profile");
     }
@@ -56,8 +49,10 @@ class ScreenshotCommand extends EnigmaCommand<IScreenshotCommand, IScreenshotRes
       }
 
       if (profile.enigma == EnigmaType.enigma2) {
-        return _factory.screenshotResponseWithBytes(
-            await requester.getBinaryResponseAsync(url, profile, cancelToken: token));
+        var binaryResponse = await requester.getBinaryResponseAsync(url, profile, cancelToken: token);
+        if (binaryResponse != null) {
+          return ScreenshotResponse(binaryResponse.content, binaryResponse.responseDuration);
+        }
       }
 
       //Enigma 1
@@ -75,12 +70,14 @@ class ScreenshotCommand extends EnigmaCommand<IScreenshotCommand, IScreenshotRes
           }
       }
 
-      String response = await requester.getResponseAsync(url, profile, cancelToken: token);
+      var response = await requester.getResponseAsync(url, profile, cancelToken: token);
       if (response == null) {
         return null;
       }
-      return _factory.screenshotResponseWithBytes(
-          await requester.getBinaryResponseAsync(url, profile, cancelToken: token));
+      var binaryResponse = await requester.getBinaryResponseAsync(url, profile, cancelToken: token);
+      if (binaryResponse != null) {
+        return ScreenshotResponse(binaryResponse.content, binaryResponse.responseDuration);
+      }
     } on Exception catch (ex) {
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
@@ -88,6 +85,7 @@ class ScreenshotCommand extends EnigmaCommand<IScreenshotCommand, IScreenshotRes
 
       throw CommandException("Command failed for profile ${profile.name}\n$ex");
     }
+    throw CommandException("Screenshot failed for profile ${profile.name}\nEmpty response!");
   }
 
   static String _unixTimeStamp() {

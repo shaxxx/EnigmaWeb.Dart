@@ -1,13 +1,15 @@
-import '../i_bouquet_item_service.dart';
-import '../responses/i_get_current_service_response.dart';
+import 'package:enigma_web/src/i_bouquet_item_service.dart';
+import 'package:enigma_web/src/responses/i_get_current_service_response.dart';
 
 class GetCurrentServiceResponse implements IGetCurrentServiceResponse {
-  GetCurrentServiceResponse.withService(IBouquetItemService currentService) {
-    this.currentService = currentService;
-  }
+  final IBouquetItemService _currentService;
+  final Duration _responseDuration;
 
-  GetCurrentServiceResponse();
+  GetCurrentServiceResponse(this._currentService, this._responseDuration);
 
   @override
-  IBouquetItemService currentService;
+  IBouquetItemService get currentService => _currentService;
+
+  @override
+  Duration get responseDuration => _responseDuration;
 }

@@ -1,5 +1,6 @@
+import 'package:enigma_web/src/i_profile.dart';
+
 import 'enums.dart' show EnigmaType;
-import 'i_profile.dart';
 
 class Profile implements IProfile {
   @override
@@ -29,7 +30,32 @@ class Profile implements IProfile {
   }
 
   @override
+  int get hashCode =>
+      name.hashCode ^
+      username.hashCode ^
+      password.hashCode ^
+      enigma.hashCode ^
+      address.hashCode ^
+      httpPort.hashCode ^
+      useSsl.hashCode ^
+      streamingPort.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IProfile &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          username == other.username &&
+          password == other.password &&
+          enigma == other.enigma &&
+          address == other.address &&
+          httpPort == other.httpPort &&
+          useSsl == other.useSsl &&
+          streamingPort == other.streamingPort;
+
+  @override
   String toString() {
-    return name;
+    return 'Profile $name, address $address, port: $httpPort, enigma: $enigma';
   }
 }

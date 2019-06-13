@@ -1,15 +1,15 @@
-import '../i_bouquet_item.dart';
-import '../responses/i_get_bouquet_items_response.dart';
+import 'package:enigma_web/src/i_bouquet_item.dart';
+import 'package:enigma_web/src/responses/i_get_bouquet_items_response.dart';
 
 class GetBouquetItemsResponse implements IGetBouquetItemsResponse {
-  GetBouquetItemsResponse.withItems(List<IBouquetItem> items) {
-    this.items = items;
-  }
+  final List<IBouquetItem> _items;
+  final Duration _responseDuration;
 
-  GetBouquetItemsResponse() {
-    items = List<IBouquetItem>();
-  }
+  GetBouquetItemsResponse(this._items, this._responseDuration) {}
 
   @override
-  List<IBouquetItem> items;
+  List<IBouquetItem> get items => _items;
+
+  @override
+  Duration get responseDuration => _responseDuration;
 }

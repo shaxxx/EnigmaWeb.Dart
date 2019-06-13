@@ -1,33 +1,21 @@
 //import 'package:logging/logging.dart';
+import 'package:enigma_web/src/commands/i_volume_status_command.dart';
+import 'package:enigma_web/src/enums.dart';
+import 'package:enigma_web/src/i_volume_status.dart';
+import 'package:enigma_web/src/known_exception.dart';
+import 'package:enigma_web/src/operation_cancelled_exception.dart';
+import 'package:enigma_web/src/parsers/helpers.dart';
+import 'package:enigma_web/src/parsers/i_response_parser.dart';
+import 'package:enigma_web/src/parsers/parsing_exception.dart';
+import 'package:enigma_web/src/responses/i_string_response.dart';
+import 'package:enigma_web/src/responses/volume_status_response.dart';
+import 'package:enigma_web/src/string_helper.dart';
+import 'package:enigma_web/src/volume_status.dart';
 import 'package:xml/xml.dart' as xml;
 
-import '../commands/i_volume_status_command.dart';
-import '../enums.dart';
-import '../i_factory.dart';
-import '../i_volume_status.dart';
-import '../known_exception.dart';
-import '../operation_cancelled_exception.dart';
-import '../parsers/helpers.dart';
-import '../parsers/i_response_parser.dart';
-import '../parsers/parsing_exception.dart';
-import '../responses/i_volume_status_response.dart';
-import '../string_helper.dart';
-
-class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, IVolumeStatusResponse> {
-  IFactory _factory;
-  //Logger _log;
-
-  VolumeStatusParser(IFactory factory) {
-    if (factory == null) {
-      throw ArgumentError.notNull("factory");
-    }
-
-    _factory = factory;
-    //_log = factory.log;
-  }
-
+class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, VolumeStatusResponse> {
   @override
-  Future<IVolumeStatusResponse> parseAsync(String response, EnigmaType enigmaType) async {
+  Future<VolumeStatusResponse> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -43,13 +31,13 @@ class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, IVolum
     }
   }
 
-  IVolumeStatusResponse parseE1(String response) {
+  VolumeStatusResponse parseE1(IStringResponse response) {
     bool mute = false;
     int current = 0;
-    IVolumeStatus status = _factory.volumeStatus();
+    IVolumeStatus status = VolumeStatus();
 
-    String muteString = getE1StatusValue(response, "var mute = ");
-    String currentString = getE1StatusValue(response, "var volume = ");
+    String muteString = getE1StatusValue(response.responseString, "var mute = ");
+    String currentString = getE1StatusValue(response.responseString, "var volume = ");
     muteString = StringHelper.trimAll(muteString);
     mute = muteString.toLowerCase() == "true" || muteString.toLowerCase() == "1";
     status.mute = mute;
@@ -60,7 +48,7 @@ class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, IVolum
           "Enigma1 volume status parsing failed. Unable to convert $currentString to integer value.");
     }
     status.level = current;
-    return _factory.volumeStatusResponseWithResponse(status);
+    return VolumeStatusResponse(status, null);
   }
 
   String getE1StatusValue(String response, String searchFor) {
@@ -68,10 +56,10 @@ class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, IVolum
     return StringHelper.trimAll(tmp.substring(0, tmp.indexOf(";")));
   }
 
-  IVolumeStatusResponse parseE2(String response) {
-    response = Helpers.sanitizeXmlString(response);
-    IVolumeStatus status = _factory.volumeStatus();
-    var document = xml.parse(response);
+  VolumeStatusResponse parseE2(IStringResponse response) {
+    var responseString = Helpers.sanitizeXmlString(response.responseString);
+    IVolumeStatus status = VolumeStatus();
+    var document = xml.parse(responseString);
 
     String isMutedString;
     String currentString;
@@ -95,6 +83,6 @@ class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, IVolum
     status.mute = isMutedString.toLowerCase() == "true" || isMutedString.toLowerCase() == "1";
     status.level = intLevel;
 
-    return _factory.volumeStatusResponseWithResponse(status);
+    return new VolumeStatusResponse(status, response.responseDuration);
   }
 }

@@ -1,4 +1,4 @@
-import 'enums.dart' show EnigmaType;
+import 'package:enigma_web/src/enums.dart' show EnigmaType;
 
 abstract class IProfile {
   String name;

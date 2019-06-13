@@ -1,10 +1,14 @@
-import '../responses/i_power_state_response.dart';
+import 'package:enigma_web/src/responses/i_power_state_response.dart';
 
 class PowerStateResponse implements IPowerStateResponse {
-  PowerStateResponse(bool standby) {
-    this.standby = standby;
-  }
+  final bool _standby;
+  final Duration _responseDuration;
+
+  PowerStateResponse(this._standby, this._responseDuration) : assert(_standby != null, _responseDuration != null) {}
 
   @override
-  bool standby = false;
+  bool get standby => _standby;
+
+  @override
+  Duration get responseDuration => _responseDuration;
 }

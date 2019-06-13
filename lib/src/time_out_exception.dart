@@ -1,4 +1,4 @@
-import 'web_request_exception.dart';
+import 'package:enigma_web/src/web_request_exception.dart';
 
 class TimeOutException extends WebRequestException {
   TimeOutException(String message, String url, Duration timeOut) : super(message) {
@@ -6,8 +6,7 @@ class TimeOutException extends WebRequestException {
     this.timeOut = timeOut;
   }
 
-  TimeOutException.withException(
-      String message, String url, Duration timeOut, Exception innerException)
+  TimeOutException.withException(String message, String url, Duration timeOut, Exception innerException)
       : super.withException(message, innerException) {
     this.url = url;
     this.timeOut = timeOut;

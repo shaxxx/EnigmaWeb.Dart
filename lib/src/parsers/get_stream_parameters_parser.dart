@@ -1,30 +1,18 @@
 //import 'package:logging/logging.dart';
 
-import '../commands/i_get_stream_parameters_command.dart';
-import '../enums.dart';
-import '../i_factory.dart';
-import '../known_exception.dart';
-import '../operation_cancelled_exception.dart';
-import '../parsers/i_response_parser.dart';
-import '../parsers/parsing_exception.dart';
-import '../responses/i_get_stream_parameters_response.dart';
-import '../string_helper.dart';
+import 'package:enigma_web/src/commands/i_get_stream_parameters_command.dart';
+import 'package:enigma_web/src/enums.dart';
+import 'package:enigma_web/src/known_exception.dart';
+import 'package:enigma_web/src/operation_cancelled_exception.dart';
+import 'package:enigma_web/src/parsers/i_response_parser.dart';
+import 'package:enigma_web/src/parsers/parsing_exception.dart';
+import 'package:enigma_web/src/responses/get_stream_parameters_response.dart';
+import 'package:enigma_web/src/responses/i_string_response.dart';
+import 'package:enigma_web/src/string_helper.dart';
 
-class GetStreamParametersParser
-    implements IResponseParser<IGetStreamParametersCommand, IGetStreamParametersResponse> {
-  IFactory _factory;
-  //Logger _log;
-
-  GetStreamParametersParser(IFactory factory) {
-    if (factory == null) {
-      throw ArgumentError.notNull("factory");
-    }
-    _factory = factory;
-    //_log = factory.log;
-  }
-
+class GetStreamParametersParser implements IResponseParser<IGetStreamParametersCommand, GetStreamParametersResponse> {
   @override
-  Future<IGetStreamParametersResponse> parseAsync(String response, EnigmaType enigmaType) async {
+  Future<GetStreamParametersResponse> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -39,23 +27,22 @@ class GetStreamParametersParser
     }
   }
 
-  IGetStreamParametersResponse parseE1(String response) {
+  GetStreamParametersResponse parseE1(IStringResponse response) {
     return parseE2(response);
   }
 
-  IGetStreamParametersResponse parseE2(String response) {
+  GetStreamParametersResponse parseE2(IStringResponse response) {
     String lf = '\n';
-    var spr = _factory.getStreamParametersResponseWithResponse(response);
-    spr.m3uFileContent = response;
-    var lines = response.split(lf);
+    String streamUrl = "";
+    var lines = response.responseString.split(lf);
     if (lines != null && lines.isNotEmpty) {
       var link = lines.where((x) => x.toLowerCase().startsWith("http"));
       if (link != null && link.isNotEmpty) {
         if (!StringHelper.stringIsNullOrEmpty(link.first)) {
-          spr.streamUrl = StringHelper.trimAll(link.first);
+          streamUrl = StringHelper.trimAll(link.first);
         }
       }
     }
-    return spr;
+    return GetStreamParametersResponse(streamUrl, response.responseString, response.responseDuration);
   }
 }

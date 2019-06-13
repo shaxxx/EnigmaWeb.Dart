@@ -1,36 +1,26 @@
 import 'package:dio/dio.dart';
-
-import '../i_factory.dart';
-import '../i_profile.dart';
-import '../i_web_requester.dart';
-import '../known_exception.dart';
-import '../operation_cancelled_exception.dart';
-import '../parsers/i_response_parser.dart';
-import '../responses/i_response.dart';
-import 'command_exception.dart';
-import 'i_command.dart';
+import 'package:enigma_web/src/commands/command_exception.dart';
+import 'package:enigma_web/src/commands/i_command.dart';
+import 'package:enigma_web/src/i_profile.dart';
+import 'package:enigma_web/src/i_web_requester.dart';
+import 'package:enigma_web/src/known_exception.dart';
+import 'package:enigma_web/src/operation_cancelled_exception.dart';
+import 'package:enigma_web/src/parsers/i_response_parser.dart';
+import 'package:enigma_web/src/responses/i_response.dart';
 
 abstract class EnigmaCommand<TCommand extends ICommand, TResponse extends IResponse<TCommand>> {
-  IWebRequester requester;
-  //IFactory _factory;
+  final IWebRequester requester;
 
-  EnigmaCommand(IFactory factory) {
-    if (factory == null) {
-      throw ArgumentError.notNull("factory");
-    }
-    //this._factory = factory;
-    requester = factory.webRequester();
-  }
+  EnigmaCommand(this.requester) : assert(requester != null) {}
 
-  Future<TResponse> executeGenericAsync(
-      IProfile profile, String url, IResponseParser<TCommand, TResponse> parser,
+  Future<TResponse> executeGenericAsync(IProfile profile, String url, IResponseParser<TCommand, TResponse> parser,
       {CancelToken token}) async {
     if (profile == null) throw ArgumentError.notNull("profile");
     if (url == null) throw ArgumentError.notNull("url");
     if (parser == null) throw ArgumentError.notNull("parser");
 
     try {
-      String response = await requester.getResponseAsync(url, profile, cancelToken: token);
+      var response = await requester.getResponseAsync(url, profile, cancelToken: token);
       if (response == null) {
         return null;
       }

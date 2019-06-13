@@ -1,19 +1,18 @@
-import '../responses/i_get_stream_parameters_response.dart';
+import 'package:enigma_web/src/responses/i_get_stream_parameters_response.dart';
 
 class GetStreamParametersResponse implements IGetStreamParametersResponse {
-  GetStreamParametersResponse() {
-    streamUrl = "";
-    m3uFileContent = "";
-  }
+  final String _streamUrl;
+  final String _m3uFileContent;
+  final Duration _responseDuration;
 
-  GetStreamParametersResponse.withResponse(String response) {
-    streamUrl = "";
-    m3uFileContent = response;
-  }
+  GetStreamParametersResponse(this._streamUrl, this._m3uFileContent, this._responseDuration) {}
 
   @override
-  String streamUrl;
+  String get streamUrl => _streamUrl;
 
   @override
-  String m3uFileContent;
+  String get m3uFileContent => _m3uFileContent;
+
+  @override
+  Duration get responseDuration => _responseDuration;
 }
