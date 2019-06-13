@@ -6,7 +6,9 @@ class UnparsedResponse<TCommand extends ICommand> implements IUnparsedResponse<T
   final IStringResponse _response;
   final Duration _responseDuration;
 
-  UnparsedResponse(this._response, this._responseDuration) : assert(_response != null, _responseDuration != null) {}
+  UnparsedResponse(this._response, this._responseDuration)
+      : assert(_response != null),
+        assert(_responseDuration != null) {}
 
   @override
   IStringResponse get response => _response;

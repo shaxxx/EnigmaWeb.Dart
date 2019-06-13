@@ -5,7 +5,9 @@ class GetCurrentServiceResponse implements IGetCurrentServiceResponse {
   final IBouquetItemService _currentService;
   final Duration _responseDuration;
 
-  GetCurrentServiceResponse(this._currentService, this._responseDuration);
+  GetCurrentServiceResponse(this._currentService, this._responseDuration)
+      : assert(_currentService != null),
+        assert(_responseDuration != null);
 
   @override
   IBouquetItemService get currentService => _currentService;
