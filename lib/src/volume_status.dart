@@ -13,7 +13,10 @@ class VolumeStatus implements IVolumeStatus {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is VolumeStatus && runtimeType == other.runtimeType && level == other.level && mute == other.mute;
+      other is VolumeStatus &&
+          runtimeType == other.runtimeType &&
+          level == other.level &&
+          mute == other.mute;
 
   @override
   String toString() {

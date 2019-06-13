@@ -8,19 +8,22 @@ import 'package:enigma_web/src/operation_cancelled_exception.dart';
 import 'package:enigma_web/src/parsers/i_response_parser.dart';
 import 'package:enigma_web/src/responses/i_response.dart';
 
-abstract class EnigmaCommand<TCommand extends ICommand, TResponse extends IResponse<TCommand>> {
+abstract class EnigmaCommand<TCommand extends ICommand,
+    TResponse extends IResponse<TCommand>> {
   final IWebRequester requester;
 
-  EnigmaCommand(this.requester) : assert(requester != null) {}
+  EnigmaCommand(this.requester) : assert(requester != null);
 
-  Future<TResponse> executeGenericAsync(IProfile profile, String url, IResponseParser<TCommand, TResponse> parser,
+  Future<TResponse> executeGenericAsync(
+      IProfile profile, String url, IResponseParser<TCommand, TResponse> parser,
       {CancelToken token}) async {
     if (profile == null) throw ArgumentError.notNull("profile");
     if (url == null) throw ArgumentError.notNull("url");
     if (parser == null) throw ArgumentError.notNull("parser");
 
     try {
-      var response = await requester.getResponseAsync(url, profile, cancelToken: token);
+      var response =
+          await requester.getResponseAsync(url, profile, cancelToken: token);
       if (response == null) {
         return null;
       }
@@ -29,7 +32,8 @@ abstract class EnigmaCommand<TCommand extends ICommand, TResponse extends IRespo
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw CommandException.withException("Command failed for profile ${profile.name}", ex);
+      throw CommandException.withException(
+          "Command failed for profile ${profile.name}", ex);
     }
   }
 }

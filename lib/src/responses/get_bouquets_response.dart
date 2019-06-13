@@ -7,7 +7,7 @@ class GetBouquetsResponse implements IGetBouquetsResponse {
 
   GetBouquetsResponse(this._bouquets, this._responseDuration)
       : assert(_bouquets != null),
-        assert(_responseDuration != null) {}
+        assert(_responseDuration != null);
 
   List<IBouquetItemBouquet> get bouquets => _bouquets;
 

@@ -9,11 +9,15 @@ import 'package:enigma_web/src/known_exception.dart';
 import 'package:enigma_web/src/operation_cancelled_exception.dart';
 import 'package:enigma_web/src/responses/i_screenshot_response.dart';
 
-class ScreenshotCommand extends EnigmaCommand<IScreenshotCommand, IScreenshotResponse> implements IScreenshotCommand {
-  ScreenshotCommand(IWebRequester requester) : super(requester) {}
+class ScreenshotCommand
+    extends EnigmaCommand<IScreenshotCommand, IScreenshotResponse>
+    implements IScreenshotCommand {
+  ScreenshotCommand(IWebRequester requester) : super(requester);
 
   @override
-  Future<IScreenshotResponse> executeAsync(IProfile profile, ScreenshotType type, {CancelToken token}) async {
+  Future<IScreenshotResponse> executeAsync(
+      IProfile profile, ScreenshotType type,
+      {CancelToken token}) async {
     if (profile == null) {
       throw ArgumentError.notNull("profile");
     }
@@ -25,21 +29,27 @@ class ScreenshotCommand extends EnigmaCommand<IScreenshotCommand, IScreenshotRes
           {
             url = profile.enigma == EnigmaType.enigma1
                 ? "body?mode=controlScreenShot&blendtype=2"
-                : "grab?format=jpg&mode=all&filename=/tmp/" + _unixTimeStamp() + ".jpg";
+                : "grab?format=jpg&mode=all&filename=/tmp/" +
+                    _unixTimeStamp() +
+                    ".jpg";
             break;
           }
         case ScreenshotType.picture:
           {
             url = profile.enigma == EnigmaType.enigma1
                 ? "body?mode=controlScreenShot"
-                : "grab?format=jpg&mode=video&v=&filename=/tmp/" + _unixTimeStamp() + ".jpg";
+                : "grab?format=jpg&mode=video&v=&filename=/tmp/" +
+                    _unixTimeStamp() +
+                    ".jpg";
             break;
           }
         case ScreenshotType.osd:
           {
             url = profile.enigma == EnigmaType.enigma1
                 ? "body?mode=controlFBShot"
-                : "grab?format=jpg&mode=osd&o=&n=&filename=/tmp/" + _unixTimeStamp() + ".jpg";
+                : "grab?format=jpg&mode=osd&o=&n=&filename=/tmp/" +
+                    _unixTimeStamp() +
+                    ".jpg";
             break;
           }
         default:
@@ -49,9 +59,11 @@ class ScreenshotCommand extends EnigmaCommand<IScreenshotCommand, IScreenshotRes
       }
 
       if (profile.enigma == EnigmaType.enigma2) {
-        var binaryResponse = await requester.getBinaryResponseAsync(url, profile, cancelToken: token);
+        var binaryResponse = await requester
+            .getBinaryResponseAsync(url, profile, cancelToken: token);
         if (binaryResponse != null) {
-          return ScreenshotResponse(binaryResponse.content, binaryResponse.responseDuration);
+          return ScreenshotResponse(
+              binaryResponse.content, binaryResponse.responseDuration);
         }
       }
 
@@ -70,13 +82,16 @@ class ScreenshotCommand extends EnigmaCommand<IScreenshotCommand, IScreenshotRes
           }
       }
 
-      var response = await requester.getResponseAsync(url, profile, cancelToken: token);
+      var response =
+          await requester.getResponseAsync(url, profile, cancelToken: token);
       if (response == null) {
         return null;
       }
-      var binaryResponse = await requester.getBinaryResponseAsync(url, profile, cancelToken: token);
+      var binaryResponse = await requester.getBinaryResponseAsync(url, profile,
+          cancelToken: token);
       if (binaryResponse != null) {
-        return ScreenshotResponse(binaryResponse.content, binaryResponse.responseDuration);
+        return ScreenshotResponse(
+            binaryResponse.content, binaryResponse.responseDuration);
       }
     } on Exception catch (ex) {
       if (ex is KnownException || ex is OperationCanceledException) {
@@ -85,7 +100,8 @@ class ScreenshotCommand extends EnigmaCommand<IScreenshotCommand, IScreenshotRes
 
       throw CommandException("Command failed for profile ${profile.name}\n$ex");
     }
-    throw CommandException("Screenshot failed for profile ${profile.name}\nEmpty response!");
+    throw CommandException(
+        "Screenshot failed for profile ${profile.name}\nEmpty response!");
   }
 
   static String _unixTimeStamp() {

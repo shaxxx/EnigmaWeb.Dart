@@ -5,7 +5,7 @@ class ScreenshotResponse implements IScreenshotResponse {
   final Duration _responseDuration;
   ScreenshotResponse(this._screenshot, this._responseDuration)
       : assert(_screenshot != null),
-        assert(_responseDuration != null) {}
+        assert(_responseDuration != null);
 
   @override
   List<int> get screenshot => _screenshot;

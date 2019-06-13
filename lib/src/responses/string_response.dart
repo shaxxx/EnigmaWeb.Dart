@@ -6,7 +6,7 @@ class StringResponse implements IStringResponse {
 
   StringResponse(this._responseString, this._responseDuration)
       : assert(_responseString != null),
-        assert(_responseDuration != null) {}
+        assert(_responseDuration != null);
 
   @override
   Duration get responseDuration => _responseDuration;

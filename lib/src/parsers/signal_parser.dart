@@ -17,7 +17,8 @@ import 'package:xml/xml.dart' as xml;
 
 class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
   @override
-  Future<SignalResponse> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
+  Future<SignalResponse> parseAsync(
+      IStringResponse response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -28,26 +29,32 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException.withException("Failed to parse response\n$response", ex);
+      throw ParsingException.withException(
+          "Failed to parse response\n$response", ex);
     }
   }
 
   SignalResponse parseE1(IStringResponse response) {
     String searchFor = "type=\"checkbox\" value=\"";
     var responseString = response.responseString;
-    String sLock = responseString.substring(responseString.indexOf(searchFor) + searchFor.length);
+    String sLock = responseString
+        .substring(responseString.indexOf(searchFor) + searchFor.length);
     sLock = sLock.substring(0, sLock.indexOf("\""));
     bool locked = (sLock.toLowerCase() == "on");
-    String sSync = responseString.substring(responseString.indexOf(searchFor) + searchFor.length);
+    String sSync = responseString
+        .substring(responseString.indexOf(searchFor) + searchFor.length);
     sSync = sSync.substring(sSync.indexOf(searchFor) + searchFor.length);
     sSync = sSync.substring(0, sSync.indexOf("\""));
     bool sync = (sSync.toLowerCase() == "on");
     searchFor = "<td align=\"center\">";
-    responseString = responseString.substring(responseString.indexOf(searchFor) + searchFor.length);
+    responseString = responseString
+        .substring(responseString.indexOf(searchFor) + searchFor.length);
     String snr = responseString.substring(0, responseString.indexOf("%"));
-    responseString = responseString.substring(responseString.indexOf(searchFor) + searchFor.length);
+    responseString = responseString
+        .substring(responseString.indexOf(searchFor) + searchFor.length);
     String acg = responseString.substring(0, responseString.indexOf("%"));
-    responseString = responseString.substring(responseString.indexOf(searchFor) + searchFor.length);
+    responseString = responseString
+        .substring(responseString.indexOf(searchFor) + searchFor.length);
 
     String ber = responseString.substring(0, responseString.indexOf("<"));
 
@@ -60,7 +67,8 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
     return SignalResponse(signal, response.responseDuration);
   }
 
-  E1Signal _initializeSignal(String snr, String acg, String ber, bool locked, bool sync) {
+  E1Signal _initializeSignal(
+      String snr, String acg, String ber, bool locked, bool sync) {
     IE1Signal signal = E1Signal();
 
     if (snr.isEmpty) {
@@ -127,7 +135,9 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
 
     snr = StringHelper.trimAll(snr.replaceAll("%", ""));
     db = StringHelper.trimAll(
-        StringHelper.trimAll(db.toLowerCase().replaceAll("db", "")).replaceAll(",", ds).replaceAll(".", ds));
+        StringHelper.trimAll(db.toLowerCase().replaceAll("db", ""))
+            .replaceAll(",", ds)
+            .replaceAll(".", ds));
 
     if (snr.isEmpty || db.isEmpty) {
       signal.db = -1;
@@ -143,7 +153,9 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
       if (snr.contains("db")) {
         realSnr = db;
         realDb = snr;
-        realDb = StringHelper.trimAll(realDb.replaceAll("db", "")).replaceAll(",", ds).replaceAll(".", ds);
+        realDb = StringHelper.trimAll(realDb.replaceAll("db", ""))
+            .replaceAll(",", ds)
+            .replaceAll(".", ds);
         realSnr = StringHelper.trimAll(realSnr.replaceAll("%", ""));
       } else {
         //both dB and SNR are in %, we'll have to calculate dB

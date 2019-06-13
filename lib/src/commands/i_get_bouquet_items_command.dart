@@ -5,5 +5,7 @@ import 'package:enigma_web/src/i_profile.dart';
 import 'package:enigma_web/src/responses/i_get_bouquet_items_response.dart';
 
 abstract class IGetBouquetItemsCommand implements ICommand {
-  Future<IGetBouquetItemsResponse> executeAsync(IProfile profile, IBouquetItemBouquet bouquet, {CancelToken token});
+  Future<IGetBouquetItemsResponse> executeAsync(
+      IProfile profile, IBouquetItemBouquet bouquet,
+      {CancelToken token});
 }

@@ -144,7 +144,10 @@ class RemoteControlCode {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is EnigmaType && runtimeType == other.runtimeType && name == other.name && value == other.value;
+      other is EnigmaType &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          value == other.value;
 
   @override
   String toString() {

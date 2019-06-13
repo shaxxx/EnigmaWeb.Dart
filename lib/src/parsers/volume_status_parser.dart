@@ -13,9 +13,11 @@ import 'package:enigma_web/src/string_helper.dart';
 import 'package:enigma_web/src/volume_status.dart';
 import 'package:xml/xml.dart' as xml;
 
-class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, VolumeStatusResponse> {
+class VolumeStatusParser
+    implements IResponseParser<IVolumeStatusCommand, VolumeStatusResponse> {
   @override
-  Future<VolumeStatusResponse> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
+  Future<VolumeStatusResponse> parseAsync(
+      IStringResponse response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -27,7 +29,8 @@ class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, Volume
         rethrow;
       }
 
-      throw ParsingException.withException("Failed to parse response\n$response", ex);
+      throw ParsingException.withException(
+          "Failed to parse response\n$response", ex);
     }
   }
 
@@ -36,10 +39,13 @@ class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, Volume
     int current = 0;
     IVolumeStatus status = VolumeStatus();
 
-    String muteString = getE1StatusValue(response.responseString, "var mute = ");
-    String currentString = getE1StatusValue(response.responseString, "var volume = ");
+    String muteString =
+        getE1StatusValue(response.responseString, "var mute = ");
+    String currentString =
+        getE1StatusValue(response.responseString, "var volume = ");
     muteString = StringHelper.trimAll(muteString);
-    mute = muteString.toLowerCase() == "true" || muteString.toLowerCase() == "1";
+    mute =
+        muteString.toLowerCase() == "true" || muteString.toLowerCase() == "1";
     status.mute = mute;
     currentString = StringHelper.trimAll(currentString);
     current = num.tryParse(currentString);
@@ -52,7 +58,8 @@ class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, Volume
   }
 
   String getE1StatusValue(String response, String searchFor) {
-    String tmp = response.substring(response.indexOf(searchFor) + searchFor.length);
+    String tmp =
+        response.substring(response.indexOf(searchFor) + searchFor.length);
     return StringHelper.trimAll(tmp.substring(0, tmp.indexOf(";")));
   }
 
@@ -80,9 +87,10 @@ class VolumeStatusParser implements IResponseParser<IVolumeStatusCommand, Volume
           "Enigma2 volume status parsing failed. Unable to convert $currentString to integer value.");
     }
 
-    status.mute = isMutedString.toLowerCase() == "true" || isMutedString.toLowerCase() == "1";
+    status.mute = isMutedString.toLowerCase() == "true" ||
+        isMutedString.toLowerCase() == "1";
     status.level = intLevel;
 
-    return new VolumeStatusResponse(status, response.responseDuration);
+    return VolumeStatusResponse(status, response.responseDuration);
   }
 }

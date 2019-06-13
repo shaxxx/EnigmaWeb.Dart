@@ -7,7 +7,7 @@ class SignalResponse implements ISignalResponse {
 
   SignalResponse(this._signal, this._responseDuration)
       : assert(_signal != null),
-        assert(_responseDuration != null) {}
+        assert(_responseDuration != null);
 
   @override
   ISignal get signal => _signal;

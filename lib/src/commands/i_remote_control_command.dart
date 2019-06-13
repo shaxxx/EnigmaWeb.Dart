@@ -5,5 +5,7 @@ import 'package:enigma_web/src/i_profile.dart';
 import 'package:enigma_web/src/responses/i_response.dart';
 
 abstract class IRemoteControlCommand implements ICommand {
-  Future<IResponse<IRemoteControlCommand>> executeAsync(IProfile profile, RemoteControlCode code, {CancelToken token});
+  Future<IResponse<IRemoteControlCommand>> executeAsync(
+      IProfile profile, RemoteControlCode code,
+      {CancelToken token});
 }

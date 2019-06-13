@@ -8,16 +8,20 @@ import 'package:enigma_web/src/responses/i_response.dart';
 import 'package:enigma_web/src/responses/i_string_response.dart';
 import 'package:enigma_web/src/responses/unparsed_response.dart';
 
-class UnparsedParser<TCommand extends ICommand> implements IUnparsedParser<TCommand> {
+class UnparsedParser<TCommand extends ICommand>
+    implements IUnparsedParser<TCommand> {
   @override
-  Future<IResponse<TCommand>> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
+  Future<IResponse<TCommand>> parseAsync(
+      IStringResponse response, EnigmaType enigmaType) async {
     try {
-      return await Future(() => UnparsedResponse<TCommand>(response, response.responseDuration));
+      return await Future(() =>
+          UnparsedResponse<TCommand>(response, response.responseDuration));
     } on Exception catch (ex) {
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException.withException("Failed to parse response\n$response", ex);
+      throw ParsingException.withException(
+          "Failed to parse response\n$response", ex);
     }
   }
 }

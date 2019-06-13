@@ -6,7 +6,7 @@ class PowerStateResponse implements IPowerStateResponse {
 
   PowerStateResponse(this._standby, this._responseDuration)
       : assert(_standby != null),
-        assert(_responseDuration != null) {}
+        assert(_responseDuration != null);
 
   @override
   bool get standby => _standby;

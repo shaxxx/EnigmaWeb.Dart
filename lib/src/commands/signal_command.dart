@@ -7,16 +7,19 @@ import 'package:enigma_web/src/i_profile.dart';
 import 'package:enigma_web/src/parsers/i_response_parser.dart';
 import 'package:enigma_web/src/responses/i_signal_response.dart';
 
-class SignalCommand extends EnigmaCommand<ISignalCommand, ISignalResponse> implements ISignalCommand {
+class SignalCommand extends EnigmaCommand<ISignalCommand, ISignalResponse>
+    implements ISignalCommand {
   final IResponseParser<ISignalCommand, ISignalResponse> parser;
 
   SignalCommand(this.parser, IWebRequester requester)
       : assert(parser != null),
-        super(requester) {}
+        super(requester);
 
   @override
-  Future<ISignalResponse> executeAsync(IProfile profile, {CancelToken token}) async {
-    String url = profile.enigma == EnigmaType.enigma1 ? "satFinder" : "web/signal";
+  Future<ISignalResponse> executeAsync(IProfile profile,
+      {CancelToken token}) async {
+    String url =
+        profile.enigma == EnigmaType.enigma1 ? "satFinder" : "web/signal";
     return await super.executeGenericAsync(profile, url, parser, token: token);
   }
 }

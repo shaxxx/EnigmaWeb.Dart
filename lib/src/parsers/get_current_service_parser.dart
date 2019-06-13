@@ -14,14 +14,18 @@ import 'package:enigma_web/src/responses/i_string_response.dart';
 import 'package:enigma_web/src/string_helper.dart';
 import 'package:xml/xml.dart' as xml;
 
-class GetCurrentServiceParser implements IResponseParser<IGetCurrentServiceCommand, GetCurrentServiceResponse> {
+class GetCurrentServiceParser
+    implements
+        IResponseParser<IGetCurrentServiceCommand, GetCurrentServiceResponse> {
   String getE1StatusValue(String response, String searchFor) {
-    String tmp = response.substring(response.indexOf(searchFor) + searchFor.length);
+    String tmp =
+        response.substring(response.indexOf(searchFor) + searchFor.length);
     return StringHelper.trimAll(tmp.substring(0, tmp.indexOf(";")));
   }
 
   @override
-  Future<GetCurrentServiceResponse> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
+  Future<GetCurrentServiceResponse> parseAsync(
+      IStringResponse response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -31,15 +35,19 @@ class GetCurrentServiceParser implements IResponseParser<IGetCurrentServiceComma
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException.withException("Failed to parse response\n$response", ex);
+      throw ParsingException.withException(
+          "Failed to parse response\n$response", ex);
     }
   }
 
   GetCurrentServiceResponse parseE1(IStringResponse response) {
     IBouquetItemServiceE1 service = BouquetItemServiceE1();
-    service.name = getE1StatusValue(response.responseString, "var serviceName = " "");
-    service.reference = getE1StatusValue(response.responseString, "var serviceReference = " "");
-    service.vlcParms = getE1StatusValue(response.responseString, "var vlcparms = " "");
+    service.name =
+        getE1StatusValue(response.responseString, "var serviceName = " "");
+    service.reference =
+        getE1StatusValue(response.responseString, "var serviceReference = " "");
+    service.vlcParms =
+        getE1StatusValue(response.responseString, "var vlcparms = " "");
     return GetCurrentServiceResponse(service, response.responseDuration);
   }
 

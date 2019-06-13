@@ -10,9 +10,13 @@ import 'package:enigma_web/src/responses/get_stream_parameters_response.dart';
 import 'package:enigma_web/src/responses/i_string_response.dart';
 import 'package:enigma_web/src/string_helper.dart';
 
-class GetStreamParametersParser implements IResponseParser<IGetStreamParametersCommand, GetStreamParametersResponse> {
+class GetStreamParametersParser
+    implements
+        IResponseParser<IGetStreamParametersCommand,
+            GetStreamParametersResponse> {
   @override
-  Future<GetStreamParametersResponse> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
+  Future<GetStreamParametersResponse> parseAsync(
+      IStringResponse response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -23,7 +27,8 @@ class GetStreamParametersParser implements IResponseParser<IGetStreamParametersC
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException.withException("Failed to parse response\n$response", ex);
+      throw ParsingException.withException(
+          "Failed to parse response\n$response", ex);
     }
   }
 
@@ -43,6 +48,7 @@ class GetStreamParametersParser implements IResponseParser<IGetStreamParametersC
         }
       }
     }
-    return GetStreamParametersResponse(streamUrl, response.responseString, response.responseDuration);
+    return GetStreamParametersResponse(
+        streamUrl, response.responseString, response.responseDuration);
   }
 }

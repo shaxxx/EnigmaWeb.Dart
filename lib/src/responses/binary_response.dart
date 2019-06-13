@@ -6,7 +6,7 @@ class BinaryResponse implements IBinaryResponse {
 
   BinaryResponse(this._content, this._responseDuration)
       : assert(_content != null),
-        assert(_responseDuration != null) {}
+        assert(_responseDuration != null);
   @override
   List<int> get content => _content;
 

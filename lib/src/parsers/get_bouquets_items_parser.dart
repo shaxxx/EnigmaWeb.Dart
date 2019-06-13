@@ -12,9 +12,12 @@ import 'package:enigma_web/src/responses/i_string_response.dart';
 import 'package:enigma_web/src/string_helper.dart';
 import 'package:xml/xml.dart' as xml;
 
-class GetBouquetItemsParser implements IResponseParser<IGetBouquetItemsCommand, GetBouquetItemsResponse> {
+class GetBouquetItemsParser
+    implements
+        IResponseParser<IGetBouquetItemsCommand, GetBouquetItemsResponse> {
   @override
-  Future<GetBouquetItemsResponse> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
+  Future<GetBouquetItemsResponse> parseAsync(
+      IStringResponse response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -24,7 +27,8 @@ class GetBouquetItemsParser implements IResponseParser<IGetBouquetItemsCommand, 
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException.withException("Failed to parse response\n$response", ex);
+      throw ParsingException.withException(
+          "Failed to parse response\n$response", ex);
     }
   }
 
@@ -70,7 +74,8 @@ class GetBouquetItemsParser implements IResponseParser<IGetBouquetItemsCommand, 
         String serviceName;
 
         if (serviceReferenceNode != null && serviceReferenceNode.isNotEmpty) {
-          serviceReference = StringHelper.trimAll(serviceReferenceNode.first.text);
+          serviceReference =
+              StringHelper.trimAll(serviceReferenceNode.first.text);
         }
 
         if (serviceNameNode != null && serviceNameNode.isNotEmpty) {
@@ -93,7 +98,9 @@ class GetBouquetItemsParser implements IResponseParser<IGetBouquetItemsCommand, 
     }
 
     if (reference.startsWith("1:0:1")) {
-      return enigmaType == EnigmaType.enigma2 ? BouquetItemService() : BouquetItemServiceE1();
+      return enigmaType == EnigmaType.enigma2
+          ? BouquetItemService()
+          : BouquetItemServiceE1();
     }
 
     if (reference.startsWith("1:64")) {

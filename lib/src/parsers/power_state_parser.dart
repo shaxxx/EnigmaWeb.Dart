@@ -12,9 +12,11 @@ import 'package:enigma_web/src/responses/power_state_response.dart';
 import 'package:enigma_web/src/string_helper.dart';
 import 'package:xml/xml.dart' as xml;
 
-class PowerStateParser implements IResponseParser<IPowerStateCommand, PowerStateResponse> {
+class PowerStateParser
+    implements IResponseParser<IPowerStateCommand, PowerStateResponse> {
   @override
-  Future<PowerStateResponse> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
+  Future<PowerStateResponse> parseAsync(
+      IStringResponse response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -24,14 +26,16 @@ class PowerStateParser implements IResponseParser<IPowerStateCommand, PowerState
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException.withException("Failed to parse response\n$response", ex);
+      throw ParsingException.withException(
+          "Failed to parse response\n$response", ex);
     }
   }
 
   PowerStateResponse parseE1(IStringResponse response) {
     bool standby = false;
     String searchFor = "var standby = ";
-    String value = response.responseString.substring(response.responseString.indexOf(searchFor) + searchFor.length);
+    String value = response.responseString.substring(
+        response.responseString.indexOf(searchFor) + searchFor.length);
     value = value.substring(0, value.indexOf(";")).trim();
     value = StringHelper.trimAll(value);
     standby = value.toLowerCase() == "true" || value.toLowerCase() == "1";
@@ -48,6 +52,7 @@ class PowerStateParser implements IResponseParser<IPowerStateCommand, PowerState
       standby = value.toLowerCase() == "true" || value.toLowerCase() == "1";
       return PowerStateResponse(standby, response.responseDuration);
     }
-    throw ParsingException("Failed to parse Enigma2 powerstate. Xml tag <e2instandby> not found!");
+    throw ParsingException(
+        "Failed to parse Enigma2 powerstate. Xml tag <e2instandby> not found!");
   }
 }

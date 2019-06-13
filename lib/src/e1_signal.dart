@@ -18,7 +18,12 @@ class E1Signal implements IE1Signal {
   }
 
   @override
-  int get hashCode => acg.hashCode ^ ber.hashCode ^ lock.hashCode ^ snr.hashCode ^ sync.hashCode;
+  int get hashCode =>
+      acg.hashCode ^
+      ber.hashCode ^
+      lock.hashCode ^
+      snr.hashCode ^
+      sync.hashCode;
 
   @override
   bool operator ==(Object other) =>

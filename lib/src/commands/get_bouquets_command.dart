@@ -8,18 +8,21 @@ import 'package:enigma_web/src/parsers/i_response_parser.dart';
 import 'package:enigma_web/src/responses/get_bouquets_response.dart';
 import 'package:enigma_web/src/responses/i_get_bouquets_response.dart';
 
-class GetBouquetsCommand extends EnigmaCommand<IGetBouquetsCommand, IGetBouquetsResponse>
+class GetBouquetsCommand
+    extends EnigmaCommand<IGetBouquetsCommand, IGetBouquetsResponse>
     implements IGetBouquetsCommand {
   final IResponseParser<IGetBouquetsCommand, GetBouquetsResponse> parser;
 
   GetBouquetsCommand(this.parser, IWebRequester requester)
       : assert(parser != null),
-        super(requester) {}
+        super(requester);
 
   @override
-  Future<IGetBouquetsResponse> executeAsync(IProfile profile, {CancelToken token}) async {
-    String url =
-        profile.enigma == EnigmaType.enigma1 ? "cgi-bin/getServices?ref=4097:7:0:6:0:0:0:0:0:0:" : "web/getservices";
+  Future<IGetBouquetsResponse> executeAsync(IProfile profile,
+      {CancelToken token}) async {
+    String url = profile.enigma == EnigmaType.enigma1
+        ? "cgi-bin/getServices?ref=4097:7:0:6:0:0:0:0:0:0:"
+        : "web/getservices";
     return await super.executeGenericAsync(profile, url, parser, token: token);
   }
 }

@@ -12,9 +12,11 @@ import 'package:enigma_web/src/responses/i_string_response.dart';
 import 'package:enigma_web/src/string_helper.dart';
 import 'package:xml/xml.dart' as xml;
 
-class GetBouquetsParser implements IResponseParser<IGetBouquetsCommand, GetBouquetsResponse> {
+class GetBouquetsParser
+    implements IResponseParser<IGetBouquetsCommand, GetBouquetsResponse> {
   @override
-  Future<GetBouquetsResponse> parseAsync(IStringResponse response, EnigmaType enigmaType) async {
+  Future<GetBouquetsResponse> parseAsync(
+      IStringResponse response, EnigmaType enigmaType) async {
     try {
       if (enigmaType == EnigmaType.enigma1) {
         return await Future(() => parseE1(response));
@@ -25,7 +27,8 @@ class GetBouquetsParser implements IResponseParser<IGetBouquetsCommand, GetBouqu
         rethrow;
       }
 
-      throw ParsingException.withException("Failed to parse response\n$response", ex);
+      throw ParsingException.withException(
+          "Failed to parse response\n$response", ex);
     }
   }
 
@@ -61,7 +64,8 @@ class GetBouquetsParser implements IResponseParser<IGetBouquetsCommand, GetBouqu
         String serviceName;
 
         if (serviceReferenceNode != null && serviceReferenceNode.isNotEmpty) {
-          serviceReference = StringHelper.trimAll(serviceReferenceNode.first.text);
+          serviceReference =
+              StringHelper.trimAll(serviceReferenceNode.first.text);
         }
 
         if (serviceNameNode != null && serviceNameNode.isNotEmpty) {

@@ -9,7 +9,8 @@ class FailedStatusCodeException implements KnownException {
     statusCode = statusCode;
   }
 
-  FailedStatusCodeException.withException(String message, HttpStatus statusCode, Exception innerException) {
+  FailedStatusCodeException.withException(
+      String message, HttpStatus statusCode, Exception innerException) {
     statusCode = statusCode;
   }
 }
