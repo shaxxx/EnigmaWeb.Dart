@@ -20,6 +20,3 @@ All available web commands are implemented, just execute command and read respon
     var result = await currentCommand.executeAsync(profile);
     print(result.currentService.name);  
     
-## Override with implementation
-Default Factory.dart class is provided to initialize objects (poor man IoC), but you can override it's implementation and use your implementation.
-
