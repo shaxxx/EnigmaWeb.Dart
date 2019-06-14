@@ -35,8 +35,8 @@ class GetCurrentServiceParser
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException.withException(
-          "Failed to parse response\n$response", ex);
+      throw ParsingException("Failed to parse response\n$response",
+          innerException: ex);
     }
   }
 

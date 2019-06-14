@@ -1,4 +1,5 @@
 abstract class KnownException implements Exception {
-  KnownException(String message);
-  KnownException.withException(String message, Exception innerException);
+  final String message;
+  final Exception innerException;
+  KnownException(this.message, {this.innerException}) : assert(message != null);
 }

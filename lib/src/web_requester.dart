@@ -33,21 +33,29 @@ class WebRequester implements IWebRequester {
     this.userAgentHeader =
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
     this.xRequestedWithHeader = "XMLHttpRequest",
-    this.proxy = null,
+    this.proxy,
   }) : assert(log != null) {
     _cookies = CookieManager(CookieJar());
   }
 
   @override
-  Future<IBinaryResponse> getBinaryResponseAsync(String url, IProfile profile, {CancelToken cancelToken}) async {
-    var responseWithDuration = await _getResponse(url, profile, ResponseType.bytes, cancelToken: cancelToken);
-    return BinaryResponse(responseWithDuration.httpResponse.data, responseWithDuration.duration);
+  Future<IBinaryResponse> getBinaryResponseAsync(String url, IProfile profile,
+      {CancelToken cancelToken}) async {
+    var responseWithDuration = await _getResponse(
+        url, profile, ResponseType.bytes,
+        cancelToken: cancelToken);
+    return BinaryResponse(
+        responseWithDuration.httpResponse.data, responseWithDuration.duration);
   }
 
   @override
-  Future<IStringResponse> getResponseAsync(String url, IProfile profile, {CancelToken cancelToken}) async {
-    var responseWithDuration = await _getResponse(url, profile, ResponseType.plain, cancelToken: cancelToken);
-    return StringResponse(responseWithDuration.httpResponse.toString(), responseWithDuration.duration);
+  Future<IStringResponse> getResponseAsync(String url, IProfile profile,
+      {CancelToken cancelToken}) async {
+    var responseWithDuration = await _getResponse(
+        url, profile, ResponseType.plain,
+        cancelToken: cancelToken);
+    return StringResponse(responseWithDuration.httpResponse.toString(),
+        responseWithDuration.duration);
   }
 
   String _contentTypeByEnigmaVersion(EnigmaType enigma) {
@@ -62,8 +70,10 @@ class WebRequester implements IWebRequester {
     _setBasicAuthHeader(dio, profile);
     _setXRequesteWithHeader(dio);
     _setUserAgentHeader(dio);
-    dio.options.contentType = ContentType.parse(_contentTypeByEnigmaVersion(profile.enigma));
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
+    dio.options.contentType =
+        ContentType.parse(_contentTypeByEnigmaVersion(profile.enigma));
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
       _setHttpProxy(client);
       _setHttpCertificateValidaton(client);
     };
@@ -72,7 +82,8 @@ class WebRequester implements IWebRequester {
   }
 
   String _createUrl(String url, IProfile profile) {
-    var addressWithoutHttpPrefix = "${profile.address}:${profile.httpPort}/$url";
+    var addressWithoutHttpPrefix =
+        "${profile.address}:${profile.httpPort}/$url";
     if (profile.useSsl) {
       return "https://" + addressWithoutHttpPrefix;
     } else {
@@ -84,7 +95,8 @@ class WebRequester implements IWebRequester {
     return 'Basic ' + base64Encode(utf8.encode('$username:$password'));
   }
 
-  Future<_ResponseWithDuration> _getResponse(String url, IProfile profile, ResponseType responseType,
+  Future<_ResponseWithDuration> _getResponse(
+      String url, IProfile profile, ResponseType responseType,
       {CancelToken cancelToken, bool authorize = false}) async {
     var completeUrl = _createUrl(url, profile);
     log.fine("Initializing request to $url");
@@ -100,22 +112,39 @@ class WebRequester implements IWebRequester {
       logResponse(response, url, responseType);
     } on DioError catch (e) {
       if (e.type == DioErrorType.CANCEL) {
-        throw OperationCanceledException.withException(e.message, e);
+        throw OperationCanceledException(e.message, innerException: e);
       } else if (e.type == DioErrorType.CONNECT_TIMEOUT) {
-        throw TimeOutException.withException(e.message, url, Duration(milliseconds: e.request.connectTimeout), e);
+        throw TimeOutException(
+          e.message,
+          url,
+          Duration(milliseconds: e.request.connectTimeout),
+          innerException: e,
+        );
       } else if (e.type == DioErrorType.RECEIVE_TIMEOUT) {
-        throw TimeOutException.withException(e.message, url, Duration(milliseconds: e.request.receiveTimeout), e);
+        throw TimeOutException(
+          e.message,
+          url,
+          Duration(milliseconds: e.request.receiveTimeout),
+          innerException: e,
+        );
       } else if (e.type == DioErrorType.SEND_TIMEOUT) {
-        throw TimeOutException.withException(e.message, url, Duration(milliseconds: e.request.sendTimeout), e);
+        throw TimeOutException(
+          e.message,
+          url,
+          Duration(milliseconds: e.request.sendTimeout),
+          innerException: e,
+        );
       }
       if (e.response != null) {
-        throw FailedStatusCodeException(e.message, response.statusCode as HttpStatus);
+        throw FailedStatusCodeException(
+            e.message, response.statusCode as HttpStatus);
       }
-      throw WebRequestException.withException(e.message, e);
+      throw WebRequestException(e.message, innerException: e);
     } on Exception catch (e) {
       if (e is KnownException) rethrow;
       if (e is Exception) {
-        throw WebRequestException.withException("Request for $completeUrl failed.", e);
+        throw WebRequestException("Request for $completeUrl failed.",
+            innerException: e);
       }
     }
     return _ResponseWithDuration(response, st.elapsed);
@@ -127,11 +156,13 @@ class WebRequester implements IWebRequester {
         log.warning("Response to $url is null!");
       }
     } else {
-      if (responseType == ResponseType.json || responseType == ResponseType.plain) {
+      if (responseType == ResponseType.json ||
+          responseType == ResponseType.plain) {
         log.finest("$url response is");
         log.finest(response.toString());
       } else if (responseType == ResponseType.bytes) {
-        log.finest("$url response content length is ${response.headers.contentLength} bytes.");
+        log.finest(
+            "$url response content length is ${response.headers.contentLength} bytes.");
       }
     }
   }
@@ -149,13 +180,15 @@ class WebRequester implements IWebRequester {
       }
       ;
       dio.options.headers.addAll({
-        'Authorization': _getBasicAuthHeader(profile.username, profile.password),
+        'Authorization':
+            _getBasicAuthHeader(profile.username, profile.password),
       });
     }
   }
 
   void _setHttpCertificateValidaton(HttpClient client) {
-    client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    client.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
   }
 
   void _setHttpProxy(HttpClient client) {
