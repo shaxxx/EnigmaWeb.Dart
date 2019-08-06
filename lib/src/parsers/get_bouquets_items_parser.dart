@@ -85,6 +85,7 @@ class GetBouquetItemsParser
         if (serviceReference != null) {
           var item = _initializeItem(serviceReference, EnigmaType.enigma2);
           item.name = serviceName;
+          item.reference = serviceReference;
           items.add(item);
         }
       }

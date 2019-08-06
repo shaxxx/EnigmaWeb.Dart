@@ -1,6 +1,8 @@
 Changelog
 =========
 
+0.8.0 fixed bouquet items parser
+
 0.7.0 all custom exceptions inherit from KnownException
 
 0.6.0 added proxy as optional WebRequester parameter
