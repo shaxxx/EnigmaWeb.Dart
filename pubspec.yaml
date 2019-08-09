@@ -1,6 +1,6 @@
 name: enigma_web
 description: Attempt to create unified API to control Enigma1 & Enigma2 web interfaces
-version: 0.8.0
+version: 0.9.0
 author: shaxxx <developer@krkadoni.com>
 homepage: https://github.com/shaxxx/EnigmaWeb.Dart.git
 
