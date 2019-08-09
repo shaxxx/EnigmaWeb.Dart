@@ -12,6 +12,7 @@ import 'package:enigma_web/src/parsers/parsing_exception.dart';
 import 'package:enigma_web/src/responses/get_current_service_response.dart';
 import 'package:enigma_web/src/responses/i_string_response.dart';
 import 'package:enigma_web/src/string_helper.dart';
+import 'package:logging/logging.dart';
 import 'package:xml/xml.dart' as xml;
 
 class GetCurrentServiceParser
@@ -70,7 +71,12 @@ class GetCurrentServiceParser
     }
 
     service.name = serviceName;
-    service.reference = serviceReference;
+    try {
+      service.reference = Uri.decodeFull(serviceReference);
+    } catch (e, s) {
+      service.reference = serviceReference;
+      Logger.root.fine(e.toString());
+    }
 
     return GetCurrentServiceResponse(service, response.responseDuration);
   }

@@ -27,7 +27,7 @@ class ZapCommand extends EnigmaCommand<IZapCommand, IResponse<IZapCommand>>
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/zapTo?path="
         : "web/zap?sRef=";
-    url = url + service.reference;
+    url = url + Uri.encodeFull(service.reference);
     return await super.executeGenericAsync(profile, url, parser, token: token);
   }
 }
