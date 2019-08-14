@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
-import 'package:enigma_web/src/commands/i_get_bouquet_items_command.dart';
 import 'package:enigma_web/src/commands/i_get_current_service_command.dart';
 import 'package:enigma_web/src/enums.dart';
 import 'package:enigma_web/src/i_profile.dart';
