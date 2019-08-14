@@ -1,6 +1,8 @@
 Changelog
 =========
 
+0.9.2 Failed HTTP status code as int
+
 0.9.1 Refactor command parameters
 
 0.9.0 Uri encoding/decoding as E2 bug workaround
