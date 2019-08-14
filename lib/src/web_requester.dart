@@ -136,8 +136,7 @@ class WebRequester implements IWebRequester {
         );
       }
       if (e.response != null) {
-        throw FailedStatusCodeException(
-            e.message, response.statusCode as HttpStatus);
+        throw FailedStatusCodeException(e.message, response.statusCode);
       }
       throw WebRequestException(e.message, innerException: e);
     } on Exception catch (e) {
