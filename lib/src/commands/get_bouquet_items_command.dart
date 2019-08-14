@@ -14,22 +14,30 @@ class GetBouquetItemsCommand
   final IResponseParser<IGetBouquetItemsCommand, IGetBouquetItemsResponse>
       parser;
 
-  GetBouquetItemsCommand(this.parser, IWebRequester requester)
-      : assert(parser != null),
+  final IProfile profile;
+  final IBouquetItemBouquet bouquet;
+
+  GetBouquetItemsCommand(
+    this.parser,
+    IWebRequester requester,
+    this.profile,
+    this.bouquet,
+  )   : assert(parser != null),
+        assert(profile != null),
+        assert(bouquet != null),
         super(requester);
 
   @override
-  Future<IGetBouquetItemsResponse> executeAsync(
-      IProfile profile, IBouquetItemBouquet bouquet,
-      {CancelToken token}) async {
-    if (bouquet == null) {
-      throw ArgumentError.notNull("bouquet");
-    }
-
+  Future<IGetBouquetItemsResponse> executeAsync({CancelToken token}) async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/getServices?ref="
         : "web/getservices?sRef=";
     url = url + bouquet.reference;
-    return await super.executeGenericAsync(profile, url, parser, token: token);
+    return await super.executeGenericAsync(
+      profile,
+      url,
+      parser,
+      token: token,
+    );
   }
 }

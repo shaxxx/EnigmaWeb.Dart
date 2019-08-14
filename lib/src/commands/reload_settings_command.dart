@@ -11,40 +11,61 @@ class ReloadSettingsCommand extends EnigmaCommand<IReloadSettingsCommand,
     IResponse<IReloadSettingsCommand>> implements IReloadSettingsCommand {
   final IResponseParser<IReloadSettingsCommand,
       IResponse<IReloadSettingsCommand>> parser;
+  final IProfile profile;
+  final ReloadSettingsType type;
 
-  ReloadSettingsCommand(this.parser, IWebRequester requester)
-      : assert(parser != null),
+  ReloadSettingsCommand(
+    this.parser,
+    IWebRequester requester,
+    this.profile,
+    this.type,
+  )   : assert(parser != null),
+        assert(profile != profile),
+        assert(type != type),
         super(requester);
 
   @override
-  Future<IResponse<IReloadSettingsCommand>> executeAsync(
-    IProfile profile,
-    ReloadSettingsType type, {
+  Future<IResponse<IReloadSettingsCommand>> executeAsync({
     CancelToken token,
   }) async {
     if (profile.enigma == EnigmaType.enigma1) {
       if (type == ReloadSettingsType.all) {
         await super.executeGenericAsync(
-            profile, "cgi-bin/reloadSettings", parser,
-            token: token);
+          profile,
+          "cgi-bin/reloadSettings",
+          parser,
+          token: token,
+        );
         return await super.executeGenericAsync(
-            profile, "cgi-bin/reloadUserBouquets", parser,
-            token: token);
+          profile,
+          "cgi-bin/reloadUserBouquets",
+          parser,
+          token: token,
+        );
       }
       if (type == ReloadSettingsType.services) {
         return await super.executeGenericAsync(
-            profile, "cgi-bin/reloadSettings", parser,
-            token: token);
+          profile,
+          "cgi-bin/reloadSettings",
+          parser,
+          token: token,
+        );
       }
       if (type == ReloadSettingsType.bouquets) {
         return await super.executeGenericAsync(
-            profile, "cgi-bin/reloadUserBouquets", parser,
-            token: token);
+          profile,
+          "cgi-bin/reloadUserBouquets",
+          parser,
+          token: token,
+        );
       }
       throw Exception("ReloadSettingsType not supported");
     }
     return await super.executeGenericAsync(
-        profile, "web/servicelistreload?mode=${type.index}", parser,
-        token: token);
+      profile,
+      "web/servicelistreload?mode=${type.index}",
+      parser,
+      token: token,
+    );
   }
 }

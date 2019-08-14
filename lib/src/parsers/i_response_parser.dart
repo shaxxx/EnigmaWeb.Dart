@@ -5,5 +5,8 @@ import 'package:enigma_web/src/responses/i_string_response.dart';
 
 abstract class IResponseParser<TCommand extends ICommand,
     TResult extends IResponse<TCommand>> {
-  Future<TResult> parseAsync(IStringResponse response, EnigmaType enigmaType);
+  Future<TResult> parseAsync(
+    IStringResponse response,
+    EnigmaType enigmaType,
+  );
 }

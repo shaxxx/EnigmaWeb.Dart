@@ -11,15 +11,25 @@ class PowerStateCommand
     extends EnigmaCommand<IPowerStateCommand, IPowerStateResponse>
     implements IPowerStateCommand {
   final IResponseParser<IPowerStateCommand, IPowerStateResponse> parser;
-  PowerStateCommand(this.parser, IWebRequester requester)
-      : assert(parser != null),
+  final IProfile profile;
+
+  PowerStateCommand(
+    this.parser,
+    IWebRequester requester,
+    this.profile,
+  )   : assert(parser != null),
+        assert(profile != null),
         super(requester);
 
   @override
-  Future<IPowerStateResponse> executeAsync(IProfile profile,
-      {CancelToken token}) async {
+  Future<IPowerStateResponse> executeAsync({CancelToken token}) async {
     String url =
         profile.enigma == EnigmaType.enigma1 ? "data" : "web/powerstate";
-    return await super.executeGenericAsync(profile, url, parser, token: token);
+    return await super.executeGenericAsync(
+      profile,
+      url,
+      parser,
+      token: token,
+    );
   }
 }

@@ -11,15 +11,23 @@ class VolumeStatusCommand
     extends EnigmaCommand<IVolumeStatusCommand, IVolumeStatusResponse>
     implements IVolumeStatusCommand {
   final IResponseParser<IVolumeStatusCommand, IVolumeStatusResponse> parser;
-
-  VolumeStatusCommand(this.parser, IWebRequester requester)
-      : assert(parser != null),
+  final IProfile profile;
+  VolumeStatusCommand(
+    this.parser,
+    IWebRequester requester,
+    this.profile,
+  )   : assert(parser != null),
+        assert(profile != null),
         super(requester);
 
   @override
-  Future<IVolumeStatusResponse> executeAsync(IProfile profile,
-      {CancelToken token}) async {
+  Future<IVolumeStatusResponse> executeAsync({CancelToken token}) async {
     String url = profile.enigma == EnigmaType.enigma1 ? "data" : "web/vol";
-    return await super.executeGenericAsync(profile, url, parser, token: token);
+    return await super.executeGenericAsync(
+      profile,
+      url,
+      parser,
+      token: token,
+    );
   }
 }

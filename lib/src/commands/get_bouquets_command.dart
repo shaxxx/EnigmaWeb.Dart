@@ -12,17 +12,26 @@ class GetBouquetsCommand
     extends EnigmaCommand<IGetBouquetsCommand, IGetBouquetsResponse>
     implements IGetBouquetsCommand {
   final IResponseParser<IGetBouquetsCommand, GetBouquetsResponse> parser;
+  final IProfile profile;
 
-  GetBouquetsCommand(this.parser, IWebRequester requester)
-      : assert(parser != null),
+  GetBouquetsCommand(
+    this.parser,
+    IWebRequester requester,
+    this.profile,
+  )   : assert(parser != null),
+        assert(profile != null),
         super(requester);
 
   @override
-  Future<IGetBouquetsResponse> executeAsync(IProfile profile,
-      {CancelToken token}) async {
+  Future<IGetBouquetsResponse> executeAsync({CancelToken token}) async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/getServices?ref=4097:7:0:6:0:0:0:0:0:0:"
         : "web/getservices";
-    return await super.executeGenericAsync(profile, url, parser, token: token);
+    return await super.executeGenericAsync(
+      profile,
+      url,
+      parser,
+      token: token,
+    );
   }
 }

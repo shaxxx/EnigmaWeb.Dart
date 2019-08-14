@@ -22,12 +22,18 @@ abstract class EnigmaCommand<TCommand extends ICommand,
     if (parser == null) throw ArgumentError.notNull("parser");
 
     try {
-      var response =
-          await requester.getResponseAsync(url, profile, cancelToken: token);
+      var response = await requester.getResponseAsync(
+        url,
+        profile,
+        cancelToken: token,
+      );
       if (response == null) {
         return null;
       }
-      return await parser.parseAsync(response, profile.enigma);
+      return await parser.parseAsync(
+        response,
+        profile.enigma,
+      );
     } on Exception catch (ex) {
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;

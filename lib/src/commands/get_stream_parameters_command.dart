@@ -13,15 +13,20 @@ class GetStreamParametersCommand extends EnigmaCommand<
     IGetStreamParametersResponse> implements IGetStreamParametersCommand {
   IResponseParser<IGetStreamParametersCommand, IGetStreamParametersResponse>
       parser;
-
-  GetStreamParametersCommand(this.parser, IWebRequester requester)
-      : assert(parser != null),
+  final IProfile profile;
+  final IBouquetItemService service;
+  GetStreamParametersCommand(
+    this.parser,
+    IWebRequester requester,
+    this.profile,
+    this.service,
+  )   : assert(parser != null),
+        assert(profile != null),
+        assert(service != null),
         super(requester);
 
   @override
-  Future<IGetStreamParametersResponse> executeAsync(
-      IProfile profile, IBouquetItemService service,
-      {CancelToken token}) async {
+  Future<IGetStreamParametersResponse> executeAsync({CancelToken token}) async {
     if (profile == null) {
       throw ArgumentError.notNull("profile");
     }
@@ -34,6 +39,11 @@ class GetStreamParametersCommand extends EnigmaCommand<
         ? "video.m3u?ref="
         : "web/video.m3u?sRef=";
     url = url + service.reference;
-    return await super.executeGenericAsync(profile, url, parser, token: token);
+    return await super.executeGenericAsync(
+      profile,
+      url,
+      parser,
+      token: token,
+    );
   }
 }

@@ -11,17 +11,25 @@ class SleepCommand
     extends EnigmaCommand<ISleepCommand, IResponse<ISleepCommand>>
     implements ISleepCommand {
   final IResponseParser<ISleepCommand, IResponse<ISleepCommand>> parser;
-
-  SleepCommand(this.parser, IWebRequester requester)
-      : assert(parser != null),
+  final IProfile profile;
+  SleepCommand(
+    this.parser,
+    IWebRequester requester,
+    this.profile,
+  )   : assert(parser != null),
+        assert(profile != null),
         super(requester);
 
   @override
-  Future<IResponse<ISleepCommand>> executeAsync(IProfile profile,
-      {CancelToken token}) async {
+  Future<IResponse<ISleepCommand>> executeAsync({CancelToken token}) async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/admin?command=standby&requester=webif"
         : "web/powerstate?newstate=5";
-    return await super.executeGenericAsync(profile, url, parser, token: token);
+    return await super.executeGenericAsync(
+      profile,
+      url,
+      parser,
+      token: token,
+    );
   }
 }

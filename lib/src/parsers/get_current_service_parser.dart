@@ -73,7 +73,7 @@ class GetCurrentServiceParser
     service.name = serviceName;
     try {
       service.reference = Uri.decodeFull(serviceReference);
-    } catch (e, s) {
+    } catch (e) {
       service.reference = serviceReference;
       Logger.root.fine(e.toString());
     }

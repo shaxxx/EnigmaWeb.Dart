@@ -10,16 +10,25 @@ import 'package:enigma_web/src/responses/i_signal_response.dart';
 class SignalCommand extends EnigmaCommand<ISignalCommand, ISignalResponse>
     implements ISignalCommand {
   final IResponseParser<ISignalCommand, ISignalResponse> parser;
+  final IProfile profile;
 
-  SignalCommand(this.parser, IWebRequester requester)
-      : assert(parser != null),
+  SignalCommand(
+    this.parser,
+    IWebRequester requester,
+    this.profile,
+  )   : assert(parser != null),
+        assert(profile != null),
         super(requester);
 
   @override
-  Future<ISignalResponse> executeAsync(IProfile profile,
-      {CancelToken token}) async {
+  Future<ISignalResponse> executeAsync({CancelToken token}) async {
     String url =
         profile.enigma == EnigmaType.enigma1 ? "satFinder" : "web/signal";
-    return await super.executeGenericAsync(profile, url, parser, token: token);
+    return await super.executeGenericAsync(
+      profile,
+      url,
+      parser,
+      token: token,
+    );
   }
 }

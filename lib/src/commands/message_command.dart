@@ -11,15 +11,27 @@ class MessageCommand
     extends EnigmaCommand<IMessageCommand, IResponse<IMessageCommand>>
     implements IMessageCommand {
   final IResponseParser<IMessageCommand, IResponse<IMessageCommand>> parser;
+  final IProfile profile;
+  final MessageType type;
+  final String message;
+  final int timeout;
 
-  MessageCommand(this.parser, IWebRequester requester)
-      : assert(parser != null),
+  MessageCommand(
+    this.parser,
+    IWebRequester requester,
+    this.profile,
+    this.message,
+    this.timeout,
+    this.type,
+  )   : assert(parser != null),
+        assert(profile != null),
+        assert(message != null),
+        assert(timeout != null),
+        assert(type != null),
         super(requester);
 
   @override
-  Future<IResponse<IMessageCommand>> executeAsync(
-      IProfile profile, MessageType type, String message, int timeout,
-      {CancelToken token}) async {
+  Future<IResponse<IMessageCommand>> executeAsync({CancelToken token}) async {
     String url;
     if (profile.enigma == EnigmaType.enigma1) {
       String caption;
@@ -50,6 +62,11 @@ class MessageCommand
       url =
           "web/message?text=${Uri.encodeFull(message)}&type=$type&timeout=$timeout";
     }
-    return await super.executeGenericAsync(profile, url, parser, token: token);
+    return await super.executeGenericAsync(
+      profile,
+      url,
+      parser,
+      token: token,
+    );
   }
 }

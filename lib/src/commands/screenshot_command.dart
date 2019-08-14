@@ -12,16 +12,18 @@ import 'package:enigma_web/src/responses/i_screenshot_response.dart';
 class ScreenshotCommand
     extends EnigmaCommand<IScreenshotCommand, IScreenshotResponse>
     implements IScreenshotCommand {
-  ScreenshotCommand(IWebRequester requester) : super(requester);
+  final IProfile profile;
+  final ScreenshotType type;
+  ScreenshotCommand(
+    IWebRequester requester,
+    this.profile,
+    this.type,
+  )   : assert(profile != null),
+        assert(type != null),
+        super(requester);
 
   @override
-  Future<IScreenshotResponse> executeAsync(
-      IProfile profile, ScreenshotType type,
-      {CancelToken token}) async {
-    if (profile == null) {
-      throw ArgumentError.notNull("profile");
-    }
-
+  Future<IScreenshotResponse> executeAsync({CancelToken token}) async {
     try {
       String url;
       switch (type) {
@@ -59,16 +61,25 @@ class ScreenshotCommand
       }
 
       if (profile.enigma == EnigmaType.enigma2) {
-        var binaryResponse = await requester
-            .getBinaryResponseAsync(url, profile, cancelToken: token);
+        var binaryResponse = await requester.getBinaryResponseAsync(
+          url,
+          profile,
+          cancelToken: token,
+        );
         if (binaryResponse != null) {
           return ScreenshotResponse(
-              binaryResponse.content, binaryResponse.responseDuration);
+            binaryResponse.content,
+            binaryResponse.responseDuration,
+          );
         }
       }
 
       //Enigma 1
-      await requester.getResponseAsync(url, profile, cancelToken: token);
+      await requester.getResponseAsync(
+        url,
+        profile,
+        cancelToken: token,
+      );
 
       switch (type) {
         case ScreenshotType.osd:
@@ -82,26 +93,37 @@ class ScreenshotCommand
           }
       }
 
-      var response =
-          await requester.getResponseAsync(url, profile, cancelToken: token);
+      var response = await requester.getResponseAsync(
+        url,
+        profile,
+        cancelToken: token,
+      );
       if (response == null) {
         return null;
       }
-      var binaryResponse = await requester.getBinaryResponseAsync(url, profile,
-          cancelToken: token);
+      var binaryResponse = await requester.getBinaryResponseAsync(
+        url,
+        profile,
+        cancelToken: token,
+      );
       if (binaryResponse != null) {
         return ScreenshotResponse(
-            binaryResponse.content, binaryResponse.responseDuration);
+          binaryResponse.content,
+          binaryResponse.responseDuration,
+        );
       }
     } on Exception catch (ex) {
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
 
-      throw CommandException("Command failed for profile ${profile.name}\n$ex");
+      throw CommandException(
+        "Command failed for profile ${profile.name}\n$ex",
+      );
     }
     throw CommandException(
-        "Screenshot failed for profile ${profile.name}\nEmpty response!");
+      "Screenshot failed for profile ${profile.name}\nEmpty response!",
+    );
   }
 
   static String _unixTimeStamp() {

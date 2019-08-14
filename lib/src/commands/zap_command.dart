@@ -11,23 +11,30 @@ import 'package:enigma_web/src/responses/i_response.dart';
 class ZapCommand extends EnigmaCommand<IZapCommand, IResponse<IZapCommand>>
     implements IZapCommand {
   final IResponseParser<IZapCommand, IResponse<IZapCommand>> parser;
+  final IProfile profile;
+  final IBouquetItemService service;
 
-  ZapCommand(this.parser, IWebRequester requester)
-      : assert(parser != null),
+  ZapCommand(
+    this.parser,
+    IWebRequester requester,
+    this.profile,
+    this.service,
+  )   : assert(parser != null),
+        assert(profile != null),
+        assert(service != null),
         super(requester);
 
   @override
-  Future<IResponse<IZapCommand>> executeAsync(
-      IProfile profile, IBouquetItemService service,
-      {CancelToken token}) async {
-    if (service == null) {
-      throw ArgumentError.notNull("service");
-    }
-
+  Future<IResponse<IZapCommand>> executeAsync({CancelToken token}) async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/zapTo?path="
         : "web/zap?sRef=";
     url = url + Uri.encodeFull(service.reference);
-    return await super.executeGenericAsync(profile, url, parser, token: token);
+    return await super.executeGenericAsync(
+      profile,
+      url,
+      parser,
+      token: token,
+    );
   }
 }
