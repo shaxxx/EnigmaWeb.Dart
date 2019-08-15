@@ -134,9 +134,12 @@ class WebRequester implements IWebRequester {
           Duration(milliseconds: e.request.sendTimeout),
           innerException: e,
         );
-      }
-      if (e.response != null) {
-        throw FailedStatusCodeException(e.message, response.statusCode);
+      } else if (e.type == DioErrorType.RESPONSE) {
+        throw FailedStatusCodeException(
+          e.message,
+          e.response.statusCode,
+          innerException: e,
+        );
       }
       throw WebRequestException(e.message, innerException: e);
     } on Exception catch (e) {
