@@ -1,10 +1,14 @@
 import 'package:enigma_web/src/i_bouquet_item_bouquet.dart';
 
 class BouquetItemBouquet implements IBouquetItemBouquet {
-  @override
-  String name;
-  @override
-  String reference;
+  final String name;
+  final String reference;
+
+  BouquetItemBouquet({
+    this.name,
+    this.reference,
+  })  : assert(name != null),
+        assert(reference != null);
 
   @override
   int get hashCode => name.hashCode ^ reference.hashCode;

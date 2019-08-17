@@ -1,9 +1,9 @@
 import 'package:enigma_web/src/i_signal.dart';
 
 abstract class IE1Signal implements ISignal {
-  bool lock = false;
+  bool get lock;
 
-  bool sync = false;
+  bool get sync;
 
-  String get calculatedDb => "0.0";
+  String get calculatedDb;
 }

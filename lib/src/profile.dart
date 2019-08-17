@@ -3,48 +3,66 @@ import 'package:enigma_web/src/i_profile.dart';
 import 'enums.dart' show EnigmaType;
 
 class Profile implements IProfile {
-  @override
-  String address;
-  @override
-  EnigmaType enigma = EnigmaType.enigma1;
-  @override
-  int httpPort = 0;
-  @override
-  String name;
-  @override
-  String password;
-  @override
-  bool useSsl = false;
-  @override
-  String username;
-  @override
-  int streamingPort = 0;
+  final String address;
+  final EnigmaType enigma;
+  final int httpPort;
+  final String name;
+  final String password;
+  final bool useSsl;
+  final String username;
+  final int streamingPort;
+  final bool transcoding;
+  final int transcodingPort;
+  final bool streaming;
 
-  Profile() {
-    name = "";
-    username = "root";
-    password = "dreambox";
-    address = "192.168.1.1";
-    enigma = EnigmaType.enigma2;
-    httpPort = 80;
-  }
+  Profile({
+    this.address,
+    this.enigma = EnigmaType.enigma2,
+    this.httpPort = 80,
+    this.name,
+    this.password = 'dreambox',
+    this.useSsl = false,
+    this.username = 'root',
+    this.streamingPort,
+    this.transcoding = false,
+    this.transcodingPort,
+    this.streaming,
+  })  : assert(address != null),
+        assert(address.length > 0),
+        assert(enigma != null),
+        assert(httpPort != null),
+        assert(name != null),
+        assert(password != null),
+        assert(useSsl != null),
+        assert(username != null),
+        assert(transcoding != null),
+        assert(streaming != null);
 
   @override
-  int get hashCode =>
-      name.hashCode ^
-      username.hashCode ^
-      password.hashCode ^
-      enigma.hashCode ^
-      address.hashCode ^
-      httpPort.hashCode ^
-      useSsl.hashCode ^
-      streamingPort.hashCode;
+  int get hashCode => name.hashCode ^
+              username.hashCode ^
+              password.hashCode ^
+              enigma.hashCode ^
+              address.hashCode ^
+              httpPort.hashCode ^
+              useSsl.hashCode ^
+              streamingPort ==
+          null
+      ? 0
+      : streamingPort.hashCode ^ transcodingPort == null
+          ? 0
+          : transcodingPort.hashCode ^
+              transcoding.hashCode ^
+              streaming.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is IProfile &&
           runtimeType == other.runtimeType &&
+          transcodingPort == other.transcodingPort &&
+          transcoding == other.transcoding &&
+          streaming == other.streaming &&
           name == other.name &&
           username == other.username &&
           password == other.password &&

@@ -3,7 +3,13 @@ import 'package:enigma_web/src/i_bouquet_item_service_e1.dart';
 
 class BouquetItemServiceE1 extends BouquetItemService
     implements IBouquetItemServiceE1 {
-  String vlcParms;
+  final String vlcParms;
+
+  BouquetItemServiceE1({
+    String reference,
+    String name,
+    this.vlcParms,
+  }) : super(reference: reference, name: name);
 
   @override
   int get hashCode => name.hashCode ^ reference.hashCode ^ vlcParms.hashCode;

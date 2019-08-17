@@ -2,7 +2,6 @@ import 'package:enigma_web/src/bouquet_item_service.dart';
 import 'package:enigma_web/src/bouquet_item_service_e1.dart';
 import 'package:enigma_web/src/commands/i_get_current_service_command.dart';
 import 'package:enigma_web/src/enums.dart';
-import 'package:enigma_web/src/i_bouquet_item_service.dart';
 import 'package:enigma_web/src/i_bouquet_item_service_e1.dart';
 import 'package:enigma_web/src/known_exception.dart';
 import 'package:enigma_web/src/operation_cancelled_exception.dart';
@@ -42,19 +41,28 @@ class GetCurrentServiceParser
   }
 
   GetCurrentServiceResponse parseE1(IStringResponse response) {
-    IBouquetItemServiceE1 service = BouquetItemServiceE1();
-    service.name =
-        getE1StatusValue(response.responseString, "var serviceName = " "");
-    service.reference =
-        getE1StatusValue(response.responseString, "var serviceReference = " "");
-    service.vlcParms =
-        getE1StatusValue(response.responseString, "var vlcparms = " "");
+    var name = getE1StatusValue(
+      response.responseString,
+      "var serviceName = " "",
+    );
+    var reference = getE1StatusValue(
+      response.responseString,
+      "var serviceReference = " "",
+    );
+    var vlcParms = getE1StatusValue(
+      response.responseString,
+      "var vlcparms = " "",
+    );
+    IBouquetItemServiceE1 service = BouquetItemServiceE1(
+      name: name,
+      reference: reference,
+      vlcParms: vlcParms,
+    );
     return GetCurrentServiceResponse(service, response.responseDuration);
   }
 
   GetCurrentServiceResponse parseE2(IStringResponse response) {
     var responseString = Helpers.sanitizeXmlString(response.responseString);
-    IBouquetItemService service = BouquetItemService();
     var document = xml.parse(responseString);
 
     String serviceReference;
@@ -70,14 +78,17 @@ class GetCurrentServiceParser
       serviceName = StringHelper.trimAll(nameNodes.first.text);
     }
 
-    service.name = serviceName;
     try {
-      service.reference = Uri.decodeFull(serviceReference);
+      serviceReference = Uri.decodeFull(serviceReference);
     } catch (e) {
-      service.reference = serviceReference;
       Logger.root.fine(e.toString());
     }
 
-    return GetCurrentServiceResponse(service, response.responseDuration);
+    return GetCurrentServiceResponse(
+        BouquetItemService(
+          name: serviceName,
+          reference: serviceReference,
+        ),
+        response.responseDuration);
   }
 }

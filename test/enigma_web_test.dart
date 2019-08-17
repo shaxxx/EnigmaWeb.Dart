@@ -4,8 +4,7 @@ import 'package:logging/logging.dart';
 
 void main() {
   test('e1 snr to db conversion', () {
-    final e1signal = E1Signal();
-    e1signal.snr = 91;
+    final e1signal = E1Signal(snr: 91);
     expect(e1signal.calculatedDb, "14.00");
   });
 

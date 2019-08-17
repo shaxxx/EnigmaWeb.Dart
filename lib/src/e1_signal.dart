@@ -1,16 +1,23 @@
 import 'package:enigma_web/src/i_e1_signal.dart';
 
 class E1Signal implements IE1Signal {
-  @override
-  int acg = 0;
-  @override
-  int ber = 0;
-  @override
-  bool lock = false;
-  @override
-  int snr = 0;
-  @override
-  bool sync = false;
+  final int acg;
+  final int ber;
+  final bool lock;
+  final int snr;
+  final bool sync;
+
+  E1Signal({
+    this.acg = 0,
+    this.ber = 0,
+    this.lock = false,
+    this.snr = 0,
+    this.sync = false,
+  })  : assert(acg != null),
+        assert(ber != null),
+        assert(lock != null),
+        assert(snr != null),
+        assert(sync != null) {}
 
   @override
   String get calculatedDb {

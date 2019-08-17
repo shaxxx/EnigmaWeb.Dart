@@ -1,12 +1,15 @@
 import 'package:enigma_web/src/enums.dart' show EnigmaType;
 
 abstract class IProfile {
-  String name;
-  String username;
-  String password;
-  EnigmaType enigma = EnigmaType.enigma2;
-  String address;
-  int httpPort = 0;
-  bool useSsl = false;
-  int streamingPort = 0;
+  String get name;
+  String get username;
+  String get password;
+  EnigmaType get enigma;
+  String get address;
+  int get httpPort;
+  bool get useSsl;
+  int get streamingPort;
+  bool get transcoding;
+  int get transcodingPort;
+  bool get streaming;
 }

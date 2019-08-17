@@ -36,15 +36,20 @@ class GetBouquetsParser
     var bouquets = List<IBouquetItemBouquet>();
     List<String> lines = response.responseString.split("\n");
     for (int i = 0; i <= lines.length - 2; i++) {
-      IBouquetItemBouquet bq = BouquetItemBouquet();
-      bq.reference = lines[i].substring(0, lines[i].indexOf(";")).trim();
-      bq.reference = StringHelper.trimAll(bq.reference);
-      bq.name = lines[i].substring(lines[i].indexOf(";") + 1).trim();
-      bq.name = StringHelper.trimAll(bq.name);
+      //IBouquetItemBouquet bq = BouquetItemBouquet();
+      var reference = lines[i].substring(0, lines[i].indexOf(";")).trim();
+      reference = StringHelper.trimAll(reference);
+      var name = lines[i].substring(lines[i].indexOf(";") + 1).trim();
+      name = StringHelper.trimAll(name);
       if (lines[i].contains(";selected")) {
-        bq.name = bq.name.substring(0, bq.name.indexOf(";selected"));
+        name = name.substring(0, name.indexOf(";selected"));
       }
-      bouquets.add(bq);
+      bouquets.add(
+        BouquetItemBouquet(
+          name: name,
+          reference: reference,
+        ),
+      );
     }
     return GetBouquetsResponse(bouquets, response.responseDuration);
   }
@@ -73,10 +78,12 @@ class GetBouquetsParser
         }
 
         if (serviceReference != null) {
-          var bouquet = BouquetItemBouquet();
-          bouquet.name = serviceName;
-          bouquet.reference = serviceReference;
-          bouquets.add(bouquet);
+          bouquets.add(
+            BouquetItemBouquet(
+              name: serviceName,
+              reference: serviceReference,
+            ),
+          );
         }
       }
     }

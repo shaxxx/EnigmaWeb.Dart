@@ -1,5 +1,5 @@
 abstract class ISignal {
-  int snr = 0;
-  int acg = 0;
-  int ber = 0;
+  int get snr;
+  int get acg;
+  int get ber;
 }

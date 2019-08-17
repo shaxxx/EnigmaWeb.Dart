@@ -39,8 +39,8 @@ class GetBouquetItemsParser
     for (int i = 0; i <= lines.length - 2; i++) {
       String reference = lines[i].substring(0, lines[i].indexOf(";"));
       reference = StringHelper.trimAll(reference);
-      IBouquetItem item = _initializeItem(reference, EnigmaType.enigma1);
-      if (item == null) {
+
+      if (StringHelper.stringIsNullOrEmpty(reference)) {
         continue;
       }
 
@@ -51,10 +51,10 @@ class GetBouquetItemsParser
         name = name.substring(0, name.indexOf(";"));
         name = StringHelper.trimAll(name);
       }
-
-      item.reference = reference;
-      item.name = name;
-      items.add(item);
+      var item = _initializeItem(reference, EnigmaType.enigma1, name);
+      if (item != null) {
+        items.add(item);
+      }
     }
     return GetBouquetItemsResponse(items, response.responseDuration);
   }
@@ -83,31 +83,45 @@ class GetBouquetItemsParser
         }
 
         if (serviceReference != null) {
-          var item = _initializeItem(serviceReference, EnigmaType.enigma2);
-          item.name = serviceName;
-          item.reference = serviceReference;
-          items.add(item);
+          var item = _initializeItem(
+            serviceReference,
+            EnigmaType.enigma2,
+            serviceName,
+          );
+          if (item != null) {
+            items.add(item);
+          }
         }
       }
     }
     return GetBouquetItemsResponse(items, response.responseDuration);
   }
 
-  IBouquetItem _initializeItem(String reference, EnigmaType enigmaType) {
+  IBouquetItem _initializeItem(
+    String reference,
+    EnigmaType enigmaType,
+    String serviceName,
+  ) {
     if (StringHelper.stringIsNullOrEmpty(reference)) {
       return null;
     }
 
     if (reference.startsWith("1:0:1")) {
       return enigmaType == EnigmaType.enigma2
-          ? BouquetItemService()
-          : BouquetItemServiceE1();
+          ? BouquetItemService(
+              name: serviceName,
+              reference: reference,
+            )
+          : BouquetItemServiceE1(
+              name: serviceName,
+              reference: reference,
+            );
     }
 
     if (reference.startsWith("1:64")) {
-      return BouquetItemMarker();
+      return BouquetItemMarker(name: serviceName, reference: reference);
     }
 
-    return BouquetItemBouquet();
+    return BouquetItemBouquet(name: serviceName, reference: reference);
   }
 }

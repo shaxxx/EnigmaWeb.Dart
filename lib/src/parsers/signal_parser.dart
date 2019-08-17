@@ -3,8 +3,6 @@ import 'package:enigma_web/src/commands/i_signal_command.dart';
 import 'package:enigma_web/src/e1_signal.dart';
 import 'package:enigma_web/src/e2_signal.dart';
 import 'package:enigma_web/src/enums.dart';
-import 'package:enigma_web/src/i_e1_signal.dart';
-import 'package:enigma_web/src/i_e2_signal.dart';
 import 'package:enigma_web/src/known_exception.dart';
 import 'package:enigma_web/src/operation_cancelled_exception.dart';
 import 'package:enigma_web/src/parsers/helpers.dart';
@@ -58,7 +56,7 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
 
     String ber = responseString.substring(0, responseString.indexOf("<"));
 
-    var signal = _initializeSignal(snr, acg, ber, locked, sync);
+    var signal = _initializeSignalEnigma1(snr, acg, ber, locked, sync);
 
     if (signal == null) {
       throw ParsingException("Failed to parse Enigma1 signal!");
@@ -67,24 +65,30 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
     return SignalResponse(signal, response.responseDuration);
   }
 
-  E1Signal _initializeSignal(
-      String snr, String acg, String ber, bool locked, bool sync) {
-    IE1Signal signal = E1Signal();
-
+  E1Signal _initializeSignalEnigma1(
+    String snr,
+    String acg,
+    String ber,
+    bool locked,
+    bool sync,
+  ) {
     if (snr.isEmpty) {
-      signal.snr = -1;
-      signal.acg = -1;
-      signal.ber = -1;
-      return signal;
+      return E1Signal(
+        snr: -1,
+        acg: -1,
+        ber: -1,
+        lock: false,
+        sync: false,
+      );
     }
 
-    signal.lock = locked;
-    signal.sync = sync;
-    signal.acg = int.parse(acg);
-    signal.snr = int.parse(snr);
-    signal.ber = int.parse(ber);
-
-    return signal;
+    return E1Signal(
+      lock: locked,
+      sync: sync,
+      acg: int.parse(acg),
+      snr: int.parse(snr),
+      ber: int.parse(ber),
+    );
   }
 
   SignalResponse parseE2(IStringResponse response) {
@@ -117,7 +121,7 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
       acg = StringHelper.trimAll(acgNodes.first.text);
     }
 
-    var signal = _initializeSignal1(snr, db, acg, ber);
+    var signal = _initializeSignalEnigma2(snr, db, acg, ber);
 
     if (signal == null) {
       throw ParsingException("Failed to parse Enigma2 signal!");
@@ -126,10 +130,13 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
     return SignalResponse(signal, response.responseDuration);
   }
 
-  E2Signal _initializeSignal1(String snr, String db, String acg, String ber) {
-    IE2Signal signal = E2Signal();
+  E2Signal _initializeSignalEnigma2(
+    String snr,
+    String db,
+    String acg,
+    String ber,
+  ) {
     String ds = ".";
-
     String realSnr;
     String realDb;
 
@@ -140,11 +147,12 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
             .replaceAll(".", ds));
 
     if (snr.isEmpty || db.isEmpty) {
-      signal.db = -1;
-      signal.snr = -1;
-      signal.acg = -1;
-      signal.ber = -1;
-      return signal;
+      return E2Signal(
+        db: -1,
+        snr: -1,
+        acg: -1,
+        ber: -1,
+      );
     }
 
     //dB is in percentage, someting is wrong
@@ -177,18 +185,28 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
       throw ParsingException("Failed to parse Enigma2 signal!");
     }
 
+    int snr2;
+    double db2;
+    int acg2;
+    int ber2;
+
     if (realSnr != null && realDb != null) {
-      signal.snr = int.parse(realSnr);
-      signal.db = double.parse(realDb);
+      snr2 = int.parse(realSnr);
+      db2 = double.parse(realDb);
     } else if (realDb != null) {
-      signal.db = double.parse(realDb);
-      signal.snr = (signal.db * 6.5).round();
+      db2 = double.parse(realDb);
+      snr2 = (db2 * 6.5).round();
     } else {
-      signal.snr = int.parse(realSnr);
-      signal.db = double.parse((signal.snr / 6.5).toStringAsFixed(2));
+      snr2 = int.parse(realSnr);
+      db2 = double.parse((snr2 / 6.5).toStringAsFixed(2));
     }
-    signal.acg = int.parse(StringHelper.trimAll(acg.replaceAll("%", "")));
-    signal.ber = int.parse(StringHelper.trimAll(ber));
-    return signal;
+    acg2 = int.parse(StringHelper.trimAll(acg.replaceAll("%", "")));
+    ber2 = int.parse(StringHelper.trimAll(ber));
+    return E2Signal(
+      snr: snr2,
+      db: db2,
+      acg: acg2,
+      ber: ber2,
+    );
   }
 }

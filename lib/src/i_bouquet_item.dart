@@ -1,7 +1,7 @@
 abstract class IBouquetItem {
   /// e2servicename
-  String name;
+  String get name;
 
   /// e2servicereference
-  String reference;
+  String get reference;
 }
