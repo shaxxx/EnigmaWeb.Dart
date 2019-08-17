@@ -1,6 +1,8 @@
 Changelog
 =========
 
+0.9.3 Refactor as immutable types
+
 0.9.2 Failed HTTP status code as int
 
 0.9.1 Refactor command parameters
