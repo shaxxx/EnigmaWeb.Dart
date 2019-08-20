@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/enigma_web.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_message_command.dart';
@@ -31,7 +30,7 @@ class MessageCommand
         super(requester);
 
   @override
-  Future<IResponse<IMessageCommand>> executeAsync({CancelToken token}) async {
+  Future<IResponse<IMessageCommand>> executeAsync() async {
     String url;
     if (profile.enigma == EnigmaType.enigma1) {
       String caption;
@@ -66,7 +65,6 @@ class MessageCommand
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }

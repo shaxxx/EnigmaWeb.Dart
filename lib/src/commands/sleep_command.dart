@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_sleep_command.dart';
 import 'package:enigma_web/src/enums.dart';
@@ -21,7 +20,7 @@ class SleepCommand
         super(requester);
 
   @override
-  Future<IResponse<ISleepCommand>> executeAsync({CancelToken token}) async {
+  Future<IResponse<ISleepCommand>> executeAsync() async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/admin?command=standby&requester=webif"
         : "web/powerstate?newstate=5";
@@ -29,7 +28,6 @@ class SleepCommand
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }

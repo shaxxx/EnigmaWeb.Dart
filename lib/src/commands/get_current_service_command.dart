@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_get_current_service_command.dart';
 import 'package:enigma_web/src/enums.dart';
@@ -23,14 +22,13 @@ class GetCurrentServiceCommand
         super(requester);
 
   @override
-  Future<IGetCurrentServiceResponse> executeAsync({CancelToken token}) async {
+  Future<IGetCurrentServiceResponse> executeAsync() async {
     String url =
         profile.enigma == EnigmaType.enigma1 ? "data" : "web/getcurrent";
     return await super.executeGenericAsync(
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_set_volume_command.dart';
 import 'package:enigma_web/src/enums.dart';
@@ -24,7 +23,7 @@ class SetVolumeCommand
         super(requester);
 
   @override
-  Future<IResponse<ISetVolumeCommand>> executeAsync({CancelToken token}) async {
+  Future<IResponse<ISetVolumeCommand>> executeAsync() async {
     if (level > 100 || level < 0) {
       throw ArgumentError.value("level");
     }
@@ -37,7 +36,6 @@ class SetVolumeCommand
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }

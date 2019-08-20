@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_power_state_command.dart';
 import 'package:enigma_web/src/enums.dart';
@@ -22,14 +21,13 @@ class PowerStateCommand
         super(requester);
 
   @override
-  Future<IPowerStateResponse> executeAsync({CancelToken token}) async {
+  Future<IPowerStateResponse> executeAsync() async {
     String url =
         profile.enigma == EnigmaType.enigma1 ? "data" : "web/powerstate";
     return await super.executeGenericAsync(
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }

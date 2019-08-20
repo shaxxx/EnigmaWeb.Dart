@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_remote_control_command.dart';
 import 'package:enigma_web/src/enums.dart';
@@ -25,8 +24,7 @@ class RemoteControlCommand extends EnigmaCommand<IRemoteControlCommand,
         super(requester);
 
   @override
-  Future<IResponse<IRemoteControlCommand>> executeAsync(
-      {CancelToken token}) async {
+  Future<IResponse<IRemoteControlCommand>> executeAsync() async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/rc?"
         : "web/remotecontrol?command=";
@@ -35,7 +33,6 @@ class RemoteControlCommand extends EnigmaCommand<IRemoteControlCommand,
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/enigma_web.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_signal_command.dart';
@@ -21,14 +20,13 @@ class SignalCommand extends EnigmaCommand<ISignalCommand, ISignalResponse>
         super(requester);
 
   @override
-  Future<ISignalResponse> executeAsync({CancelToken token}) async {
+  Future<ISignalResponse> executeAsync() async {
     String url =
         profile.enigma == EnigmaType.enigma1 ? "satFinder" : "web/signal";
     return await super.executeGenericAsync(
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }

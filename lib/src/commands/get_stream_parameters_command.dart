@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_get_stream_parameters_command.dart';
 import 'package:enigma_web/src/enums.dart';
@@ -26,7 +25,7 @@ class GetStreamParametersCommand extends EnigmaCommand<
         super(requester);
 
   @override
-  Future<IGetStreamParametersResponse> executeAsync({CancelToken token}) async {
+  Future<IGetStreamParametersResponse> executeAsync() async {
     if (profile == null) {
       throw ArgumentError.notNull("profile");
     }
@@ -43,7 +42,6 @@ class GetStreamParametersCommand extends EnigmaCommand<
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }

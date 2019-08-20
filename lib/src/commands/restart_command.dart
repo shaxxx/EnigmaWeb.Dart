@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_restart_command.dart';
 import 'package:enigma_web/src/enums.dart';
@@ -21,7 +20,7 @@ class RestartCommand
         super(requester);
 
   @override
-  Future<IResponse<IRestartCommand>> executeAsync({CancelToken token}) async {
+  Future<IResponse<IRestartCommand>> executeAsync() async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/admin?command=restart&requester=webif"
         : "web/powerstate?newstate=3";
@@ -29,7 +28,6 @@ class RestartCommand
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }

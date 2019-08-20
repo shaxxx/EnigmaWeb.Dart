@@ -64,7 +64,6 @@ class ScreenshotCommand
         var binaryResponse = await requester.getBinaryResponseAsync(
           url,
           profile,
-          cancelToken: token,
         );
         if (binaryResponse != null) {
           return ScreenshotResponse(
@@ -78,7 +77,6 @@ class ScreenshotCommand
       await requester.getResponseAsync(
         url,
         profile,
-        cancelToken: token,
       );
 
       switch (type) {
@@ -96,7 +94,6 @@ class ScreenshotCommand
       var response = await requester.getResponseAsync(
         url,
         profile,
-        cancelToken: token,
       );
       if (response == null) {
         return null;
@@ -104,7 +101,6 @@ class ScreenshotCommand
       var binaryResponse = await requester.getBinaryResponseAsync(
         url,
         profile,
-        cancelToken: token,
       );
       if (binaryResponse != null) {
         return ScreenshotResponse(

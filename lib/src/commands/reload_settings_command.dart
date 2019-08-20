@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_reload_settings_command.dart';
 import 'package:enigma_web/src/enums.dart';
@@ -25,22 +24,18 @@ class ReloadSettingsCommand extends EnigmaCommand<IReloadSettingsCommand,
         super(requester);
 
   @override
-  Future<IResponse<IReloadSettingsCommand>> executeAsync({
-    CancelToken token,
-  }) async {
+  Future<IResponse<IReloadSettingsCommand>> executeAsync() async {
     if (profile.enigma == EnigmaType.enigma1) {
       if (type == ReloadSettingsType.all) {
         await super.executeGenericAsync(
           profile,
           "cgi-bin/reloadSettings",
           parser,
-          token: token,
         );
         return await super.executeGenericAsync(
           profile,
           "cgi-bin/reloadUserBouquets",
           parser,
-          token: token,
         );
       }
       if (type == ReloadSettingsType.services) {
@@ -48,7 +43,6 @@ class ReloadSettingsCommand extends EnigmaCommand<IReloadSettingsCommand,
           profile,
           "cgi-bin/reloadSettings",
           parser,
-          token: token,
         );
       }
       if (type == ReloadSettingsType.bouquets) {
@@ -56,7 +50,6 @@ class ReloadSettingsCommand extends EnigmaCommand<IReloadSettingsCommand,
           profile,
           "cgi-bin/reloadUserBouquets",
           parser,
-          token: token,
         );
       }
       throw Exception("ReloadSettingsType not supported");
@@ -65,7 +58,6 @@ class ReloadSettingsCommand extends EnigmaCommand<IReloadSettingsCommand,
       profile,
       "web/servicelistreload?mode=${type.index}",
       parser,
-      token: token,
     );
   }
 }

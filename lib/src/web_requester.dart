@@ -39,21 +39,26 @@ class WebRequester implements IWebRequester {
   }
 
   @override
-  Future<IBinaryResponse> getBinaryResponseAsync(String url, IProfile profile,
-      {CancelToken cancelToken}) async {
+  Future<IBinaryResponse> getBinaryResponseAsync(
+    String url,
+    IProfile profile,
+  ) async {
     var responseWithDuration = await _getResponse(
-        url, profile, ResponseType.bytes,
-        cancelToken: cancelToken);
+      url,
+      profile,
+      ResponseType.bytes,
+    );
     return BinaryResponse(
         responseWithDuration.httpResponse.data, responseWithDuration.duration);
   }
 
   @override
-  Future<IStringResponse> getResponseAsync(String url, IProfile profile,
-      {CancelToken cancelToken}) async {
+  Future<IStringResponse> getResponseAsync(String url, IProfile profile) async {
     var responseWithDuration = await _getResponse(
-        url, profile, ResponseType.plain,
-        cancelToken: cancelToken);
+      url,
+      profile,
+      ResponseType.plain,
+    );
     return StringResponse(responseWithDuration.httpResponse.toString(),
         responseWithDuration.duration);
   }
@@ -62,11 +67,10 @@ class WebRequester implements IWebRequester {
     return enigma == EnigmaType.enigma1 ? "text/html" : "text/xml";
   }
 
-  Dio _createHttpClient(ResponseType responseType, IProfile profile) {
+  Dio _createHttpClient(IProfile profile) {
     Dio dio = Dio();
     dio.options.connectTimeout = connectTimeOut;
     dio.options.receiveTimeout = receiveTimeOut;
-    dio.options.responseType = responseType;
     _setBasicAuthHeader(dio, profile);
     _setXRequesteWithHeader(dio);
     _setUserAgentHeader(dio);
@@ -79,6 +83,10 @@ class WebRequester implements IWebRequester {
     };
     dio.interceptors.add(_cookies);
     return dio;
+  }
+
+  void _setResponseType(Dio dio, ResponseType responseType) {
+    dio.options.responseType = responseType;
   }
 
   String _createUrl(String url, IProfile profile) {
@@ -97,17 +105,17 @@ class WebRequester implements IWebRequester {
 
   Future<_ResponseWithDuration> _getResponse(
       String url, IProfile profile, ResponseType responseType,
-      {CancelToken cancelToken, bool authorize = false}) async {
+      {bool authorize = false}) async {
     var completeUrl = _createUrl(url, profile);
     log.fine("Initializing request to $url");
     Response response;
     var st = Stopwatch();
     try {
-      var httpClient = _createHttpClient(responseType, profile);
+      var client = _createHttpClient(profile);
+      _setResponseType(client, responseType);
       st.start();
-      response = await httpClient.get(completeUrl, cancelToken: cancelToken);
+      response = await client.get(completeUrl);
       st.stop();
-      _throwIfCanceled(cancelToken, url);
       log.fine("Request for $url took ${st.elapsedMilliseconds} ms");
       logResponse(response, url, responseType);
     } on DioError catch (e) {
@@ -215,14 +223,6 @@ class WebRequester implements IWebRequester {
       dio.options.headers = {};
     }
     dio.options.headers.addAll({'X-Requested-With': xRequestedWithHeader});
-  }
-
-  void _throwIfCanceled(CancelToken cancelToken, String url) {
-    if (cancelToken != null) {
-      if (cancelToken.isCancelled) {
-        throw OperationCanceledException("Request for $url was canceled.");
-      }
-    }
   }
 }
 

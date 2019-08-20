@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/command_exception.dart';
 import 'package:enigma_web/src/commands/i_command.dart';
 import 'package:enigma_web/src/i_profile.dart';
@@ -15,8 +14,10 @@ abstract class EnigmaCommand<TCommand extends ICommand,
   EnigmaCommand(this.requester) : assert(requester != null);
 
   Future<TResponse> executeGenericAsync(
-      IProfile profile, String url, IResponseParser<TCommand, TResponse> parser,
-      {CancelToken token}) async {
+    IProfile profile,
+    String url,
+    IResponseParser<TCommand, TResponse> parser,
+  ) async {
     if (profile == null) throw ArgumentError.notNull("profile");
     if (url == null) throw ArgumentError.notNull("url");
     if (parser == null) throw ArgumentError.notNull("parser");
@@ -25,7 +26,6 @@ abstract class EnigmaCommand<TCommand extends ICommand,
       var response = await requester.getResponseAsync(
         url,
         profile,
-        cancelToken: token,
       );
       if (response == null) {
         return null;

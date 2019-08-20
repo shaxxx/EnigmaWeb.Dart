@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/enigma_web.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_zap_command.dart';
@@ -25,7 +24,7 @@ class ZapCommand extends EnigmaCommand<IZapCommand, IResponse<IZapCommand>>
         super(requester);
 
   @override
-  Future<IResponse<IZapCommand>> executeAsync({CancelToken token}) async {
+  Future<IResponse<IZapCommand>> executeAsync() async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/zapTo?path="
         : "web/zap?sRef=";
@@ -34,7 +33,6 @@ class ZapCommand extends EnigmaCommand<IZapCommand, IResponse<IZapCommand>>
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }

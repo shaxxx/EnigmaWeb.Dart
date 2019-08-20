@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_get_bouquets_command.dart';
 import 'package:enigma_web/src/enums.dart';
@@ -23,7 +22,7 @@ class GetBouquetsCommand
         super(requester);
 
   @override
-  Future<IGetBouquetsResponse> executeAsync({CancelToken token}) async {
+  Future<IGetBouquetsResponse> executeAsync() async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/getServices?ref=4097:7:0:6:0:0:0:0:0:0:"
         : "web/getservices";
@@ -31,7 +30,6 @@ class GetBouquetsCommand
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }

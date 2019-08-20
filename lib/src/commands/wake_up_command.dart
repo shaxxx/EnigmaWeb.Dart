@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
 import 'package:enigma_web/src/commands/i_wake_up_command.dart';
 import 'package:enigma_web/src/enums.dart';
@@ -22,7 +21,7 @@ class WakeUpCommand
         super(requester);
 
   @override
-  Future<IResponse<IWakeUpCommand>> executeAsync({CancelToken token}) async {
+  Future<IResponse<IWakeUpCommand>> executeAsync() async {
     String url = profile.enigma == EnigmaType.enigma1
         ? "cgi-bin/admin?command=wakeup&requester=webif"
         : "web/powerstate?newstate=4";
@@ -30,7 +29,6 @@ class WakeUpCommand
       profile,
       url,
       parser,
-      token: token,
     );
   }
 }
