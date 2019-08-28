@@ -1,6 +1,8 @@
 Changelog
 =========
 
+0.9.4 Optional retry strategy
+
 0.9.3 Refactor as immutable types
 
 0.9.2 Failed HTTP status code as int

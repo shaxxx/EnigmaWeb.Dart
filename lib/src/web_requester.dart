@@ -25,6 +25,8 @@ class WebRequester implements IWebRequester {
   final String xRequestedWithHeader;
   final String proxy;
   final Logger log;
+  final int receiveTimeoutRetries;
+  int _retried = 0;
 
   WebRequester(
     this.log, {
@@ -34,6 +36,7 @@ class WebRequester implements IWebRequester {
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
     this.xRequestedWithHeader = "XMLHttpRequest",
     this.proxy,
+    this.receiveTimeoutRetries = 0,
   }) : assert(log != null) {
     _cookies = CookieManager(CookieJar());
   }
@@ -69,6 +72,21 @@ class WebRequester implements IWebRequester {
 
   Dio _createHttpClient(IProfile profile) {
     Dio dio = Dio();
+    if (receiveTimeoutRetries > 0) {
+      dio.interceptors.add(
+        InterceptorsWrapper(onError: (DioError e) async {
+          if (e.response == null && e.type == DioErrorType.RECEIVE_TIMEOUT) {
+            if (_retried < receiveTimeoutRetries) {
+              _retried += 1;
+              dio.options.receiveTimeout = receiveTimeOut * (_retried + 1);
+              log.fine('********************** Retry ${_retried}');
+              return await dio.request(e.request.path);
+            }
+          }
+          return e;
+        }),
+      );
+    }
     dio.options.connectTimeout = connectTimeOut;
     dio.options.receiveTimeout = receiveTimeOut;
     _setBasicAuthHeader(dio, profile);
@@ -103,18 +121,23 @@ class WebRequester implements IWebRequester {
     return 'Basic ' + base64Encode(utf8.encode('$username:$password'));
   }
 
+  Dio _client;
   Future<_ResponseWithDuration> _getResponse(
       String url, IProfile profile, ResponseType responseType,
       {bool authorize = false}) async {
+    _retried = 0;
     var completeUrl = _createUrl(url, profile);
     log.fine("Initializing request to $url");
     Response response;
     var st = Stopwatch();
     try {
-      var client = _createHttpClient(profile);
-      _setResponseType(client, responseType);
+      if (_client == null) {
+        _client = _createHttpClient(profile);
+      }
+      _client.options.receiveTimeout = receiveTimeOut;
+      _setResponseType(_client, responseType);
       st.start();
-      response = await client.get(completeUrl);
+      response = await _client.get(completeUrl);
       st.stop();
       log.fine("Request for $url took ${st.elapsedMilliseconds} ms");
       logResponse(response, url, responseType);
