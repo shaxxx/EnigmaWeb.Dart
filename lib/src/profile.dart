@@ -38,6 +38,34 @@ class Profile implements IProfile {
         assert(transcoding != null),
         assert(streaming != null);
 
+  Profile copyWith({
+    String address,
+    EnigmaType enigma,
+    int httpPort,
+    String name,
+    String password,
+    bool useSsl,
+    String username,
+    int streamingPort,
+    bool transcoding,
+    int transcodingPort,
+    bool streaming,
+  }) {
+    return Profile(
+      address: address ?? this.address,
+      enigma: enigma ?? this.enigma,
+      httpPort: httpPort ?? this.httpPort,
+      name: name ?? this.name,
+      password: password ?? this.password,
+      useSsl: useSsl ?? this.useSsl,
+      username: username ?? this.username,
+      streamingPort: streamingPort ?? this.streamingPort,
+      transcoding: transcoding ?? this.transcoding,
+      transcodingPort: transcodingPort ?? this.transcodingPort,
+      streaming: streaming ?? this.streaming,
+    );
+  }
+
   @override
   int get hashCode => name.hashCode ^
               username.hashCode ^

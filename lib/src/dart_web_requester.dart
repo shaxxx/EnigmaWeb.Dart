@@ -8,7 +8,6 @@ import 'package:enigma_web/src/enums.dart';
 import 'package:enigma_web/src/i_profile.dart';
 import 'package:enigma_web/src/i_web_requester.dart';
 import 'package:enigma_web/src/known_exception.dart';
-import 'package:enigma_web/src/operation_cancelled_exception.dart';
 import 'package:enigma_web/src/responses/binary_response.dart';
 import 'package:enigma_web/src/responses/i_binary_response.dart';
 import 'package:enigma_web/src/responses/i_string_response.dart';
