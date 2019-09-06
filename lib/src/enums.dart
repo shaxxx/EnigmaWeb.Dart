@@ -6,21 +6,24 @@ class EnigmaType {
   final String name;
   const EnigmaType._(this.value, this.name);
 
-  static const enigma1 = EnigmaType._(1, 'Enigma1');
-  static const enigma2 = EnigmaType._(2, 'Enigma2');
+  static const enigma1 = EnigmaType._(0, 'Enigma1');
+  static const enigma2 = EnigmaType._(1, 'Enigma2');
 
-  // static const List<EnigmaType> values = [
-  //   enigma1,
-  //   enigma2,
-  // ];
+  static const List<EnigmaType> values = [
+    enigma1,
+    enigma2,
+  ];
 
-  // @override
-  // int get hashCode => name.hashCode ^ value.hashCode;
+  @override
+  int get hashCode => name.hashCode ^ value.hashCode;
 
-  // @override
-  // bool operator ==(Object other) =>
-  //     identical(this, other) ||
-  //     other is EnigmaType && runtimeType == other.runtimeType && name == other.name && value == other.value;
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EnigmaType &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          value == other.value;
 
   @override
   String toString() {
@@ -37,19 +40,22 @@ class ScreenshotType {
   static const picture = ScreenshotType._(2, 'Picture');
   static const osd = ScreenshotType._(3, 'Osd');
 
-  // static const List<ScreenshotType> values = [
-  //   all,
-  //   picture,
-  //   osd,
-  // ];
+  static const List<ScreenshotType> values = [
+    all,
+    picture,
+    osd,
+  ];
 
-  // @override
-  // int get hashCode => name.hashCode ^ value.hashCode;
+  @override
+  int get hashCode => name.hashCode ^ value.hashCode;
 
-  // @override
-  // bool operator ==(Object other) =>
-  //     identical(this, other) ||
-  //     other is EnigmaType && runtimeType == other.runtimeType && name == other.name && value == other.value;
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EnigmaType &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          value == other.value;
 
   @override
   String toString() {
@@ -99,44 +105,44 @@ class RemoteControlCode {
   static const text = RemoteControlCode._(66, 'Text');
   static const help = RemoteControlCode._(138, 'Help');
 
-  // static const List<RemoteControlCode> values = [
-  //   power,
-  //   key1,
-  //   key2,
-  //   key3,
-  //   key4,
-  //   key5,
-  //   key6,
-  //   key7,
-  //   key8,
-  //   key9,
-  //   key0,
-  //   volumeUp,
-  //   volumeDown,
-  //   previous,
-  //   keyNext,
-  //   mute,
-  //   bouquetUp,
-  //   bouquetDown,
-  //   lame,
-  //   info,
-  //   up,
-  //   dream,
-  //   left,
-  //   right,
-  //   ok,
-  //   audio,
-  //   down,
-  //   video,
-  //   red,
-  //   green,
-  //   yellow,
-  //   blue,
-  //   tv,
-  //   radio,
-  //   text,
-  //   help,
-  // ];
+  static const List<RemoteControlCode> values = [
+    power,
+    key1,
+    key2,
+    key3,
+    key4,
+    key5,
+    key6,
+    key7,
+    key8,
+    key9,
+    key0,
+    volumeUp,
+    volumeDown,
+    previous,
+    keyNext,
+    mute,
+    bouquetUp,
+    bouquetDown,
+    lame,
+    info,
+    up,
+    dream,
+    left,
+    right,
+    ok,
+    audio,
+    down,
+    video,
+    red,
+    green,
+    yellow,
+    blue,
+    tv,
+    radio,
+    text,
+    help,
+  ];
 
   @override
   int get hashCode => name.hashCode ^ value.hashCode;
