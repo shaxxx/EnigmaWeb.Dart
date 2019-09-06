@@ -27,6 +27,7 @@ class WebRequester implements IWebRequester {
   final Logger log;
   final int receiveTimeoutRetries;
   int _retried = 0;
+  int _currentProfileHashCode;
 
   WebRequester(
     this.log, {
@@ -38,7 +39,7 @@ class WebRequester implements IWebRequester {
     this.proxy,
     this.receiveTimeoutRetries = 0,
   }) : assert(log != null) {
-    _cookies = CookieManager(CookieJar());
+    _cookies = CookieManager(DefaultCookieJar());
   }
 
   @override
@@ -99,6 +100,7 @@ class WebRequester implements IWebRequester {
       _setHttpProxy(client);
       _setHttpCertificateValidaton(client);
     };
+    (_cookies.cookieJar as DefaultCookieJar).deleteAll();
     dio.interceptors.add(_cookies);
     return dio;
   }
@@ -131,7 +133,8 @@ class WebRequester implements IWebRequester {
     Response response;
     var st = Stopwatch();
     try {
-      if (_client == null) {
+      if (_client == null || _currentProfileHashCode != profile.hashCode) {
+        _currentProfileHashCode = profile.hashCode;
         _client = _createHttpClient(profile);
       }
       _client.options.receiveTimeout = receiveTimeOut;
