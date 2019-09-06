@@ -12,4 +12,7 @@ abstract class IProfile {
   bool get transcoding;
   int get transcodingPort;
   bool get streaming;
+  String get id;
+  Map<String, dynamic> toJson();
+  IProfile.fromJson(Map<String, dynamic> json);
 }

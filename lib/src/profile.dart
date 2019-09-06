@@ -14,6 +14,7 @@ class Profile implements IProfile {
   final bool transcoding;
   final int transcodingPort;
   final bool streaming;
+  final String id;
 
   Profile({
     this.address,
@@ -27,6 +28,7 @@ class Profile implements IProfile {
     this.transcoding = false,
     this.transcodingPort,
     this.streaming,
+    this.id,
   })  : assert(address != null),
         assert(address.length > 0),
         assert(enigma != null),
@@ -36,7 +38,8 @@ class Profile implements IProfile {
         assert(useSsl != null),
         assert(username != null),
         assert(transcoding != null),
-        assert(streaming != null);
+        assert(streaming != null),
+        assert(id != null);
 
   Profile copyWith({
     String address,
@@ -50,6 +53,7 @@ class Profile implements IProfile {
     bool transcoding,
     int transcodingPort,
     bool streaming,
+    String id,
   }) {
     return Profile(
       address: address ?? this.address,
@@ -63,30 +67,29 @@ class Profile implements IProfile {
       transcoding: transcoding ?? this.transcoding,
       transcodingPort: transcodingPort ?? this.transcodingPort,
       streaming: streaming ?? this.streaming,
+      id: id ?? this.id,
     );
   }
 
   @override
-  int get hashCode => name.hashCode ^
-              username.hashCode ^
-              password.hashCode ^
-              enigma.hashCode ^
-              address.hashCode ^
-              httpPort.hashCode ^
-              useSsl.hashCode ^
-              streamingPort ==
-          null
-      ? 0
-      : streamingPort.hashCode ^ transcodingPort == null
-          ? 0
-          : transcodingPort.hashCode ^
-              transcoding.hashCode ^
-              streaming.hashCode;
+  int get hashCode =>
+      name.hashCode ^
+      username.hashCode ^
+      password.hashCode ^
+      enigma.hashCode ^
+      address.hashCode ^
+      httpPort.hashCode ^
+      useSsl.hashCode ^
+      streamingPort.hashCode ^
+      transcodingPort.hashCode ^
+      transcoding.hashCode ^
+      streaming.hashCode ^
+      id.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is IProfile &&
+      other is Profile &&
           runtimeType == other.runtimeType &&
           transcodingPort == other.transcodingPort &&
           transcoding == other.transcoding &&
@@ -98,10 +101,42 @@ class Profile implements IProfile {
           address == other.address &&
           httpPort == other.httpPort &&
           useSsl == other.useSsl &&
-          streamingPort == other.streamingPort;
+          streamingPort == other.streamingPort &&
+          id == other.id;
 
   @override
   String toString() {
     return 'Profile $name, address $address, port: $httpPort, enigma: $enigma';
   }
+
+  @override
+  Profile.fromJson(Map<String, dynamic> json)
+      : transcodingPort = json['transcodingPort'],
+        transcoding = json['transcoding'],
+        streaming = json['streaming'],
+        name = json['name'],
+        username = json['username'],
+        password = json['password'],
+        enigma = EnigmaType.values[json['enigma']],
+        address = json['address'],
+        httpPort = json['httpPort'],
+        useSsl = json['useSsl'],
+        streamingPort = json['streamingPort'],
+        id = json['id'];
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'transcodingPort': transcodingPort,
+        'transcoding': transcoding,
+        'streaming': streaming,
+        'name': name,
+        'username': username,
+        'password': password,
+        'enigma': enigma.value,
+        'address': address,
+        'httpPort': httpPort,
+        'useSsl': useSsl,
+        'streamingPort': streamingPort,
+        'id': id,
+      };
 }
