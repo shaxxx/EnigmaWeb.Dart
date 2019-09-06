@@ -122,6 +122,22 @@ class GetBouquetItemsParser
       return BouquetItemMarker(name: serviceName, reference: reference);
     }
 
+    List<String> sData = StringHelper.trimAll(reference).split(':');
+    if (sData.length >= 10 &&
+        (sData[0] == "4097" ||
+            sData[10].contains("//") ||
+            (sData.length == 12 && sData[11] != null))) {
+      return enigmaType == EnigmaType.enigma2
+          ? BouquetItemService(
+              name: serviceName,
+              reference: reference,
+            )
+          : BouquetItemServiceE1(
+              name: serviceName,
+              reference: reference,
+            );
+    }
+
     return BouquetItemBouquet(name: serviceName, reference: reference);
   }
 }
