@@ -20,7 +20,15 @@ class GetCurrentServiceParser
   String getE1StatusValue(String response, String searchFor) {
     String tmp =
         response.substring(response.indexOf(searchFor) + searchFor.length);
-    return StringHelper.trimAll(tmp.substring(0, tmp.indexOf(";")));
+    tmp = tmp.substring(0, tmp.indexOf(";"));
+    tmp = StringHelper.trimAll(tmp);
+    if (tmp.startsWith('"')) {
+      tmp = tmp.substring(1);
+    }
+    if (tmp.endsWith('"')) {
+      tmp = tmp.substring(0, tmp.length - 1);
+    }
+    return StringHelper.trimAll(tmp);
   }
 
   @override
@@ -49,14 +57,14 @@ class GetCurrentServiceParser
       response.responseString,
       "var serviceReference = " "",
     );
-    var vlcParms = getE1StatusValue(
-      response.responseString,
-      "var vlcparms = " "",
-    );
+    // var vlcParms = getE1StatusValue(
+    //   response.responseString,
+    //   "var vlcparms = " "",
+    // );
     IBouquetItemServiceE1 service = BouquetItemServiceE1(
       name: name,
       reference: reference,
-      vlcParms: vlcParms,
+      //vlcParms: vlcParms,
     );
     return GetCurrentServiceResponse(service, response.responseDuration);
   }
