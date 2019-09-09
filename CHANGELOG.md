@@ -1,6 +1,8 @@
 Changelog
 =========
 
+0.9.5 webrequest fixes for Enigma1
+
 0.9.4 Optional retry strategy
 
 0.9.3 Refactor as immutable types
