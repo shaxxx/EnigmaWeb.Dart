@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:alt_http/alt_http.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:enigma_web/enigma_web.dart';
@@ -16,6 +17,8 @@ import 'package:enigma_web/src/responses/string_response.dart';
 import 'package:enigma_web/src/string_helper.dart';
 import 'package:enigma_web/src/web_request_exception.dart';
 import 'package:logging/logging.dart';
+
+import 'alt_http_client_adapter.dart';
 
 class WebRequester implements IWebRequester {
   CookieManager _cookies;
@@ -73,6 +76,7 @@ class WebRequester implements IWebRequester {
 
   Dio _createHttpClient(IProfile profile) {
     Dio dio = Dio();
+    dio.httpClientAdapter = AltHttpClientAdapter();
     if (receiveTimeoutRetries > 0) {
       dio.interceptors.add(
         InterceptorsWrapper(onError: (DioError e) async {
@@ -95,7 +99,7 @@ class WebRequester implements IWebRequester {
     _setUserAgentHeader(dio);
     dio.options.contentType =
         ContentType.parse(_contentTypeByEnigmaVersion(profile.enigma));
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    (dio.httpClientAdapter as AltHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       _setHttpProxy(client);
       _setHttpCertificateValidaton(client);
@@ -133,7 +137,9 @@ class WebRequester implements IWebRequester {
     Response response;
     var st = Stopwatch();
     try {
-      if (_client == null || _currentProfileHashCode != profile.hashCode) {
+      if (_client == null ||
+          _currentProfileHashCode != profile.hashCode ||
+          profile.enigma == EnigmaType.enigma1) {
         _currentProfileHashCode = profile.hashCode;
         _client = _createHttpClient(profile);
       }
