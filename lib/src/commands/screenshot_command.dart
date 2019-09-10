@@ -23,7 +23,7 @@ class ScreenshotCommand
         super(requester);
 
   @override
-  Future<IScreenshotResponse> executeAsync({CancelToken token}) async {
+  Future<IScreenshotResponse> executeAsync() async {
     try {
       String url;
       if (type == ScreenshotType.all) {
