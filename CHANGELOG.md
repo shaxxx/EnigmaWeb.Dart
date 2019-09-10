@@ -1,6 +1,8 @@
 Changelog
 =========
 
+0.9.6 removed canceltoken parameter
+
 0.9.5 webrequest fixes for Enigma1
 
 0.9.4 Optional retry strategy
