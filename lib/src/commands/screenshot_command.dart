@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:enigma_web/enigma_web.dart';
 import 'package:enigma_web/src/commands/command_exception.dart';
 import 'package:enigma_web/src/commands/enigma_command.dart';
