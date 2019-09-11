@@ -1,6 +1,8 @@
 Changelog
 =========
 
+0.9.7 updated AltHttp package reference
+
 0.9.6 removed canceltoken parameter
 
 0.9.5 webrequest fixes for Enigma1
