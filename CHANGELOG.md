@@ -1,6 +1,8 @@
 Changelog
 =========
 
+1.0.0 production ready
+
 0.9.7 updated AltHttp package reference
 
 0.9.6 removed canceltoken parameter
