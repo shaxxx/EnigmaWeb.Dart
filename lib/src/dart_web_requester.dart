@@ -69,7 +69,7 @@ class DartWebRequester implements IWebRequester {
     this.xRequestedWithHeader = "XMLHttpRequest",
     this.proxy,
   })  : _cookies = CookieJar(),
-        assert(log != null) {}
+        assert(log != null);
 
   @override
   Future<IBinaryResponse> getBinaryResponseAsync(

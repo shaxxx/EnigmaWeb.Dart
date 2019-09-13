@@ -30,7 +30,7 @@ class Profile implements IProfile {
     this.streaming,
     this.id,
   })  : assert(address != null),
-        assert(address.length > 0),
+        assert(address.isNotEmpty),
         assert(enigma != null),
         assert(httpPort != null),
         assert(name != null),
