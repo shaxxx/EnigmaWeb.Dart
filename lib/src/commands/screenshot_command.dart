@@ -104,6 +104,6 @@ class ScreenshotCommand
   }
 
   static String _unixTimeStamp() {
-    return (DateTime.now().millisecond / 1000).toString();
+    return (DateTime.now().millisecondsSinceEpoch).toString();
   }
 }
