@@ -154,21 +154,21 @@ class WebRequester implements IWebRequester {
         throw OperationCanceledException(e.message, innerException: e);
       } else if (e.type == DioErrorType.CONNECT_TIMEOUT) {
         throw TimeOutException(
-          e.message,
+          e.message ?? 'Request timed out',
           url,
           Duration(milliseconds: e.request.connectTimeout),
           innerException: e,
         );
       } else if (e.type == DioErrorType.RECEIVE_TIMEOUT) {
         throw TimeOutException(
-          e.message,
+          e.message ?? 'Receive timed out',
           url,
           Duration(milliseconds: e.request.receiveTimeout),
           innerException: e,
         );
       } else if (e.type == DioErrorType.SEND_TIMEOUT) {
         throw TimeOutException(
-          e.message,
+          e.message ?? 'Send timed out',
           url,
           Duration(milliseconds: e.request.sendTimeout),
           innerException: e,
@@ -210,7 +210,7 @@ class WebRequester implements IWebRequester {
 
   bool _profileHasValidCredentials(IProfile profile) {
     if (StringHelper.stringIsNullOrEmpty(profile.username)) return false;
-    if (StringHelper.stringIsNullOrEmpty(profile.password)) return false;
+    //if (StringHelper.stringIsNullOrEmpty(profile.password)) return false;
     return true;
   }
 
@@ -222,7 +222,7 @@ class WebRequester implements IWebRequester {
       ;
       dio.options.headers.addAll({
         'Authorization':
-            _getBasicAuthHeader(profile.username, profile.password),
+            _getBasicAuthHeader(profile.username, profile.password ?? ''),
       });
     }
   }
