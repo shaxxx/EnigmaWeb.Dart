@@ -9,6 +9,7 @@ import 'package:enigma_web/src/i_profile.dart';
 import 'package:enigma_web/src/i_web_requester.dart';
 import 'package:enigma_web/src/known_exception.dart';
 import 'package:enigma_web/src/operation_cancelled_exception.dart';
+import 'package:enigma_web/src/parsers/session_parser.dart';
 import 'package:enigma_web/src/responses/binary_response.dart';
 import 'package:enigma_web/src/responses/i_binary_response.dart';
 import 'package:enigma_web/src/responses/i_string_response.dart';
@@ -28,8 +29,13 @@ class WebRequester implements IWebRequester {
   final String proxy;
   final Logger log;
   final int receiveTimeoutRetries;
+
   int _retried = 0;
   int _currentProfileHashCode;
+  bool _usePostRequest;
+  bool _triedAlternativeRequestMethod;
+  String _sessionId;
+  bool _isGetSessionError;
 
   WebRequester(
     this.log, {
@@ -76,9 +82,13 @@ class WebRequester implements IWebRequester {
   Dio _createHttpClient(IProfile profile) {
     Dio dio = Dio();
     dio.httpClientAdapter = AltHttpClientAdapter();
-    if (receiveTimeoutRetries > 0) {
-      dio.interceptors.add(
-        InterceptorsWrapper(onError: (DioError e) async {
+    _usePostRequest = (profile.enigma == EnigmaType.enigma2);
+    _triedAlternativeRequestMethod = false;
+    _isGetSessionError = false;
+    _sessionId = null;
+    dio.interceptors.add(
+      InterceptorsWrapper(onError: (DioError e) async {
+        if (receiveTimeoutRetries > 0) {
           if (e.response == null && e.type == DioErrorType.RECEIVE_TIMEOUT) {
             if (_retried < receiveTimeoutRetries) {
               _retried += 1;
@@ -87,10 +97,45 @@ class WebRequester implements IWebRequester {
               return await dio.request(e.request.path);
             }
           }
-          return e;
-        }),
-      );
-    }
+        }
+        if (e.type == DioErrorType.RESPONSE) {
+          if (e.response.statusCode == HttpStatus.preconditionFailed &&
+              _isGetSessionError == false) {
+            try {
+              log.fine('********************** Requesting session id');
+              var st = Stopwatch();
+              st.start();
+              var sessionResponseString =
+                  (await dio.post(_createSessionUrl(profile))).data.toString();
+              st.stop();
+              var stringResponse = StringResponse(sessionResponseString,
+                  Duration(milliseconds: st.elapsedMilliseconds));
+              var sessionResponse = SessionParser().parseE2(stringResponse);
+              _sessionId = sessionResponse.sessionId;
+              log.fine('********************** Got session id');
+              this._client.options.method = _usePostRequest ? 'POST' : 'GET';
+              return await dio
+                  .request(_updateUrlWithSessionId(e.request.path, _sessionId));
+            } catch (e) {
+              log.fine(e);
+              _isGetSessionError = true;
+              _sessionId = null;
+            }
+            return await dio.request(e.request.path);
+          } else if (e.response.statusCode == HttpStatus.methodNotAllowed &&
+              _triedAlternativeRequestMethod == false) {
+            _usePostRequest = !_usePostRequest;
+            _triedAlternativeRequestMethod = true;
+            log.fine(
+                '********************** Switching to ${_usePostRequest ? 'POST' : 'GET'} method');
+            this._client.options.method = _usePostRequest ? 'POST' : 'GET';
+            return await dio.request(e.request.path);
+          }
+        }
+        return e;
+      }),
+    );
+
     dio.options.connectTimeout = connectTimeOut;
     dio.options.receiveTimeout = receiveTimeOut;
     _setBasicAuthHeader(dio, profile);
@@ -115,11 +160,33 @@ class WebRequester implements IWebRequester {
   String _createUrl(String url, IProfile profile) {
     var addressWithoutHttpPrefix =
         "${profile.address}:${profile.httpPort}/$url";
+    String completeUrl;
+    if (profile.useSsl) {
+      completeUrl = "https://" + addressWithoutHttpPrefix;
+    } else {
+      completeUrl = "http://" + addressWithoutHttpPrefix;
+    }
+    if (_sessionId != null) {
+      return _updateUrlWithSessionId(completeUrl, _sessionId);
+    }
+    return completeUrl;
+  }
+
+  String _createSessionUrl(IProfile profile) {
+    var addressWithoutHttpPrefix =
+        "${profile.address}:${profile.httpPort}/web/session";
     if (profile.useSsl) {
       return "https://" + addressWithoutHttpPrefix;
     } else {
       return "http://" + addressWithoutHttpPrefix;
     }
+  }
+
+  static String _updateUrlWithSessionId(String url, String sesssionId) {
+    var uri = Uri.parse(url);
+    var queryParameters = Map<String, String>.from(uri.queryParameters);
+    queryParameters['sessionid'] = sesssionId;
+    return uri.replace(queryParameters: queryParameters).toString();
   }
 
   String _getBasicAuthHeader(String username, String password) {
@@ -145,7 +212,11 @@ class WebRequester implements IWebRequester {
       _client.options.receiveTimeout = receiveTimeOut;
       _setResponseType(_client, responseType);
       st.start();
-      response = await _client.get(completeUrl);
+      if (_usePostRequest) {
+        response = await _client.post(completeUrl);
+      } else {
+        response = await _client.get(completeUrl);
+      }
       st.stop();
       log.fine("Request for $url took ${st.elapsedMilliseconds} ms");
       logResponse(response, url, responseType);

@@ -28,21 +28,15 @@ class ScreenshotCommand
       if (type == ScreenshotType.all) {
         url = profile.enigma == EnigmaType.enigma1
             ? "body?mode=controlScreenShot&blendtype=2"
-            : "grab?format=jpg&mode=all&filename=/tmp/" +
-                _unixTimeStamp() +
-                ".jpg";
+            : "grab?format=jpg&filename=/tmp/" + _unixTimeStamp() + ".jpg";
       } else if (type == ScreenshotType.picture) {
         url = profile.enigma == EnigmaType.enigma1
             ? "body?mode=controlScreenShot"
-            : "grab?format=jpg&mode=video&v=&filename=/tmp/" +
-                _unixTimeStamp() +
-                ".jpg";
+            : "grab?format=jpg&v=&filename=/tmp/" + _unixTimeStamp() + ".jpg";
       } else if (type == ScreenshotType.osd) {
         url = profile.enigma == EnigmaType.enigma1
             ? "body?mode=controlFBShot"
-            : "grab?format=jpg&mode=osd&o=&n=&filename=/tmp/" +
-                _unixTimeStamp() +
-                ".jpg";
+            : "grab?format=jpg&o=&filename=/tmp/" + _unixTimeStamp() + ".jpg";
       } else {
         throw Exception("Screenshot type not supported.");
       }
