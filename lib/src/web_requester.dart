@@ -184,6 +184,9 @@ class WebRequester implements IWebRequester {
 
   static String _updateUrlWithSessionId(String url, String sesssionId) {
     var uri = Uri.parse(url);
+    if (!uri.path.startsWith('/web')) {
+      return url;
+    }
     var queryParameters = Map<String, String>.from(uri.queryParameters);
     queryParameters['sessionid'] = sesssionId;
     return uri.replace(queryParameters: queryParameters).toString();
@@ -290,12 +293,10 @@ class WebRequester implements IWebRequester {
       if (dio.options.headers == null) {
         dio.options.headers = {};
       }
-      ;
-      dio.options.headers.addAll({
-        'Authorization':
-            _getBasicAuthHeader(profile.username, profile.password ?? ''),
-      });
+      dio.options.headers['Authorization'] =
+          _getBasicAuthHeader(profile.username, profile.password ?? '');
     }
+    ;
   }
 
   void _setHttpCertificateValidaton(HttpClient client) {
@@ -316,7 +317,7 @@ class WebRequester implements IWebRequester {
     if (dio.options.headers == null) {
       dio.options.headers = {};
     }
-    dio.options.headers.addAll({'User-Agent': userAgentHeader});
+    dio.options.headers['User-Agent'] = userAgentHeader;
   }
 
   void _setXRequesteWithHeader(Dio dio) {
@@ -324,7 +325,7 @@ class WebRequester implements IWebRequester {
     if (dio.options.headers == null) {
       dio.options.headers = {};
     }
-    dio.options.headers.addAll({'X-Requested-With': xRequestedWithHeader});
+    dio.options.headers['X-Requested-With'] = xRequestedWithHeader;
   }
 }
 
