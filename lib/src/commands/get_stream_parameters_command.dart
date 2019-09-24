@@ -35,9 +35,9 @@ class GetStreamParametersCommand extends EnigmaCommand<
     }
 
     String url = profile.enigma == EnigmaType.enigma1
-        ? "video.m3u?ref="
-        : "web/video.m3u?sRef=";
-    url = url + service.reference;
+        ? "video.m3u?ref=" + service.reference
+        : "web/video.m3u?sRef=" + Uri.encodeComponent(service.reference);
+
     return await super.executeGenericAsync(
       profile,
       url,

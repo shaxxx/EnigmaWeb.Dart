@@ -29,9 +29,8 @@ class GetBouquetItemsCommand
   @override
   Future<IGetBouquetItemsResponse> executeAsync() async {
     String url = profile.enigma == EnigmaType.enigma1
-        ? "cgi-bin/getServices?ref="
-        : "web/getservices?sRef=";
-    url = url + bouquet.reference;
+        ? "cgi-bin/getServices?ref=" + bouquet.reference
+        : "web/getservices?sRef=" + Uri.encodeComponent(bouquet.reference);
     return await super.executeGenericAsync(
       profile,
       url,

@@ -26,9 +26,8 @@ class ZapCommand extends EnigmaCommand<IZapCommand, IResponse<IZapCommand>>
   @override
   Future<IResponse<IZapCommand>> executeAsync() async {
     String url = profile.enigma == EnigmaType.enigma1
-        ? "cgi-bin/zapTo?path="
-        : "web/zap?sRef=";
-    url = url + Uri.encodeFull(service.reference);
+        ? "cgi-bin/zapTo?path=" + Uri.encodeFull(service.reference)
+        : "web/zap?sRef=" + Uri.encodeComponent(service.reference);
     return await super.executeGenericAsync(
       profile,
       url,
