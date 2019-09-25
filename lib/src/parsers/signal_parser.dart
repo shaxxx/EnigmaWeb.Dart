@@ -98,36 +98,39 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
     String db;
     String acg;
     String ber;
+    try {
+      var document = xml.parse(responseString);
 
-    var document = xml.parse(responseString);
+      var dbNodes = document.findAllElements("e2snrdb");
+      if (dbNodes != null && dbNodes.isNotEmpty) {
+        db = StringHelper.trimAll(dbNodes.first.text);
+      }
 
-    var dbNodes = document.findAllElements("e2snrdb");
-    if (dbNodes != null && dbNodes.isNotEmpty) {
-      db = StringHelper.trimAll(dbNodes.first.text);
+      var snrNodes = document.findAllElements("e2snr");
+      if (snrNodes != null && snrNodes.isNotEmpty) {
+        snr = StringHelper.trimAll(snrNodes.first.text);
+      }
+
+      var berNodes = document.findAllElements("e2ber");
+      if (berNodes != null && berNodes.isNotEmpty) {
+        ber = StringHelper.trimAll(berNodes.first.text);
+      }
+
+      var acgNodes = document.findAllElements("e2acg");
+      if (acgNodes != null && acgNodes.isNotEmpty) {
+        acg = StringHelper.trimAll(acgNodes.first.text);
+      }
+
+      var signal = _initializeSignalEnigma2(snr, db, acg, ber);
+
+      if (signal == null) {
+        throw ParsingException("Failed to parse Enigma2 signal!");
+      }
+
+      return SignalResponse(signal, response.responseDuration);
+    } on FormatException {
+      throw ParsingException('Failed to parse E2 signal!\n$responseString');
     }
-
-    var snrNodes = document.findAllElements("e2snr");
-    if (snrNodes != null && snrNodes.isNotEmpty) {
-      snr = StringHelper.trimAll(snrNodes.first.text);
-    }
-
-    var berNodes = document.findAllElements("e2ber");
-    if (berNodes != null && berNodes.isNotEmpty) {
-      ber = StringHelper.trimAll(berNodes.first.text);
-    }
-
-    var acgNodes = document.findAllElements("e2acg");
-    if (acgNodes != null && acgNodes.isNotEmpty) {
-      acg = StringHelper.trimAll(acgNodes.first.text);
-    }
-
-    var signal = _initializeSignalEnigma2(snr, db, acg, ber);
-
-    if (signal == null) {
-      throw ParsingException("Failed to parse Enigma2 signal!");
-    }
-
-    return SignalResponse(signal, response.responseDuration);
   }
 
   E2Signal _initializeSignalEnigma2(
@@ -147,6 +150,15 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
             .replaceAll(".", ds));
 
     if (snr.isEmpty || db.isEmpty) {
+      return E2Signal(
+        db: -1,
+        snr: -1,
+        acg: -1,
+        ber: -1,
+      );
+    }
+
+    if (snr.toUpperCase().contains('N/A') || db.toUpperCase().contains('N/A')) {
       return E2Signal(
         db: -1,
         snr: -1,
