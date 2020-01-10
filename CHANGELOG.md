@@ -1,6 +1,8 @@
 Changelog
 =========
 
+1.0.2 updated dependencies with minor code refactoring
+
 1.0.1 support Dreambox security features
 
 1.0.0 production ready
