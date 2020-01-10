@@ -10,9 +10,13 @@ class MessageCommand
     extends EnigmaCommand<IMessageCommand, IResponse<IMessageCommand>>
     implements IMessageCommand {
   final IResponseParser<IMessageCommand, IResponse<IMessageCommand>> parser;
+  @override
   final IProfile profile;
+  @override
   final MessageType type;
+  @override
   final String message;
+  @override
   final int timeout;
 
   MessageCommand(
@@ -37,29 +41,29 @@ class MessageCommand
       switch (type) {
         case MessageType.info:
           {
-            caption = "Info";
+            caption = 'Info';
             break;
           }
         case MessageType.warning:
           {
-            caption = "Warning";
+            caption = 'Warning';
             break;
           }
         case MessageType.question:
           {
-            caption = "Question";
+            caption = 'Question';
             break;
           }
         default:
           {
-            caption = "Message";
+            caption = 'Message';
           }
       }
       url =
           "cgi-bin/xmessage?caption=$caption&timeout=$timeout&body=${Uri.encodeFull(message).replaceAll(" ", "+")}";
     } else {
       url =
-          "web/message?text=${Uri.encodeFull(message)}&type=$type&timeout=$timeout";
+          'web/message?text=${Uri.encodeFull(message)}&type=$type&timeout=$timeout';
     }
     return await super.executeGenericAsync(
       profile,

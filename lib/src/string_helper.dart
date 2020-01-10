@@ -15,16 +15,16 @@ class StringHelper {
     if (result.isEmpty) {
       return result;
     }
-    if (result.startsWith("\n")) {
+    if (result.startsWith('\n')) {
       return trimAll(result.substring(1));
     }
-    if (result.startsWith("\t")) {
+    if (result.startsWith('\t')) {
       return trimAll(result.substring(1));
     }
-    if (result.endsWith("\n")) {
+    if (result.endsWith('\n')) {
       return trimAll(result.substring(0, result.length - 1));
     }
-    if (result.endsWith("\t")) {
+    if (result.endsWith('\t')) {
       return trimAll(result.substring(0, result.length - 1));
     }
     return result;

@@ -10,6 +10,7 @@ class PowerStateCommand
     extends EnigmaCommand<IPowerStateCommand, IPowerStateResponse>
     implements IPowerStateCommand {
   final IResponseParser<IPowerStateCommand, IPowerStateResponse> parser;
+  @override
   final IProfile profile;
 
   PowerStateCommand(
@@ -22,8 +23,7 @@ class PowerStateCommand
 
   @override
   Future<IPowerStateResponse> executeAsync() async {
-    String url =
-        profile.enigma == EnigmaType.enigma1 ? "data" : "web/powerstate";
+    var url = profile.enigma == EnigmaType.enigma1 ? 'data' : 'web/powerstate';
     return await super.executeGenericAsync(
       profile,
       url,

@@ -27,39 +27,39 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException("Failed to parse response\n$response",
+      throw ParsingException('Failed to parse response\n$response',
           innerException: ex);
     }
   }
 
   SignalResponse parseE1(IStringResponse response) {
-    String searchFor = "type=\"checkbox\" value=\"";
+    var searchFor = 'type=\"checkbox\" value=\"';
     var responseString = response.responseString;
-    String sLock = responseString
+    var sLock = responseString
         .substring(responseString.indexOf(searchFor) + searchFor.length);
-    sLock = sLock.substring(0, sLock.indexOf("\""));
-    bool locked = (sLock.toLowerCase() == "on");
-    String sSync = responseString
+    sLock = sLock.substring(0, sLock.indexOf('\"'));
+    var locked = (sLock.toLowerCase() == 'on');
+    var sSync = responseString
         .substring(responseString.indexOf(searchFor) + searchFor.length);
     sSync = sSync.substring(sSync.indexOf(searchFor) + searchFor.length);
-    sSync = sSync.substring(0, sSync.indexOf("\""));
-    bool sync = (sSync.toLowerCase() == "on");
-    searchFor = "<td align=\"center\">";
+    sSync = sSync.substring(0, sSync.indexOf('\"'));
+    var sync = (sSync.toLowerCase() == 'on');
+    searchFor = '<td align=\"center\">';
     responseString = responseString
         .substring(responseString.indexOf(searchFor) + searchFor.length);
-    String snr = responseString.substring(0, responseString.indexOf("%"));
+    var snr = responseString.substring(0, responseString.indexOf('%'));
     responseString = responseString
         .substring(responseString.indexOf(searchFor) + searchFor.length);
-    String acg = responseString.substring(0, responseString.indexOf("%"));
+    var acg = responseString.substring(0, responseString.indexOf('%'));
     responseString = responseString
         .substring(responseString.indexOf(searchFor) + searchFor.length);
 
-    String ber = responseString.substring(0, responseString.indexOf("<"));
+    var ber = responseString.substring(0, responseString.indexOf('<'));
 
     var signal = _initializeSignalEnigma1(snr, acg, ber, locked, sync);
 
     if (signal == null) {
-      throw ParsingException("Failed to parse Enigma1 signal!");
+      throw ParsingException('Failed to parse Enigma1 signal!');
     }
 
     return SignalResponse(signal, response.responseDuration);
@@ -101,22 +101,22 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
     try {
       var document = xml.parse(responseString);
 
-      var dbNodes = document.findAllElements("e2snrdb");
+      var dbNodes = document.findAllElements('e2snrdb');
       if (dbNodes != null && dbNodes.isNotEmpty) {
         db = StringHelper.trimAll(dbNodes.first.text);
       }
 
-      var snrNodes = document.findAllElements("e2snr");
+      var snrNodes = document.findAllElements('e2snr');
       if (snrNodes != null && snrNodes.isNotEmpty) {
         snr = StringHelper.trimAll(snrNodes.first.text);
       }
 
-      var berNodes = document.findAllElements("e2ber");
+      var berNodes = document.findAllElements('e2ber');
       if (berNodes != null && berNodes.isNotEmpty) {
         ber = StringHelper.trimAll(berNodes.first.text);
       }
 
-      var acgNodes = document.findAllElements("e2acg");
+      var acgNodes = document.findAllElements('e2acg');
       if (acgNodes != null && acgNodes.isNotEmpty) {
         acg = StringHelper.trimAll(acgNodes.first.text);
       }
@@ -124,7 +124,7 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
       var signal = _initializeSignalEnigma2(snr, db, acg, ber);
 
       if (signal == null) {
-        throw ParsingException("Failed to parse Enigma2 signal!");
+        throw ParsingException('Failed to parse Enigma2 signal!');
       }
 
       return SignalResponse(signal, response.responseDuration);
@@ -139,15 +139,15 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
     String acg,
     String ber,
   ) {
-    String ds = ".";
+    var ds = '.';
     String realSnr;
     String realDb;
 
-    snr = StringHelper.trimAll(snr.replaceAll("%", ""));
+    snr = StringHelper.trimAll(snr.replaceAll('%', ''));
     db = StringHelper.trimAll(
-        StringHelper.trimAll(db.toLowerCase().replaceAll("db", ""))
-            .replaceAll(",", ds)
-            .replaceAll(".", ds));
+        StringHelper.trimAll(db.toLowerCase().replaceAll('db', ''))
+            .replaceAll(',', ds)
+            .replaceAll('.', ds));
 
     if (snr.isEmpty || db.isEmpty) {
       return E2Signal(
@@ -168,15 +168,15 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
     }
 
     //dB is in percentage, someting is wrong
-    if (db.contains("%")) {
+    if (db.contains('%')) {
       //if SNR is in dB we simply switch the values
-      if (snr.contains("db")) {
+      if (snr.contains('db')) {
         realSnr = db;
         realDb = snr;
-        realDb = StringHelper.trimAll(realDb.replaceAll("db", ""))
-            .replaceAll(",", ds)
-            .replaceAll(".", ds);
-        realSnr = StringHelper.trimAll(realSnr.replaceAll("%", ""));
+        realDb = StringHelper.trimAll(realDb.replaceAll('db', ''))
+            .replaceAll(',', ds)
+            .replaceAll('.', ds);
+        realSnr = StringHelper.trimAll(realSnr.replaceAll('%', ''));
       } else {
         //both dB and SNR are in %, we'll have to calculate dB
         realSnr = snr;
@@ -188,13 +188,13 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
     }
 
     //check if snr value is in db
-    if (snr.toLowerCase().contains("db")) {
+    if (snr.toLowerCase().contains('db')) {
       realSnr = null;
       realDb = db;
     }
 
     if (realSnr == null && realDb == null) {
-      throw ParsingException("Failed to parse Enigma2 signal!");
+      throw ParsingException('Failed to parse Enigma2 signal!');
     }
 
     int snr2;
@@ -212,7 +212,7 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
       snr2 = int.parse(realSnr);
       db2 = double.parse((snr2 / 6.5).toStringAsFixed(2));
     }
-    acg2 = int.parse(StringHelper.trimAll(acg.replaceAll("%", "")));
+    acg2 = int.parse(StringHelper.trimAll(acg.replaceAll('%', '')));
     ber2 = int.parse(StringHelper.trimAll(ber));
     return E2Signal(
       snr: snr2,

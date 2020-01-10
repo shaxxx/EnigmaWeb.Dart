@@ -9,6 +9,7 @@ import 'package:enigma_web/src/responses/i_session_response.dart';
 class SessionCommand extends EnigmaCommand<ISessionCommand, ISessionResponse>
     implements ISessionCommand {
   final IResponseParser<ISessionCommand, ISessionResponse> parser;
+  @override
   final IProfile profile;
 
   SessionCommand(
@@ -23,9 +24,9 @@ class SessionCommand extends EnigmaCommand<ISessionCommand, ISessionResponse>
   Future<ISessionResponse> executeAsync() async {
     String url;
     if (profile.enigma == EnigmaType.enigma1) {
-      url = "";
+      url = '';
     } else {
-      url = "web/session";
+      url = 'web/session';
     }
     return await super.executeGenericAsync(
       profile,

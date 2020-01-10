@@ -1,34 +1,47 @@
 import 'package:enigma_web/src/i_profile.dart';
+import 'package:meta/meta.dart';
 
 import 'enums.dart' show EnigmaType;
 
 class Profile implements IProfile {
+  @override
   final String address;
+  @override
   final EnigmaType enigma;
+  @override
   final int httpPort;
+  @override
   final String name;
+  @override
   final String password;
+  @override
   final bool useSsl;
+  @override
   final String username;
+  @override
   final int streamingPort;
+  @override
   final bool transcoding;
+  @override
   final int transcodingPort;
+  @override
   final bool streaming;
+  @override
   final String id;
 
   Profile({
-    this.address,
+    @required @required this.address,
     this.enigma = EnigmaType.enigma2,
     this.httpPort = 80,
-    this.name,
+    @required this.name,
     this.password = 'dreambox',
     this.useSsl = false,
     this.username = 'root',
     this.streamingPort,
     this.transcoding = false,
     this.transcodingPort,
-    this.streaming,
-    this.id,
+    @required this.streaming,
+    @required this.id,
   })  : assert(address != null),
         assert(address.isNotEmpty),
         assert(enigma != null),

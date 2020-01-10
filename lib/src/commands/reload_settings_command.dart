@@ -10,7 +10,9 @@ class ReloadSettingsCommand extends EnigmaCommand<IReloadSettingsCommand,
     IResponse<IReloadSettingsCommand>> implements IReloadSettingsCommand {
   final IResponseParser<IReloadSettingsCommand,
       IResponse<IReloadSettingsCommand>> parser;
+  @override
   final IProfile profile;
+  @override
   final ReloadSettingsType type;
 
   ReloadSettingsCommand(
@@ -29,34 +31,34 @@ class ReloadSettingsCommand extends EnigmaCommand<IReloadSettingsCommand,
       if (type == ReloadSettingsType.all) {
         await super.executeGenericAsync(
           profile,
-          "cgi-bin/reloadSettings",
+          'cgi-bin/reloadSettings',
           parser,
         );
         return await super.executeGenericAsync(
           profile,
-          "cgi-bin/reloadUserBouquets",
+          'cgi-bin/reloadUserBouquets',
           parser,
         );
       }
       if (type == ReloadSettingsType.services) {
         return await super.executeGenericAsync(
           profile,
-          "cgi-bin/reloadSettings",
+          'cgi-bin/reloadSettings',
           parser,
         );
       }
       if (type == ReloadSettingsType.bouquets) {
         return await super.executeGenericAsync(
           profile,
-          "cgi-bin/reloadUserBouquets",
+          'cgi-bin/reloadUserBouquets',
           parser,
         );
       }
-      throw Exception("ReloadSettingsType not supported");
+      throw Exception('ReloadSettingsType not supported');
     }
     return await super.executeGenericAsync(
       profile,
-      "web/servicelistreload?mode=${type.index}",
+      'web/servicelistreload?mode=${type.index}',
       parser,
     );
   }

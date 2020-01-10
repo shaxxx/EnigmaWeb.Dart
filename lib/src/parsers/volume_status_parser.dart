@@ -29,38 +29,37 @@ class VolumeStatusParser
         rethrow;
       }
 
-      throw ParsingException("Failed to parse response\n$response",
+      throw ParsingException('Failed to parse response\n$response',
           innerException: ex);
     }
   }
 
   VolumeStatusResponse parseE1(IStringResponse response) {
-    bool mute = false;
-    int current = 0;
+    var mute = false;
+    var current = 0;
     IVolumeStatus status = VolumeStatus();
 
-    String muteString =
-        getE1StatusValue(response.responseString, "var mute = ");
-    String currentString =
-        getE1StatusValue(response.responseString, "var volume = ");
+    var muteString = getE1StatusValue(response.responseString, 'var mute = ');
+    var currentString =
+        getE1StatusValue(response.responseString, 'var volume = ');
     muteString = StringHelper.trimAll(muteString);
     mute =
-        muteString.toLowerCase() == "true" || muteString.toLowerCase() == "1";
+        muteString.toLowerCase() == 'true' || muteString.toLowerCase() == '1';
     status.mute = mute;
     currentString = StringHelper.trimAll(currentString);
     current = num.tryParse(currentString);
     if (current == null) {
       throw ParsingException(
-          "Enigma1 volume status parsing failed. Unable to convert $currentString to integer value.");
+          'Enigma1 volume status parsing failed. Unable to convert $currentString to integer value.');
     }
     status.level = current;
     return VolumeStatusResponse(status, null);
   }
 
   String getE1StatusValue(String response, String searchFor) {
-    String tmp =
+    var tmp =
         response.substring(response.indexOf(searchFor) + searchFor.length);
-    return StringHelper.trimAll(tmp.substring(0, tmp.indexOf(";")));
+    return StringHelper.trimAll(tmp.substring(0, tmp.indexOf(';')));
   }
 
   VolumeStatusResponse parseE2(IStringResponse response) {
@@ -71,24 +70,24 @@ class VolumeStatusParser
     String isMutedString;
     String currentString;
 
-    var mutedNodes = document.findAllElements("e2ismuted");
+    var mutedNodes = document.findAllElements('e2ismuted');
     if (mutedNodes != null && mutedNodes.isNotEmpty) {
       isMutedString = StringHelper.trimAll(mutedNodes.first.text);
     }
 
-    var currentNodes = document.findAllElements("e2current");
+    var currentNodes = document.findAllElements('e2current');
     if (currentNodes != null && currentNodes.isNotEmpty) {
       currentString = StringHelper.trimAll(currentNodes.first.text);
     }
 
-    int intLevel = int.tryParse(currentString);
+    var intLevel = int.tryParse(currentString);
     if (intLevel == null) {
       throw ParsingException(
-          "Enigma2 volume status parsing failed. Unable to convert $currentString to integer value.");
+          'Enigma2 volume status parsing failed. Unable to convert $currentString to integer value.');
     }
 
-    status.mute = isMutedString.toLowerCase() == "true" ||
-        isMutedString.toLowerCase() == "1";
+    status.mute = isMutedString.toLowerCase() == 'true' ||
+        isMutedString.toLowerCase() == '1';
     status.level = intLevel;
 
     return VolumeStatusResponse(status, response.responseDuration);

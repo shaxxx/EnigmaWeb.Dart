@@ -27,7 +27,7 @@ class GetStreamParametersParser
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException("Failed to parse response\n$response",
+      throw ParsingException('Failed to parse response\n$response',
           innerException: ex);
     }
   }
@@ -37,11 +37,11 @@ class GetStreamParametersParser
   }
 
   GetStreamParametersResponse parseE2(IStringResponse response) {
-    String lf = '\n';
-    String streamUrl = "";
+    var lf = '\n';
+    var streamUrl = '';
     var lines = response.responseString.split(lf);
     if (lines != null && lines.isNotEmpty) {
-      var link = lines.where((x) => x.toLowerCase().startsWith("http"));
+      var link = lines.where((x) => x.toLowerCase().startsWith('http'));
       if (link != null && link.isNotEmpty) {
         if (!StringHelper.stringIsNullOrEmpty(link.first)) {
           streamUrl = StringHelper.trimAll(link.first);

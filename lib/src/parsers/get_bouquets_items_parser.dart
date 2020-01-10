@@ -27,28 +27,28 @@ class GetBouquetItemsParser
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException("Failed to parse response\n$response",
+      throw ParsingException('Failed to parse response\n$response',
           innerException: ex);
     }
   }
 
   GetBouquetItemsResponse parseE1(IStringResponse response) {
-    var items = List<IBouquetItem>();
-    List<String> lines = response.responseString.split("\n");
+    var items = <IBouquetItem>[];
+    var lines = response.responseString.split('\n');
 
-    for (int i = 0; i <= lines.length - 2; i++) {
-      String reference = lines[i].substring(0, lines[i].indexOf(";"));
+    for (var i = 0; i <= lines.length - 2; i++) {
+      var reference = lines[i].substring(0, lines[i].indexOf(';'));
       reference = StringHelper.trimAll(reference);
 
       if (StringHelper.stringIsNullOrEmpty(reference)) {
         continue;
       }
 
-      String name = lines[i].substring(lines[i].indexOf(";") + 1);
+      var name = lines[i].substring(lines[i].indexOf(';') + 1);
       name = StringHelper.trimAll(name);
 
-      if (name.contains(";")) {
-        name = name.substring(0, name.indexOf(";"));
+      if (name.contains(';')) {
+        name = name.substring(0, name.indexOf(';'));
         name = StringHelper.trimAll(name);
       }
       var item = _initializeItem(reference, EnigmaType.enigma1, name);
@@ -61,14 +61,14 @@ class GetBouquetItemsParser
 
   GetBouquetItemsResponse parseE2(IStringResponse response) {
     var responseString = Helpers.sanitizeXmlString(response.responseString);
-    var items = List<IBouquetItem>();
+    var items = <IBouquetItem>[];
 
     var document = xml.parse(responseString);
-    var children = document.findAllElements("e2service");
+    var children = document.findAllElements('e2service');
     if (children != null && children.isNotEmpty) {
       for (final node in children) {
-        final serviceReferenceNode = node.findAllElements("e2servicereference");
-        final serviceNameNode = node.findAllElements("e2servicename");
+        final serviceReferenceNode = node.findAllElements('e2servicereference');
+        final serviceNameNode = node.findAllElements('e2servicename');
 
         String serviceReference;
         String serviceName;
@@ -106,7 +106,7 @@ class GetBouquetItemsParser
       return null;
     }
 
-    if (reference.startsWith("1:0:1")) {
+    if (reference.startsWith('1:0:1')) {
       return enigmaType == EnigmaType.enigma2
           ? BouquetItemService(
               name: serviceName,
@@ -118,14 +118,14 @@ class GetBouquetItemsParser
             );
     }
 
-    if (reference.startsWith("1:64")) {
+    if (reference.startsWith('1:64')) {
       return BouquetItemMarker(name: serviceName, reference: reference);
     }
 
-    List<String> sData = StringHelper.trimAll(reference).split(':');
+    var sData = StringHelper.trimAll(reference).split(':');
     if (sData.length >= 10 &&
-        (sData[0] == "4097" ||
-            sData[10].contains("//") ||
+        (sData[0] == '4097' ||
+            sData[10].contains('//') ||
             (sData.length == 12 && sData[11] != null))) {
       return enigmaType == EnigmaType.enigma2
           ? BouquetItemService(

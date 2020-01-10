@@ -26,33 +26,33 @@ class PowerStateParser
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException("Failed to parse response\n$response",
+      throw ParsingException('Failed to parse response\n$response',
           innerException: ex);
     }
   }
 
   PowerStateResponse parseE1(IStringResponse response) {
-    bool standby = false;
-    String searchFor = "var standby = ";
-    String value = response.responseString.substring(
+    var standby = false;
+    var searchFor = 'var standby = ';
+    var value = response.responseString.substring(
         response.responseString.indexOf(searchFor) + searchFor.length);
-    value = value.substring(0, value.indexOf(";")).trim();
+    value = value.substring(0, value.indexOf(';')).trim();
     value = StringHelper.trimAll(value);
-    standby = value.toLowerCase() == "true" || value.toLowerCase() == "1";
+    standby = value.toLowerCase() == 'true' || value.toLowerCase() == '1';
     return PowerStateResponse(standby, response.responseDuration);
   }
 
   PowerStateResponse parseE2(IStringResponse response) {
     var responseString = Helpers.sanitizeXmlString(response.responseString);
     var document = xml.parse(responseString);
-    var node = document.findAllElements("e2instandby");
+    var node = document.findAllElements('e2instandby');
     if (node != null && node.isNotEmpty) {
       var value = StringHelper.trimAll(node.first.text);
-      bool standby = false;
-      standby = value.toLowerCase() == "true" || value.toLowerCase() == "1";
+      var standby = false;
+      standby = value.toLowerCase() == 'true' || value.toLowerCase() == '1';
       return PowerStateResponse(standby, response.responseDuration);
     }
     throw ParsingException(
-        "Failed to parse Enigma2 powerstate. Xml tag <e2instandby> not found!");
+        'Failed to parse Enigma2 powerstate. Xml tag <e2instandby> not found!');
   }
 }

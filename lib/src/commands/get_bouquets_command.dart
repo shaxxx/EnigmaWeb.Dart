@@ -11,6 +11,7 @@ class GetBouquetsCommand
     extends EnigmaCommand<IGetBouquetsCommand, IGetBouquetsResponse>
     implements IGetBouquetsCommand {
   final IResponseParser<IGetBouquetsCommand, GetBouquetsResponse> parser;
+  @override
   final IProfile profile;
 
   GetBouquetsCommand(
@@ -23,9 +24,12 @@ class GetBouquetsCommand
 
   @override
   Future<IGetBouquetsResponse> executeAsync() async {
-    String url = profile.enigma == EnigmaType.enigma1
-        ? "cgi-bin/getServices?ref=4097:7:0:6:0:0:0:0:0:0:"
-        : "web/getservices";
+    String url;
+    if (profile.enigma == EnigmaType.enigma1) {
+      url = 'cgi-bin/getServices?ref=4097:7:0:6:0:0:0:0:0:0:';
+    } else {
+      url = 'web/getservices';
+    }
     return await super.executeGenericAsync(
       profile,
       url,

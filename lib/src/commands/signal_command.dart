@@ -9,6 +9,7 @@ import 'package:enigma_web/src/responses/i_signal_response.dart';
 class SignalCommand extends EnigmaCommand<ISignalCommand, ISignalResponse>
     implements ISignalCommand {
   final IResponseParser<ISignalCommand, ISignalResponse> parser;
+  @override
   final IProfile profile;
 
   SignalCommand(
@@ -21,8 +22,7 @@ class SignalCommand extends EnigmaCommand<ISignalCommand, ISignalResponse>
 
   @override
   Future<ISignalResponse> executeAsync() async {
-    String url =
-        profile.enigma == EnigmaType.enigma1 ? "satFinder" : "web/signal";
+    var url = profile.enigma == EnigmaType.enigma1 ? 'satFinder' : 'web/signal';
     return await super.executeGenericAsync(
       profile,
       url,

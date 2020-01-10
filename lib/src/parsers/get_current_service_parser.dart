@@ -18,9 +18,9 @@ class GetCurrentServiceParser
     implements
         IResponseParser<IGetCurrentServiceCommand, GetCurrentServiceResponse> {
   String getE1StatusValue(String response, String searchFor) {
-    String tmp =
+    var tmp =
         response.substring(response.indexOf(searchFor) + searchFor.length);
-    tmp = tmp.substring(0, tmp.indexOf(";"));
+    tmp = tmp.substring(0, tmp.indexOf(';'));
     tmp = StringHelper.trimAll(tmp);
     if (tmp.startsWith('"')) {
       tmp = tmp.substring(1);
@@ -43,7 +43,7 @@ class GetCurrentServiceParser
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException("Failed to parse response\n$response",
+      throw ParsingException('Failed to parse response\n$response',
           innerException: ex);
     }
   }
@@ -51,11 +51,11 @@ class GetCurrentServiceParser
   GetCurrentServiceResponse parseE1(IStringResponse response) {
     var name = getE1StatusValue(
       response.responseString,
-      "var serviceName = " "",
+      'var serviceName = ' '',
     );
     var reference = getE1StatusValue(
       response.responseString,
-      "var serviceReference = " "",
+      'var serviceReference = ' '',
     );
     // var vlcParms = getE1StatusValue(
     //   response.responseString,
@@ -76,12 +76,12 @@ class GetCurrentServiceParser
     String serviceReference;
     String serviceName;
 
-    var refNodes = document.findAllElements("e2servicereference");
+    var refNodes = document.findAllElements('e2servicereference');
     if (refNodes != null && refNodes.isNotEmpty) {
       serviceReference = StringHelper.trimAll(refNodes.first.text);
     }
 
-    var nameNodes = document.findAllElements("e2servicename");
+    var nameNodes = document.findAllElements('e2servicename');
     if (nameNodes != null && nameNodes.isNotEmpty) {
       serviceName = StringHelper.trimAll(nameNodes.first.text);
     }

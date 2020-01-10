@@ -1,9 +1,13 @@
 import 'package:enigma_web/src/i_e2_signal.dart';
 
 class E2Signal implements IE2Signal {
+  @override
   final int acg;
+  @override
   final int ber;
+  @override
   final double db;
+  @override
   final int snr;
 
   E2Signal({
@@ -16,6 +20,7 @@ class E2Signal implements IE2Signal {
         assert(db != null),
         assert(snr != null);
 
+  @override
   int get hashCode => acg.hashCode ^ ber.hashCode ^ db.hashCode ^ snr.hashCode;
 
   @override

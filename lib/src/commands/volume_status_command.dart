@@ -10,6 +10,7 @@ class VolumeStatusCommand
     extends EnigmaCommand<IVolumeStatusCommand, IVolumeStatusResponse>
     implements IVolumeStatusCommand {
   final IResponseParser<IVolumeStatusCommand, IVolumeStatusResponse> parser;
+  @override
   final IProfile profile;
   VolumeStatusCommand(
     this.parser,
@@ -21,7 +22,12 @@ class VolumeStatusCommand
 
   @override
   Future<IVolumeStatusResponse> executeAsync() async {
-    String url = profile.enigma == EnigmaType.enigma1 ? "data" : "web/vol";
+    String url;
+    if (profile.enigma == EnigmaType.enigma1) {
+      url = 'data';
+    } else {
+      url = 'web/vol';
+    }
     return await super.executeGenericAsync(
       profile,
       url,

@@ -1,10 +1,15 @@
 import 'package:enigma_web/src/i_e1_signal.dart';
 
 class E1Signal implements IE1Signal {
+  @override
   final int acg;
+  @override
   final int ber;
+  @override
   final bool lock;
+  @override
   final int snr;
+  @override
   final bool sync;
 
   E1Signal({
