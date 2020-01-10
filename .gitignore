@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 .VSCodeCounter/*
-=======
-.packages
 pubspec.lock
 .dart_tool/*
 .vscode/*
->>>>>>> 134b67b75fdc59a0a66f6f326b5807dfa8e0ae28
 .packages
+.dart_tool/pub/bin/test/test.dart.snapshot.dart2
