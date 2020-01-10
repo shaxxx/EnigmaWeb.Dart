@@ -11,6 +11,7 @@ class GetCurrentServiceCommand
     implements IGetCurrentServiceCommand {
   final IResponseParser<IGetCurrentServiceCommand, IGetCurrentServiceResponse>
       parser;
+  @override
   final IProfile profile;
 
   GetCurrentServiceCommand(
@@ -23,8 +24,7 @@ class GetCurrentServiceCommand
 
   @override
   Future<IGetCurrentServiceResponse> executeAsync() async {
-    String url =
-        profile.enigma == EnigmaType.enigma1 ? "data" : "web/getcurrent";
+    var url = profile.enigma == EnigmaType.enigma1 ? 'data' : 'web/getcurrent';
     return await super.executeGenericAsync(
       profile,
       url,

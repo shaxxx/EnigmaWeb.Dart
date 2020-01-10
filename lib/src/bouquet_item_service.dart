@@ -1,12 +1,15 @@
 import 'package:enigma_web/src/i_bouquet_item_service.dart';
+import 'package:meta/meta.dart';
 
 class BouquetItemService implements IBouquetItemService {
+  @override
   final String name;
+  @override
   final String reference;
 
   BouquetItemService({
-    this.name,
-    this.reference,
+    @required this.name,
+    @required this.reference,
   })  : assert(name != null),
         assert(reference != null);
 

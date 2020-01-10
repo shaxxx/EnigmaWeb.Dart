@@ -18,9 +18,9 @@ abstract class EnigmaCommand<TCommand extends ICommand,
     String url,
     IResponseParser<TCommand, TResponse> parser,
   ) async {
-    if (profile == null) throw ArgumentError.notNull("profile");
-    if (url == null) throw ArgumentError.notNull("url");
-    if (parser == null) throw ArgumentError.notNull("parser");
+    if (profile == null) throw ArgumentError.notNull('profile');
+    if (url == null) throw ArgumentError.notNull('url');
+    if (parser == null) throw ArgumentError.notNull('parser');
 
     try {
       var response = await requester.getResponseAsync(
@@ -39,7 +39,7 @@ abstract class EnigmaCommand<TCommand extends ICommand,
         rethrow;
       }
       throw CommandException.withException(
-          "Command failed for profile ${profile.name}", ex);
+          'Command failed for profile ${profile.name}', ex);
     }
   }
 }

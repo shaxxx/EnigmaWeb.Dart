@@ -10,7 +10,9 @@ class SetVolumeCommand
     extends EnigmaCommand<ISetVolumeCommand, IResponse<ISetVolumeCommand>>
     implements ISetVolumeCommand {
   final IResponseParser<ISetVolumeCommand, IResponse<ISetVolumeCommand>> parser;
+  @override
   final IProfile profile;
+  @override
   final int level;
   SetVolumeCommand(
     this.parser,
@@ -25,12 +27,12 @@ class SetVolumeCommand
   @override
   Future<IResponse<ISetVolumeCommand>> executeAsync() async {
     if (level > 100 || level < 0) {
-      throw ArgumentError.value("level");
+      throw ArgumentError.value('level');
     }
 
-    String url = profile.enigma == EnigmaType.enigma1
-        ? "/setVolume?volume="
-        : "web/vol?set=set";
+    var url = profile.enigma == EnigmaType.enigma1
+        ? '/setVolume?volume='
+        : 'web/vol?set=set';
     url = url + level.toString();
     return await super.executeGenericAsync(
       profile,

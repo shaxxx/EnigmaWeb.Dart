@@ -13,7 +13,9 @@ class GetBouquetItemsCommand
   final IResponseParser<IGetBouquetItemsCommand, IGetBouquetItemsResponse>
       parser;
 
+  @override
   final IProfile profile;
+  @override
   final IBouquetItemBouquet bouquet;
 
   GetBouquetItemsCommand(
@@ -28,9 +30,9 @@ class GetBouquetItemsCommand
 
   @override
   Future<IGetBouquetItemsResponse> executeAsync() async {
-    String url = profile.enigma == EnigmaType.enigma1
-        ? "cgi-bin/getServices?ref=" + bouquet.reference
-        : "web/getservices?sRef=" + Uri.encodeComponent(bouquet.reference);
+    var url = profile.enigma == EnigmaType.enigma1
+        ? 'cgi-bin/getServices?ref=' + bouquet.reference
+        : 'web/getservices?sRef=' + Uri.encodeComponent(bouquet.reference);
     return await super.executeGenericAsync(
       profile,
       url,

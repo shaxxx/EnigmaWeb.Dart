@@ -27,22 +27,22 @@ class GetBouquetsParser
         rethrow;
       }
 
-      throw ParsingException("Failed to parse response\n$response",
+      throw ParsingException('Failed to parse response\n$response',
           innerException: ex);
     }
   }
 
   GetBouquetsResponse parseE1(IStringResponse response) {
-    var bouquets = List<IBouquetItemBouquet>();
-    List<String> lines = response.responseString.split("\n");
-    for (int i = 0; i <= lines.length - 2; i++) {
+    var bouquets = <IBouquetItemBouquet>[];
+    var lines = response.responseString.split('\n');
+    for (var i = 0; i <= lines.length - 2; i++) {
       //IBouquetItemBouquet bq = BouquetItemBouquet();
-      var reference = lines[i].substring(0, lines[i].indexOf(";")).trim();
+      var reference = lines[i].substring(0, lines[i].indexOf(';')).trim();
       reference = StringHelper.trimAll(reference);
-      var name = lines[i].substring(lines[i].indexOf(";") + 1).trim();
+      var name = lines[i].substring(lines[i].indexOf(';') + 1).trim();
       name = StringHelper.trimAll(name);
-      if (lines[i].contains(";selected")) {
-        name = name.substring(0, name.indexOf(";selected"));
+      if (lines[i].contains(';selected')) {
+        name = name.substring(0, name.indexOf(';selected'));
       }
       bouquets.add(
         BouquetItemBouquet(
@@ -56,14 +56,14 @@ class GetBouquetsParser
 
   GetBouquetsResponse parseE2(IStringResponse response) {
     var responseString = Helpers.sanitizeXmlString(response.responseString);
-    var bouquets = List<IBouquetItemBouquet>();
+    var bouquets = <IBouquetItemBouquet>[];
 
     var document = xml.parse(responseString);
-    var children = document.findAllElements("e2service");
+    var children = document.findAllElements('e2service');
     if (children != null && children.isNotEmpty) {
       for (final node in children) {
-        final serviceReferenceNode = node.findAllElements("e2servicereference");
-        final serviceNameNode = node.findAllElements("e2servicename");
+        final serviceReferenceNode = node.findAllElements('e2servicereference');
+        final serviceNameNode = node.findAllElements('e2servicename');
 
         String serviceReference;
         String serviceName;

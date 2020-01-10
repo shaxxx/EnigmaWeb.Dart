@@ -5,11 +5,11 @@ import 'package:logging/logging.dart';
 void main() {
   test('e1 snr to db conversion', () {
     final e1signal = E1Signal(snr: 91);
-    expect(e1signal.calculatedDb, "14.00");
+    expect(e1signal.calculatedDb, '14.00');
   });
 
   test('default log is working', () {
-    String a = "testing default log";
+    var a = 'testing default log';
     String b;
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen((LogRecord rec) {

@@ -11,7 +11,9 @@ import 'package:enigma_web/src/responses/i_screenshot_response.dart';
 class ScreenshotCommand
     extends EnigmaCommand<IScreenshotCommand, IScreenshotResponse>
     implements IScreenshotCommand {
+  @override
   final IProfile profile;
+  @override
   final ScreenshotType type;
   ScreenshotCommand(
     IWebRequester requester,
@@ -27,18 +29,18 @@ class ScreenshotCommand
       String url;
       if (type == ScreenshotType.all) {
         url = profile.enigma == EnigmaType.enigma1
-            ? "body?mode=controlScreenShot&blendtype=2"
-            : "grab?format=jpg&filename=/tmp/" + _unixTimeStamp() + ".jpg";
+            ? 'body?mode=controlScreenShot&blendtype=2'
+            : 'grab?format=jpg&filename=/tmp/' + _unixTimeStamp() + '.jpg';
       } else if (type == ScreenshotType.picture) {
         url = profile.enigma == EnigmaType.enigma1
-            ? "body?mode=controlScreenShot"
-            : "grab?format=jpg&v=&filename=/tmp/" + _unixTimeStamp() + ".jpg";
+            ? 'body?mode=controlScreenShot'
+            : 'grab?format=jpg&v=&filename=/tmp/' + _unixTimeStamp() + '.jpg';
       } else if (type == ScreenshotType.osd) {
         url = profile.enigma == EnigmaType.enigma1
-            ? "body?mode=controlFBShot"
-            : "grab?format=jpg&o=&filename=/tmp/" + _unixTimeStamp() + ".jpg";
+            ? 'body?mode=controlFBShot'
+            : 'grab?format=jpg&o=&filename=/tmp/' + _unixTimeStamp() + '.jpg';
       } else {
-        throw Exception("Screenshot type not supported.");
+        throw Exception('Screenshot type not supported.');
       }
 
       if (profile.enigma == EnigmaType.enigma2) {
@@ -61,9 +63,9 @@ class ScreenshotCommand
       );
 
       if (type == ScreenshotType.osd) {
-        url = "root/tmp/osdshot.png";
+        url = 'root/tmp/osdshot.png';
       } else {
-        url = "root/tmp/screenshot.bmp";
+        url = 'root/tmp/screenshot.bmp';
       }
 
       var response = await requester.getResponseAsync(
@@ -89,11 +91,11 @@ class ScreenshotCommand
       }
 
       throw CommandException(
-        "Command failed for profile ${profile.name}\n$ex",
+        'Command failed for profile ${profile.name}\n$ex',
       );
     }
     throw CommandException(
-      "Screenshot failed for profile ${profile.name}\nEmpty response!",
+      'Screenshot failed for profile ${profile.name}\nEmpty response!',
     );
   }
 

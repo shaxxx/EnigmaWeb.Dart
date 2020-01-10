@@ -10,6 +10,7 @@ class RestartCommand
     extends EnigmaCommand<IRestartCommand, IResponse<IRestartCommand>>
     implements IRestartCommand {
   final IResponseParser<IRestartCommand, IResponse<IRestartCommand>> parser;
+  @override
   final IProfile profile;
   RestartCommand(
     this.parser,
@@ -21,9 +22,12 @@ class RestartCommand
 
   @override
   Future<IResponse<IRestartCommand>> executeAsync() async {
-    String url = profile.enigma == EnigmaType.enigma1
-        ? "cgi-bin/admin?command=restart&requester=webif"
-        : "web/powerstate?newstate=3";
+    String url;
+    if (profile.enigma == EnigmaType.enigma1) {
+      url = 'cgi-bin/admin?command=restart&requester=webif';
+    } else {
+      url = 'web/powerstate?newstate=3';
+    }
     return await super.executeGenericAsync(
       profile,
       url,

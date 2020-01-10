@@ -23,20 +23,20 @@ class SessionParser
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
       }
-      throw ParsingException("Failed to parse response\n$response",
-          innerException: ex);
+      throw ParsingException('''
+Failed to parse response\n$response''', innerException: ex);
     }
   }
 
   SessionResponse parseE2(IStringResponse response) {
     var responseString = Helpers.sanitizeXmlString(response.responseString);
     var document = xml.parse(responseString);
-    var node = document.findAllElements("e2sessionid");
+    var node = document.findAllElements('e2sessionid');
     if (node != null && node.isNotEmpty) {
       var value = StringHelper.trimAll(node.first.text);
       return SessionResponse(value, response.responseDuration);
     }
     throw ParsingException(
-        "Failed to parse Enigma2 session. Xml tag <e2sessionid> not found!");
+        'Failed to parse Enigma2 session. Xml tag <e2sessionid> not found!');
   }
 }

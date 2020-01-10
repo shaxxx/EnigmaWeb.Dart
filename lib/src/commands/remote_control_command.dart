@@ -10,7 +10,9 @@ class RemoteControlCommand extends EnigmaCommand<IRemoteControlCommand,
     IResponse<IRemoteControlCommand>> implements IRemoteControlCommand {
   final IResponseParser<IRemoteControlCommand, IResponse<IRemoteControlCommand>>
       parser;
+  @override
   final IProfile profile;
+  @override
   final RemoteControlCode code;
 
   RemoteControlCommand(
@@ -25,9 +27,12 @@ class RemoteControlCommand extends EnigmaCommand<IRemoteControlCommand,
 
   @override
   Future<IResponse<IRemoteControlCommand>> executeAsync() async {
-    String url = profile.enigma == EnigmaType.enigma1
-        ? "cgi-bin/rc?"
-        : "web/remotecontrol?command=";
+    var url;
+    if (profile.enigma == EnigmaType.enigma1) {
+      url = 'cgi-bin/rc?';
+    } else {
+      url = 'web/remotecontrol?command=';
+    }
     url = url + code.value.toString();
     return await super.executeGenericAsync(
       profile,

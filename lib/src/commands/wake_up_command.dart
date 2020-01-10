@@ -10,6 +10,7 @@ class WakeUpCommand
     extends EnigmaCommand<IWakeUpCommand, IResponse<IWakeUpCommand>>
     implements IWakeUpCommand {
   final IResponseParser<IWakeUpCommand, IResponse<IWakeUpCommand>> parser;
+  @override
   final IProfile profile;
 
   WakeUpCommand(
@@ -22,9 +23,12 @@ class WakeUpCommand
 
   @override
   Future<IResponse<IWakeUpCommand>> executeAsync() async {
-    String url = profile.enigma == EnigmaType.enigma1
-        ? "cgi-bin/admin?command=wakeup&requester=webif"
-        : "web/powerstate?newstate=4";
+    String url;
+    if (profile.enigma == EnigmaType.enigma1) {
+      url = 'cgi-bin/admin?command=wakeup&requester=webif';
+    } else {
+      url = 'web/powerstate?newstate=4';
+    }
     return await super.executeGenericAsync(
       profile,
       url,

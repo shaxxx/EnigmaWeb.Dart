@@ -9,6 +9,7 @@ class GetBouquetsResponse implements IGetBouquetsResponse {
       : assert(_bouquets != null),
         assert(_responseDuration != null);
 
+  @override
   List<IBouquetItemBouquet> get bouquets => _bouquets;
 
   @override
