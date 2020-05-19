@@ -1,5 +1,6 @@
-Changelog
-=========
+# Changelog
+
+1.0.3 updated AltHttp package
 
 1.0.2 updated dependencies with minor code refactoring
 
@@ -38,4 +39,3 @@ Changelog
 0.2.0 minor code refactoring
 
 0.1.0 first working conversion of [EnigmaWeb](https://github.com/shaxxx/EnigmaWeb) to Dart language.
-
