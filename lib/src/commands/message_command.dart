@@ -63,7 +63,7 @@ class MessageCommand
           "cgi-bin/xmessage?caption=$caption&timeout=$timeout&body=${Uri.encodeFull(message).replaceAll(" ", "+")}";
     } else {
       url =
-          'web/message?text=${Uri.encodeFull(message)}&type=$type&timeout=$timeout';
+          'web/message?text=${Uri.encodeFull(message)}&type=${type.index}&timeout=$timeout';
     }
     return await super.executeGenericAsync(
       profile,
