@@ -62,8 +62,35 @@ class MessageCommand
       url =
           "cgi-bin/xmessage?caption=$caption&timeout=$timeout&body=${Uri.encodeFull(message).replaceAll(" ", "+")}";
     } else {
+      int messageType;
+      switch (type) {
+        case MessageType.info:
+          {
+            messageType = 1;
+            break;
+          }
+        case MessageType.warning:
+          {
+            messageType = 2;
+            break;
+          }
+        case MessageType.question:
+          {
+            messageType = 0;
+            break;
+          }
+        case MessageType.message:
+          {
+            messageType = 3;
+            break;
+          }
+        default:
+          {
+            messageType = 1;
+          }
+      }
       url =
-          'web/message?text=${Uri.encodeFull(message)}&type=${type.index}&timeout=$timeout';
+          'web/message?text=${Uri.encodeFull(message)}&type=$messageType&timeout=$timeout';
     }
     return await super.executeGenericAsync(
       profile,
