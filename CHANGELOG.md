@@ -1,5 +1,7 @@
 # Changelog
 
+1.0.5 fix message command type (again)
+
 1.0.4 fix message command type
 
 1.0.3 updated AltHttp package
