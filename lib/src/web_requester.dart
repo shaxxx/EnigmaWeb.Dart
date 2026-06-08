@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:alt_http/alt_http.dart';
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:enigma_web/enigma_web.dart';
 import 'package:enigma_web/src/enums.dart';
@@ -22,21 +21,21 @@ import 'package:enigma_web/src/web_request_exception.dart';
 import 'package:logging/logging.dart';
 
 class WebRequester implements IWebRequester {
-  CookieManager _cookies;
+  late final CookieManager _cookies;
   final int connectTimeOut;
   final int receiveTimeOut;
   final String userAgentHeader;
   final String xRequestedWithHeader;
-  final String proxy;
+  final String? proxy;
   final Logger log;
   final int timeoutRetries;
 
   int _retried = 0;
-  int _currentProfileHashCode;
-  bool _usePostRequest;
-  bool _triedAlternativeRequestMethod;
-  String _sessionId;
-  bool _isGetSessionError;
+  int? _currentProfileHashCode;
+  bool _usePostRequest = false;
+  bool _triedAlternativeRequestMethod = false;
+  String? _sessionId;
+  bool _isGetSessionError = false;
 
   WebRequester(
     this.log, {
@@ -47,7 +46,7 @@ class WebRequester implements IWebRequester {
     this.xRequestedWithHeader = 'XMLHttpRequest',
     this.proxy,
     this.timeoutRetries = 0,
-  }) : assert(log != null) {
+  }) {
     _cookies = CookieManager(DefaultCookieJar());
   }
 
@@ -88,25 +87,23 @@ class WebRequester implements IWebRequester {
     _sessionId = null;
     dio.interceptors.add(_createDefaultInterceptor(dio, profile));
 
-    dio.options.connectTimeout = connectTimeOut;
-    dio.options.receiveTimeout = receiveTimeOut;
+    dio.options.connectTimeout = Duration(milliseconds: connectTimeOut);
+    dio.options.receiveTimeout = Duration(milliseconds: receiveTimeOut);
+    dio.options.preserveHeaderCase = true;
     _setBasicAuthHeader(dio, profile);
     _setXRequesteWithHeader(dio);
     _setUserAgentHeader(dio);
     dio.options.contentType = _contentTypeByEnigmaVersion(profile.enigma);
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (HttpClient client) {
-      if (client == null || !(client is AltHttpClient)) {
-        var altClient = AltHttpClient();
-        _setHttpProxy(altClient);
-        _setHttpCertificateValidaton(altClient);
-        return altClient;
+    (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+      final client = HttpClient();
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      final p = proxy;
+      if (p != null) {
+        client.findProxy = (uri) => 'PROXY $p';
       }
-      _setHttpProxy(client);
-      _setHttpCertificateValidaton(client);
       return client;
     };
-    (_cookies.cookieJar as DefaultCookieJar).deleteAll();
     dio.interceptors.add(_cookies);
     return dio;
   }
@@ -124,8 +121,9 @@ class WebRequester implements IWebRequester {
     } else {
       completeUrl = 'http://' + addressWithoutHttpPrefix;
     }
-    if (_sessionId != null) {
-      return _updateUrlWithSessionId(completeUrl, _sessionId);
+    var sessionId = _sessionId;
+    if (sessionId != null) {
+      return _updateUrlWithSessionId(completeUrl, sessionId);
     }
     return completeUrl;
   }
@@ -154,76 +152,78 @@ class WebRequester implements IWebRequester {
     return 'Basic ' + base64Encode(utf8.encode('$username:$password'));
   }
 
-  Dio _client;
+  Dio? _client;
   Future<_ResponseWithDuration> _getResponse(
       String url, IProfile profile, ResponseType responseType,
       {bool authorize = false}) async {
     _retried = 0;
     var completeUrl = _createUrl(url, profile);
     log.fine('Initializing request to $url');
-    Response response;
+    late Response response;
     var st = Stopwatch();
     try {
       if (_client == null ||
           _currentProfileHashCode != profile.hashCode ||
           profile.enigma == EnigmaType.enigma1) {
         _currentProfileHashCode = profile.hashCode;
+        await (_cookies.cookieJar as DefaultCookieJar).deleteAll();
         _client = _createHttpClient(profile);
       }
-      _client.options.receiveTimeout = receiveTimeOut;
-      _setResponseType(_client, responseType);
+      _client!.options.receiveTimeout = Duration(milliseconds: receiveTimeOut);
+      _setResponseType(_client!, responseType);
       st.start();
       if (_usePostRequest) {
-        response = await _client.post(completeUrl);
+        response = await _client!.post(completeUrl);
       } else {
-        response = await _client.get(completeUrl);
+        response = await _client!.get(completeUrl);
       }
       st.stop();
       log.fine('Request for $url took ${st.elapsedMilliseconds} ms');
       logResponse(response, url, responseType);
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.CANCEL) {
-        throw OperationCanceledException(e.message, innerException: e);
-      } else if (e.type == DioErrorType.CONNECT_TIMEOUT) {
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.cancel) {
+        throw OperationCanceledException(e.message ?? 'Cancelled',
+            innerException: e);
+      } else if (e.type == DioExceptionType.connectionTimeout) {
         throw TimeOutException(
           e.message ?? 'Request timed out',
           url,
-          Duration(milliseconds: e.request.connectTimeout),
+          e.requestOptions.connectTimeout ??
+              Duration(milliseconds: connectTimeOut),
           innerException: e,
         );
-      } else if (e.type == DioErrorType.RECEIVE_TIMEOUT) {
+      } else if (e.type == DioExceptionType.receiveTimeout) {
         throw TimeOutException(
           e.message ?? 'Receive timed out',
           url,
-          Duration(milliseconds: e.request.receiveTimeout),
+          e.requestOptions.receiveTimeout ??
+              Duration(milliseconds: receiveTimeOut),
           innerException: e,
         );
-      } else if (e.type == DioErrorType.SEND_TIMEOUT) {
+      } else if (e.type == DioExceptionType.sendTimeout) {
         throw TimeOutException(
           e.message ?? 'Send timed out',
           url,
-          Duration(milliseconds: e.request.sendTimeout),
+          e.requestOptions.sendTimeout ?? Duration.zero,
           innerException: e,
         );
-      } else if (e.type == DioErrorType.RESPONSE) {
+      } else if (e.type == DioExceptionType.badResponse) {
         throw FailedStatusCodeException(
-          e.message,
-          e.response.statusCode,
+          e.message ?? 'Bad response',
+          e.response?.statusCode,
           innerException: e,
         );
       }
-      throw WebRequestException(e.message, innerException: e);
+      throw WebRequestException(e.message ?? 'Request failed', innerException: e);
     } on Exception catch (e) {
       if (e is KnownException) rethrow;
-      if (e is Exception) {
-        throw WebRequestException('Request for $completeUrl failed.',
-            innerException: e);
-      }
+      throw WebRequestException('Request for $completeUrl failed.',
+          innerException: e);
     }
     return _ResponseWithDuration(response, st.elapsed);
   }
 
-  void logResponse(Response response, String url, ResponseType responseType) {
+  void logResponse(Response? response, String url, ResponseType responseType) {
     if (response == null) {
       {
         log.warning('Response to $url is null!');
@@ -243,59 +243,48 @@ class WebRequester implements IWebRequester {
     return true;
   }
 
-  void _setBasicAuthHeader(dio, IProfile profile) {
+  void _setBasicAuthHeader(Dio dio, IProfile profile) {
     if (_profileHasValidCredentials(profile)) {
-      dio.options.headers ??= {};
       dio.options.headers['Authorization'] =
-          _getBasicAuthHeader(profile.username, profile.password ?? '');
-    }
-    ;
-  }
-
-  void _setHttpCertificateValidaton(HttpClient client) {
-    client.badCertificateCallback =
-        (X509Certificate cert, String host, int port) => true;
-  }
-
-  void _setHttpProxy(HttpClient client) {
-    if (proxy != null) {
-      client.findProxy = (uri) {
-        return 'PROXY ' + proxy;
-      };
+          _getBasicAuthHeader(profile.username, profile.password);
     }
   }
 
   void _setUserAgentHeader(Dio dio) {
     if (StringHelper.stringIsNullOrEmpty(userAgentHeader)) return;
-    dio.options.headers ??= {};
     dio.options.headers['User-Agent'] = userAgentHeader;
   }
 
   void _setXRequesteWithHeader(Dio dio) {
     if (StringHelper.stringIsNullOrEmpty(xRequestedWithHeader)) return;
-    dio.options.headers ??= {};
     dio.options.headers['X-Requested-With'] = xRequestedWithHeader;
   }
 
   InterceptorsWrapper _createDefaultInterceptor(Dio dio, IProfile profile) {
     return InterceptorsWrapper(
-      onError: (DioError e) async {
+      onError: (DioException e, ErrorInterceptorHandler handler) async {
         if (timeoutRetries > 0) {
           if (e.response == null) {
-            if ((e.type == DioErrorType.RECEIVE_TIMEOUT) ||
-                (e.type == DioErrorType.CONNECT_TIMEOUT)) {
+            if (e.type == DioExceptionType.receiveTimeout ||
+                e.type == DioExceptionType.connectionTimeout) {
               if (_retried < timeoutRetries) {
                 _retried += 1;
-                if (e.type == DioErrorType.RECEIVE_TIMEOUT) {
-                  dio.options.receiveTimeout = receiveTimeOut * (_retried + 1);
+                if (e.type == DioExceptionType.receiveTimeout) {
+                  dio.options.receiveTimeout =
+                      Duration(milliseconds: receiveTimeOut * (_retried + 1));
                   log.fine(
-                      '********************** RECEIVE_TIMEOUT Retry ${_retried} ${DateTime.now().toIso8601String()}');
+                      '********************** RECEIVE_TIMEOUT Retry $_retried ${DateTime.now().toIso8601String()}');
                 } else {
-                  dio.options.connectTimeout = connectTimeOut * (_retried + 1);
+                  dio.options.connectTimeout =
+                      Duration(milliseconds: connectTimeOut * (_retried + 1));
                   log.fine(
-                      '********************** CONNECT_TIMEOUT Retry ${_retried} ${DateTime.now().toIso8601String()}');
+                      '********************** CONNECT_TIMEOUT Retry $_retried ${DateTime.now().toIso8601String()}');
                 }
-                return await dio.request(e.request.path);
+                try {
+                  return handler.resolve(await dio.fetch(e.requestOptions));
+                } on DioException catch (err) {
+                  return handler.next(err);
+                }
               }
             }
           }
@@ -304,8 +293,8 @@ class WebRequester implements IWebRequester {
                 '********************** FAILED AFTER ${_retried + 1} attempts ${DateTime.now().toIso8601String()}');
           }
         }
-        if (e.type == DioErrorType.RESPONSE) {
-          if (e.response.statusCode == HttpStatus.preconditionFailed &&
+        if (e.type == DioExceptionType.badResponse) {
+          if (e.response?.statusCode == HttpStatus.preconditionFailed &&
               _isGetSessionError == false) {
             try {
               log.fine('********************** Requesting session id');
@@ -319,26 +308,36 @@ class WebRequester implements IWebRequester {
               var sessionResponse = SessionParser().parseE2(stringResponse);
               _sessionId = sessionResponse.sessionId;
               log.fine('********************** Got session id');
-              _client.options.method = _usePostRequest ? 'POST' : 'GET';
-              return await dio
-                  .request(_updateUrlWithSessionId(e.request.path, _sessionId));
-            } catch (e) {
-              log.fine(e);
+              _client?.options.method = _usePostRequest ? 'POST' : 'GET';
+              final retryOptions = e.requestOptions
+                ..path =
+                    _updateUrlWithSessionId(e.requestOptions.path, _sessionId!);
+              return handler.resolve(await dio.fetch(retryOptions));
+            } catch (err) {
+              log.fine(err);
               _isGetSessionError = true;
               _sessionId = null;
             }
-            return await dio.request(e.request.path);
-          } else if (e.response.statusCode == HttpStatus.methodNotAllowed &&
+            try {
+              return handler.resolve(await dio.fetch(e.requestOptions));
+            } on DioException catch (err) {
+              return handler.next(err);
+            }
+          } else if (e.response?.statusCode == HttpStatus.methodNotAllowed &&
               _triedAlternativeRequestMethod == false) {
             _usePostRequest = !_usePostRequest;
             _triedAlternativeRequestMethod = true;
             log.fine(
                 '********************** Switching to ${_usePostRequest ? 'POST' : 'GET'} method');
-            _client.options.method = _usePostRequest ? 'POST' : 'GET';
-            return await dio.request(e.request.path);
+            _client?.options.method = _usePostRequest ? 'POST' : 'GET';
+            try {
+              return handler.resolve(await dio.fetch(e.requestOptions));
+            } on DioException catch (err) {
+              return handler.next(err);
+            }
           }
         }
-        return e;
+        return handler.next(e);
       },
     );
   }
