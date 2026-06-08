@@ -6,12 +6,16 @@ Works with both *Enigma1* and *Enigma2* web interfaces.
 First thing to do is to setup profile information 
 
 ```dart
-var profile = Profile();
-profile.address = "192.168.0.2";
-profile.httpPort = 80;
-profile.enigma = EnigmaType.enigma2;
-profile.username = "root";
-profile.password = "password";
+var profile = Profile(
+  address: "192.168.0.2",
+  httpPort: 80,
+  enigma: EnigmaType.enigma2,
+  username: "root",
+  password: "password",
+  name: "My receiver",
+  streaming: false,
+  id: "1",
+);
 ```
 
 ## Execute command

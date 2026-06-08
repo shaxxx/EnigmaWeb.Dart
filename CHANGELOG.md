@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.0
+
+- Migrated to Dart 3 with sound null safety (breaking: public API signatures are now null-aware).
+- Upgraded dependencies: dio 5, xml 6, cookie_jar 4, dio_cookie_manager 3, logging 1.
+- Removed `alt_http`; case-sensitive `Authorization` headers are now preserved natively via
+  `preserveHeaderCase` on both the dio and dart:io requesters.
+- Replaced `pedantic` with `package:lints/recommended`.
+- `Profile.streamingPort` and `Profile.transcodingPort` are now nullable (`int?`).
+- Bouquet item `name`/`reference` are now nullable (`String?`).
+
 1.0.5 fix message command type (again)
 
 1.0.4 fix message command type
