@@ -1,5 +1,4 @@
 import 'package:enigma_web/src/i_profile.dart';
-import 'package:meta/meta.dart';
 
 import 'enums.dart' show EnigmaType;
 
@@ -19,54 +18,44 @@ class Profile implements IProfile {
   @override
   final String username;
   @override
-  final int streamingPort;
+  final int? streamingPort;
   @override
   final bool transcoding;
   @override
-  final int transcodingPort;
+  final int? transcodingPort;
   @override
   final bool streaming;
   @override
   final String id;
 
   Profile({
-    @required @required this.address,
+    required this.address,
     this.enigma = EnigmaType.enigma2,
     this.httpPort = 80,
-    @required this.name,
+    required this.name,
     this.password = 'dreambox',
     this.useSsl = false,
     this.username = 'root',
     this.streamingPort,
     this.transcoding = false,
     this.transcodingPort,
-    @required this.streaming,
-    @required this.id,
-  })  : assert(address != null),
-        assert(address.isNotEmpty),
-        assert(enigma != null),
-        assert(httpPort != null),
-        assert(name != null),
-        assert(password != null),
-        assert(useSsl != null),
-        assert(username != null),
-        assert(transcoding != null),
-        assert(streaming != null),
-        assert(id != null);
+    required this.streaming,
+    required this.id,
+  }) : assert(address.isNotEmpty);
 
   Profile copyWith({
-    String address,
-    EnigmaType enigma,
-    int httpPort,
-    String name,
-    String password,
-    bool useSsl,
-    String username,
-    int streamingPort,
-    bool transcoding,
-    int transcodingPort,
-    bool streaming,
-    String id,
+    String? address,
+    EnigmaType? enigma,
+    int? httpPort,
+    String? name,
+    String? password,
+    bool? useSsl,
+    String? username,
+    int? streamingPort,
+    bool? transcoding,
+    int? transcodingPort,
+    bool? streaming,
+    String? id,
   }) {
     return Profile(
       address: address ?? this.address,

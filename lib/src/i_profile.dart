@@ -8,9 +8,9 @@ abstract class IProfile {
   String get address;
   int get httpPort;
   bool get useSsl;
-  int get streamingPort;
+  int? get streamingPort;
   bool get transcoding;
-  int get transcodingPort;
+  int? get transcodingPort;
   bool get streaming;
   String get id;
   Map<String, dynamic> toJson();
