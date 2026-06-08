@@ -20,9 +20,13 @@ class GetBouquetItemsCommand
 
   @override
   Future<IGetBouquetItemsResponse> executeAsync() async {
+    final reference = bouquet.reference;
+    if (reference == null) {
+      throw ArgumentError.notNull('bouquet.reference');
+    }
     var url = profile.enigma == EnigmaType.enigma1
-        ? 'cgi-bin/getServices?ref=${bouquet.reference!}'
-        : 'web/getservices?sRef=${Uri.encodeComponent(bouquet.reference!)}';
+        ? 'cgi-bin/getServices?ref=$reference'
+        : 'web/getservices?sRef=${Uri.encodeComponent(reference)}';
     return await super.executeGenericAsync(
       profile,
       url,

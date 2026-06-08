@@ -9,6 +9,11 @@
 - Replaced `pedantic` with `package:lints/recommended`.
 - `Profile.streamingPort` and `Profile.transcodingPort` are now nullable (`int?`).
 - Bouquet item `name`/`reference` are now nullable (`String?`).
+- `SignalParser` now throws `ParsingException` when an Enigma2 signal response is missing
+  expected XML fields (previously this surfaced as an uncaught runtime error).
+- `VolumeStatusParser` Enigma1 responses now report the actual request duration instead of
+  null. Commands that require a service/bouquet `reference` now throw a clear `ArgumentError`
+  when it is null instead of a generic null-check error.
 
 1.0.5 fix message command type (again)
 
