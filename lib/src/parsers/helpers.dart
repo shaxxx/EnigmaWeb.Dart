@@ -1,10 +1,6 @@
 class Helpers {
   /// Remove illegal XML characters from a string.
   static String sanitizeXmlString(String xml) {
-    if (xml == null) {
-      throw ArgumentError.notNull('xml');
-    }
-
     var buffer = StringBuffer();
     for (var c in xml.split('')) {
       if (isLegalXmlChar(c.codeUnitAt(0))) {

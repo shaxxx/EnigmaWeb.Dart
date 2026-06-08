@@ -1,13 +1,10 @@
 class StringHelper {
-  static bool stringIsNullOrEmpty(String text) {
+  static bool stringIsNullOrEmpty(String? text) {
     if (text?.isEmpty ?? true) return true;
     return false;
   }
 
   static String trimAll(String text) {
-    if (text == null) {
-      return text;
-    }
     if (text.isEmpty) {
       return text;
     }
