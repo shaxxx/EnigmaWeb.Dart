@@ -1,0 +1,3 @@
+# Internal development artifacts — keep in git, exclude from the published package.
+docs/
+.vscode/
