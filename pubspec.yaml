@@ -4,17 +4,16 @@ version: 1.0.5
 homepage: https://github.com/shaxxx/EnigmaWeb.Dart.git
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  logging: ^0.11.3+2
-  dio: ">=3.0.0 <3.0.8"
-  xml: ^3.5.0
-  cookie_jar: ^1.0.1
-  alt_http: ^0.3.0
-  dio_cookie_manager: ^1.0.0
-  meta: ^1.1.8
+  logging: ^1.3.0
+  dio: ^5.7.0
+  xml: ^6.5.0
+  cookie_jar: ^4.0.8
+  dio_cookie_manager: ^3.4.0
+  meta: ^1.15.0
 
 dev_dependencies:
-  pedantic: ^1.9.0
-  test: ^1.10.0
+  lints: ^5.0.0
+  test: ^1.25.0
