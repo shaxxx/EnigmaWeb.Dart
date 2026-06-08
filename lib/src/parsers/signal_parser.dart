@@ -58,10 +58,6 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
 
     var signal = _initializeSignalEnigma1(snr, acg, ber, locked, sync);
 
-    if (signal == null) {
-      throw ParsingException('Failed to parse Enigma1 signal!');
-    }
-
     return SignalResponse(signal, response.responseDuration);
   }
 
@@ -94,38 +90,34 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
   SignalResponse parseE2(IStringResponse response) {
     var responseString = Helpers.sanitizeXmlString(response.responseString);
 
-    String snr;
-    String db;
-    String acg;
-    String ber;
+    String? snr;
+    String? db;
+    String? acg;
+    String? ber;
     try {
-      var document = xml.parse(responseString);
+      var document = xml.XmlDocument.parse(responseString);
 
       var dbNodes = document.findAllElements('e2snrdb');
-      if (dbNodes != null && dbNodes.isNotEmpty) {
-        db = StringHelper.trimAll(dbNodes.first.text);
+      if (dbNodes.isNotEmpty) {
+        db = StringHelper.trimAll(dbNodes.first.innerText);
       }
 
       var snrNodes = document.findAllElements('e2snr');
-      if (snrNodes != null && snrNodes.isNotEmpty) {
-        snr = StringHelper.trimAll(snrNodes.first.text);
+      if (snrNodes.isNotEmpty) {
+        snr = StringHelper.trimAll(snrNodes.first.innerText);
       }
 
       var berNodes = document.findAllElements('e2ber');
-      if (berNodes != null && berNodes.isNotEmpty) {
-        ber = StringHelper.trimAll(berNodes.first.text);
+      if (berNodes.isNotEmpty) {
+        ber = StringHelper.trimAll(berNodes.first.innerText);
       }
 
       var acgNodes = document.findAllElements('e2acg');
-      if (acgNodes != null && acgNodes.isNotEmpty) {
-        acg = StringHelper.trimAll(acgNodes.first.text);
+      if (acgNodes.isNotEmpty) {
+        acg = StringHelper.trimAll(acgNodes.first.innerText);
       }
 
       var signal = _initializeSignalEnigma2(snr, db, acg, ber);
-
-      if (signal == null) {
-        throw ParsingException('Failed to parse Enigma2 signal!');
-      }
 
       return SignalResponse(signal, response.responseDuration);
     } on FormatException {
@@ -134,14 +126,17 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
   }
 
   E2Signal _initializeSignalEnigma2(
-    String snr,
-    String db,
-    String acg,
-    String ber,
+    String? snr,
+    String? db,
+    String? acg,
+    String? ber,
   ) {
     var ds = '.';
-    String realSnr;
-    String realDb;
+    if (snr == null || db == null || acg == null || ber == null) {
+      return E2Signal(db: -1, snr: -1, acg: -1, ber: -1);
+    }
+    String? realSnr;
+    String? realDb;
 
     snr = StringHelper.trimAll(snr.replaceAll('%', ''));
     db = StringHelper.trimAll(
@@ -197,10 +192,10 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
       throw ParsingException('Failed to parse Enigma2 signal!');
     }
 
-    int snr2;
-    double db2;
-    int acg2;
-    int ber2;
+    late int snr2;
+    late double db2;
+    late int acg2;
+    late int ber2;
 
     if (realSnr != null && realDb != null) {
       snr2 = int.parse(realSnr);
@@ -209,7 +204,7 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
       db2 = double.parse(realDb);
       snr2 = (db2 * 6.5).round();
     } else {
-      snr2 = int.parse(realSnr);
+      snr2 = int.parse(realSnr!);
       db2 = double.parse((snr2 / 6.5).toStringAsFixed(2));
     }
     acg2 = int.parse(StringHelper.trimAll(acg.replaceAll('%', '')));

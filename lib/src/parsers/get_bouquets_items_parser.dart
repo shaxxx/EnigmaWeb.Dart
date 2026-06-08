@@ -63,23 +63,23 @@ class GetBouquetItemsParser
     var responseString = Helpers.sanitizeXmlString(response.responseString);
     var items = <IBouquetItem>[];
 
-    var document = xml.parse(responseString);
+    var document = xml.XmlDocument.parse(responseString);
     var children = document.findAllElements('e2service');
-    if (children != null && children.isNotEmpty) {
+    if (children.isNotEmpty) {
       for (final node in children) {
         final serviceReferenceNode = node.findAllElements('e2servicereference');
         final serviceNameNode = node.findAllElements('e2servicename');
 
-        String serviceReference;
-        String serviceName;
+        String? serviceReference;
+        String? serviceName;
 
-        if (serviceReferenceNode != null && serviceReferenceNode.isNotEmpty) {
+        if (serviceReferenceNode.isNotEmpty) {
           serviceReference =
-              StringHelper.trimAll(serviceReferenceNode.first.text);
+              StringHelper.trimAll(serviceReferenceNode.first.innerText);
         }
 
-        if (serviceNameNode != null && serviceNameNode.isNotEmpty) {
-          serviceName = StringHelper.trimAll(serviceNameNode.first.text);
+        if (serviceNameNode.isNotEmpty) {
+          serviceName = StringHelper.trimAll(serviceNameNode.first.innerText);
         }
 
         if (serviceReference != null) {
@@ -97,10 +97,10 @@ class GetBouquetItemsParser
     return GetBouquetItemsResponse(items, response.responseDuration);
   }
 
-  IBouquetItem _initializeItem(
+  IBouquetItem? _initializeItem(
     String reference,
     EnigmaType enigmaType,
-    String serviceName,
+    String? serviceName,
   ) {
     if (StringHelper.stringIsNullOrEmpty(reference)) {
       return null;
@@ -126,7 +126,7 @@ class GetBouquetItemsParser
     if (sData.length >= 10 &&
         (sData[0] == '4097' ||
             sData[10].contains('//') ||
-            (sData.length == 12 && sData[11] != null))) {
+            sData.length == 12)) {
       return enigmaType == EnigmaType.enigma2
           ? BouquetItemService(
               name: serviceName,

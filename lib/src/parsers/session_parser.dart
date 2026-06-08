@@ -30,10 +30,10 @@ Failed to parse response\n$response''', innerException: ex);
 
   SessionResponse parseE2(IStringResponse response) {
     var responseString = Helpers.sanitizeXmlString(response.responseString);
-    var document = xml.parse(responseString);
+    var document = xml.XmlDocument.parse(responseString);
     var node = document.findAllElements('e2sessionid');
-    if (node != null && node.isNotEmpty) {
-      var value = StringHelper.trimAll(node.first.text);
+    if (node.isNotEmpty) {
+      var value = StringHelper.trimAll(node.first.innerText);
       return SessionResponse(value, response.responseDuration);
     }
     throw ParsingException(

@@ -44,10 +44,10 @@ class PowerStateParser
 
   PowerStateResponse parseE2(IStringResponse response) {
     var responseString = Helpers.sanitizeXmlString(response.responseString);
-    var document = xml.parse(responseString);
+    var document = xml.XmlDocument.parse(responseString);
     var node = document.findAllElements('e2instandby');
-    if (node != null && node.isNotEmpty) {
-      var value = StringHelper.trimAll(node.first.text);
+    if (node.isNotEmpty) {
+      var value = StringHelper.trimAll(node.first.innerText);
       var standby = false;
       standby = value.toLowerCase() == 'true' || value.toLowerCase() == '1';
       return PowerStateResponse(standby, response.responseDuration);

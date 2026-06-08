@@ -58,23 +58,23 @@ class GetBouquetsParser
     var responseString = Helpers.sanitizeXmlString(response.responseString);
     var bouquets = <IBouquetItemBouquet>[];
 
-    var document = xml.parse(responseString);
+    var document = xml.XmlDocument.parse(responseString);
     var children = document.findAllElements('e2service');
-    if (children != null && children.isNotEmpty) {
+    if (children.isNotEmpty) {
       for (final node in children) {
         final serviceReferenceNode = node.findAllElements('e2servicereference');
         final serviceNameNode = node.findAllElements('e2servicename');
 
-        String serviceReference;
-        String serviceName;
+        String? serviceReference;
+        String? serviceName;
 
-        if (serviceReferenceNode != null && serviceReferenceNode.isNotEmpty) {
+        if (serviceReferenceNode.isNotEmpty) {
           serviceReference =
-              StringHelper.trimAll(serviceReferenceNode.first.text);
+              StringHelper.trimAll(serviceReferenceNode.first.innerText);
         }
 
-        if (serviceNameNode != null && serviceNameNode.isNotEmpty) {
-          serviceName = StringHelper.trimAll(serviceNameNode.first.text);
+        if (serviceNameNode.isNotEmpty) {
+          serviceName = StringHelper.trimAll(serviceNameNode.first.innerText);
         }
 
         if (serviceReference != null) {

@@ -36,7 +36,7 @@ class VolumeStatusParser
 
   VolumeStatusResponse parseE1(IStringResponse response) {
     var mute = false;
-    var current = 0;
+    int? current;
     IVolumeStatus status = VolumeStatus();
 
     var muteString = getE1StatusValue(response.responseString, 'var mute = ');
@@ -47,13 +47,13 @@ class VolumeStatusParser
         muteString.toLowerCase() == 'true' || muteString.toLowerCase() == '1';
     status.mute = mute;
     currentString = StringHelper.trimAll(currentString);
-    current = num.tryParse(currentString);
+    current = num.tryParse(currentString)?.toInt();
     if (current == null) {
       throw ParsingException(
           'Enigma1 volume status parsing failed. Unable to convert $currentString to integer value.');
     }
     status.level = current;
-    return VolumeStatusResponse(status, null);
+    return VolumeStatusResponse(status, response.responseDuration);
   }
 
   String getE1StatusValue(String response, String searchFor) {
@@ -65,29 +65,29 @@ class VolumeStatusParser
   VolumeStatusResponse parseE2(IStringResponse response) {
     var responseString = Helpers.sanitizeXmlString(response.responseString);
     IVolumeStatus status = VolumeStatus();
-    var document = xml.parse(responseString);
+    var document = xml.XmlDocument.parse(responseString);
 
-    String isMutedString;
-    String currentString;
+    String? isMutedString;
+    String? currentString;
 
     var mutedNodes = document.findAllElements('e2ismuted');
-    if (mutedNodes != null && mutedNodes.isNotEmpty) {
-      isMutedString = StringHelper.trimAll(mutedNodes.first.text);
+    if (mutedNodes.isNotEmpty) {
+      isMutedString = StringHelper.trimAll(mutedNodes.first.innerText);
     }
 
     var currentNodes = document.findAllElements('e2current');
-    if (currentNodes != null && currentNodes.isNotEmpty) {
-      currentString = StringHelper.trimAll(currentNodes.first.text);
+    if (currentNodes.isNotEmpty) {
+      currentString = StringHelper.trimAll(currentNodes.first.innerText);
     }
 
-    var intLevel = int.tryParse(currentString);
+    var intLevel = int.tryParse(currentString ?? '');
     if (intLevel == null) {
       throw ParsingException(
           'Enigma2 volume status parsing failed. Unable to convert $currentString to integer value.');
     }
 
-    status.mute = isMutedString.toLowerCase() == 'true' ||
-        isMutedString.toLowerCase() == '1';
+    status.mute = (isMutedString ?? '').toLowerCase() == 'true' ||
+        (isMutedString ?? '').toLowerCase() == '1';
     status.level = intLevel;
 
     return VolumeStatusResponse(status, response.responseDuration);

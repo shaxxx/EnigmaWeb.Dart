@@ -71,25 +71,27 @@ class GetCurrentServiceParser
 
   GetCurrentServiceResponse parseE2(IStringResponse response) {
     var responseString = Helpers.sanitizeXmlString(response.responseString);
-    var document = xml.parse(responseString);
+    var document = xml.XmlDocument.parse(responseString);
 
-    String serviceReference;
-    String serviceName;
+    String? serviceReference;
+    String? serviceName;
 
     var refNodes = document.findAllElements('e2servicereference');
-    if (refNodes != null && refNodes.isNotEmpty) {
-      serviceReference = StringHelper.trimAll(refNodes.first.text);
+    if (refNodes.isNotEmpty) {
+      serviceReference = StringHelper.trimAll(refNodes.first.innerText);
     }
 
     var nameNodes = document.findAllElements('e2servicename');
-    if (nameNodes != null && nameNodes.isNotEmpty) {
-      serviceName = StringHelper.trimAll(nameNodes.first.text);
+    if (nameNodes.isNotEmpty) {
+      serviceName = StringHelper.trimAll(nameNodes.first.innerText);
     }
 
-    try {
-      serviceReference = Uri.decodeFull(serviceReference);
-    } catch (e) {
-      Logger.root.fine(e.toString());
+    if (serviceReference != null) {
+      try {
+        serviceReference = Uri.decodeFull(serviceReference);
+      } catch (e) {
+        Logger.root.fine(e.toString());
+      }
     }
 
     return GetCurrentServiceResponse(

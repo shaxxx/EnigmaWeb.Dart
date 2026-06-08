@@ -40,9 +40,9 @@ class GetStreamParametersParser
     var lf = '\n';
     var streamUrl = '';
     var lines = response.responseString.split(lf);
-    if (lines != null && lines.isNotEmpty) {
+    if (lines.isNotEmpty) {
       var link = lines.where((x) => x.toLowerCase().startsWith('http'));
-      if (link != null && link.isNotEmpty) {
+      if (link.isNotEmpty) {
         if (!StringHelper.stringIsNullOrEmpty(link.first)) {
           streamUrl = StringHelper.trimAll(link.first);
         }
