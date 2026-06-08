@@ -11,25 +11,18 @@ abstract class EnigmaCommand<TCommand extends ICommand,
     TResponse extends IResponse<TCommand>> {
   final IWebRequester requester;
 
-  EnigmaCommand(this.requester) : assert(requester != null);
+  EnigmaCommand(this.requester);
 
   Future<TResponse> executeGenericAsync(
     IProfile profile,
     String url,
     IResponseParser<TCommand, TResponse> parser,
   ) async {
-    if (profile == null) throw ArgumentError.notNull('profile');
-    if (url == null) throw ArgumentError.notNull('url');
-    if (parser == null) throw ArgumentError.notNull('parser');
-
     try {
       var response = await requester.getResponseAsync(
         url,
         profile,
       );
-      if (response == null) {
-        return null;
-      }
       return await parser.parseAsync(
         response,
         profile.enigma,

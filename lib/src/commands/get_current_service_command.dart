@@ -18,9 +18,7 @@ class GetCurrentServiceCommand
     this.parser,
     IWebRequester requester,
     this.profile,
-  )   : assert(parser != null),
-        assert(profile != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IGetCurrentServiceResponse> executeAsync() async {

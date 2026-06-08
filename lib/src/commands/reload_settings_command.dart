@@ -20,10 +20,7 @@ class ReloadSettingsCommand extends EnigmaCommand<IReloadSettingsCommand,
     IWebRequester requester,
     this.profile,
     this.type,
-  )   : assert(parser != null),
-        assert(profile != profile),
-        assert(type != type),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IResponse<IReloadSettingsCommand>> executeAsync() async {

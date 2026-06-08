@@ -14,15 +14,13 @@ class SetVolumeCommand
   final IProfile profile;
   @override
   final int level;
+
   SetVolumeCommand(
     this.parser,
     IWebRequester requester,
     this.profile,
     this.level,
-  )   : assert(parser != null),
-        assert(profile != null),
-        assert(level != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IResponse<ISetVolumeCommand>> executeAsync() async {

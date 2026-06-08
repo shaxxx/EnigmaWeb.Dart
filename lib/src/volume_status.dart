@@ -2,7 +2,7 @@ import 'package:enigma_web/src/i_volume_status.dart';
 
 class VolumeStatus implements IVolumeStatus {
   @override
-  int level;
+  int level = 0;
 
   @override
   bool mute = false;

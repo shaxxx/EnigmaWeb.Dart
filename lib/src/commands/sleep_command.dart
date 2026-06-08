@@ -12,13 +12,12 @@ class SleepCommand
   final IResponseParser<ISleepCommand, IResponse<ISleepCommand>> parser;
   @override
   final IProfile profile;
+
   SleepCommand(
     this.parser,
     IWebRequester requester,
     this.profile,
-  )   : assert(parser != null),
-        assert(profile != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IResponse<ISleepCommand>> executeAsync() async {

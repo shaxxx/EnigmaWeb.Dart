@@ -26,12 +26,7 @@ class MessageCommand
     this.message,
     this.timeout,
     this.type,
-  )   : assert(parser != null),
-        assert(profile != null),
-        assert(message != null),
-        assert(timeout != null),
-        assert(type != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IResponse<IMessageCommand>> executeAsync() async {

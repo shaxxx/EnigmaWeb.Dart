@@ -4,9 +4,8 @@ class BinaryResponse implements IBinaryResponse {
   final List<int> _content;
   final Duration _responseDuration;
 
-  BinaryResponse(this._content, this._responseDuration)
-      : assert(_content != null),
-        assert(_responseDuration != null);
+  BinaryResponse(this._content, this._responseDuration);
+
   @override
   List<int> get content => _content;
 

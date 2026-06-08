@@ -4,7 +4,7 @@ class CommandException implements KnownException {
   @override
   String message;
   @override
-  Exception innerException;
+  Exception? innerException;
 
   CommandException(String message) : message = message;
   CommandException.withException(String message, Exception innerException)

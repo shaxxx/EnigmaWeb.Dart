@@ -17,9 +17,7 @@ class WakeUpCommand
     this.parser,
     IWebRequester requester,
     this.profile,
-  )   : assert(parser != null),
-        assert(profile != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IResponse<IWakeUpCommand>> executeAsync() async {

@@ -5,9 +5,7 @@ class GetBouquetItemsResponse implements IGetBouquetItemsResponse {
   final List<IBouquetItem> _items;
   final Duration _responseDuration;
 
-  GetBouquetItemsResponse(this._items, this._responseDuration)
-      : assert(_items != null),
-        assert(_responseDuration != null);
+  GetBouquetItemsResponse(this._items, this._responseDuration);
 
   @override
   List<IBouquetItem> get items => _items;

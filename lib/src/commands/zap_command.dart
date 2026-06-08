@@ -20,16 +20,13 @@ class ZapCommand extends EnigmaCommand<IZapCommand, IResponse<IZapCommand>>
     IWebRequester requester,
     this.profile,
     this.service,
-  )   : assert(parser != null),
-        assert(profile != null),
-        assert(service != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IResponse<IZapCommand>> executeAsync() async {
     var url = profile.enigma == EnigmaType.enigma1
-        ? 'cgi-bin/zapTo?path=' + Uri.encodeFull(service.reference)
-        : 'web/zap?sRef=' + Uri.encodeComponent(service.reference);
+        ? 'cgi-bin/zapTo?path=' + Uri.encodeFull(service.reference!)
+        : 'web/zap?sRef=' + Uri.encodeComponent(service.reference!);
     return await super.executeGenericAsync(
       profile,
       url,

@@ -15,13 +15,12 @@ class ScreenshotCommand
   final IProfile profile;
   @override
   final ScreenshotType type;
+
   ScreenshotCommand(
     IWebRequester requester,
     this.profile,
     this.type,
-  )   : assert(profile != null),
-        assert(type != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IScreenshotResponse> executeAsync() async {
@@ -48,12 +47,10 @@ class ScreenshotCommand
           url,
           profile,
         );
-        if (binaryResponse != null) {
-          return ScreenshotResponse(
-            binaryResponse.content,
-            binaryResponse.responseDuration,
-          );
-        }
+        return ScreenshotResponse(
+          binaryResponse.content,
+          binaryResponse.responseDuration,
+        );
       }
 
       //Enigma 1
@@ -68,23 +65,18 @@ class ScreenshotCommand
         url = 'root/tmp/screenshot.bmp';
       }
 
-      var response = await requester.getResponseAsync(
+      await requester.getResponseAsync(
         url,
         profile,
       );
-      if (response == null) {
-        return null;
-      }
       var binaryResponse = await requester.getBinaryResponseAsync(
         url,
         profile,
       );
-      if (binaryResponse != null) {
-        return ScreenshotResponse(
-          binaryResponse.content,
-          binaryResponse.responseDuration,
-        );
-      }
+      return ScreenshotResponse(
+        binaryResponse.content,
+        binaryResponse.responseDuration,
+      );
     } on Exception catch (ex) {
       if (ex is KnownException || ex is OperationCanceledException) {
         rethrow;
@@ -94,9 +86,6 @@ class ScreenshotCommand
         'Command failed for profile ${profile.name}\n$ex',
       );
     }
-    throw CommandException(
-      'Screenshot failed for profile ${profile.name}\nEmpty response!',
-    );
   }
 
   static String _unixTimeStamp() {

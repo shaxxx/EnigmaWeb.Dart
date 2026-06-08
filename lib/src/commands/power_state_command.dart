@@ -17,9 +17,7 @@ class PowerStateCommand
     this.parser,
     IWebRequester requester,
     this.profile,
-  )   : assert(parser != null),
-        assert(profile != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IPowerStateResponse> executeAsync() async {

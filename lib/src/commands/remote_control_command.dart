@@ -20,10 +20,7 @@ class RemoteControlCommand extends EnigmaCommand<IRemoteControlCommand,
     IWebRequester requester,
     this.profile,
     this.code,
-  )   : assert(parser != null),
-        assert(profile != null),
-        assert(code != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IResponse<IRemoteControlCommand>> executeAsync() async {

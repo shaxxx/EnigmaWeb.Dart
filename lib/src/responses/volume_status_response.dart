@@ -5,9 +5,7 @@ class VolumeStatusResponse implements IVolumeStatusResponse {
   final IVolumeStatus _status;
   final Duration _responseDuration;
 
-  VolumeStatusResponse(this._status, this._responseDuration)
-      : assert(_status != null),
-        assert(_responseDuration != null);
+  VolumeStatusResponse(this._status, this._responseDuration);
 
   @override
   IVolumeStatus get status => _status;

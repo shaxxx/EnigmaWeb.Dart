@@ -15,10 +15,7 @@ class E2Signal implements IE2Signal {
     this.ber = 0,
     this.db = 0,
     this.snr = 0,
-  })  : assert(acg != null),
-        assert(ber != null),
-        assert(db != null),
-        assert(snr != null);
+  });
 
   @override
   int get hashCode => acg.hashCode ^ ber.hashCode ^ db.hashCode ^ snr.hashCode;

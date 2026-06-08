@@ -16,29 +16,19 @@ class GetStreamParametersCommand extends EnigmaCommand<
   final IProfile profile;
   @override
   final IBouquetItemService service;
+
   GetStreamParametersCommand(
     this.parser,
     IWebRequester requester,
     this.profile,
     this.service,
-  )   : assert(parser != null),
-        assert(profile != null),
-        assert(service != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IGetStreamParametersResponse> executeAsync() async {
-    if (profile == null) {
-      throw ArgumentError.notNull('profile');
-    }
-
-    if (service == null) {
-      throw ArgumentError.notNull('service');
-    }
-
     var url = profile.enigma == EnigmaType.enigma1
-        ? 'video.m3u?ref=' + service.reference
-        : 'web/video.m3u?sRef=' + Uri.encodeComponent(service.reference);
+        ? 'video.m3u?ref=' + service.reference!
+        : 'web/video.m3u?sRef=' + Uri.encodeComponent(service.reference!);
 
     return await super.executeGenericAsync(
       profile,

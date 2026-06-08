@@ -23,16 +23,13 @@ class GetBouquetItemsCommand
     IWebRequester requester,
     this.profile,
     this.bouquet,
-  )   : assert(parser != null),
-        assert(profile != null),
-        assert(bouquet != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IGetBouquetItemsResponse> executeAsync() async {
     var url = profile.enigma == EnigmaType.enigma1
-        ? 'cgi-bin/getServices?ref=' + bouquet.reference
-        : 'web/getservices?sRef=' + Uri.encodeComponent(bouquet.reference);
+        ? 'cgi-bin/getServices?ref=' + bouquet.reference!
+        : 'web/getservices?sRef=' + Uri.encodeComponent(bouquet.reference!);
     return await super.executeGenericAsync(
       profile,
       url,

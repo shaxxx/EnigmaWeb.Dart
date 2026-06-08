@@ -7,6 +7,6 @@ class TimeOutException extends WebRequestException {
     String message,
     this.url,
     this.timeOut, {
-    Exception innerException,
+    Exception? innerException,
   }) : super(message, innerException: innerException);
 }

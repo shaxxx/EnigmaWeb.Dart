@@ -18,11 +18,7 @@ class E1Signal implements IE1Signal {
     this.lock = false,
     this.snr = 0,
     this.sync = false,
-  })  : assert(acg != null),
-        assert(ber != null),
-        assert(lock != null),
-        assert(snr != null),
-        assert(sync != null);
+  });
 
   @override
   String get calculatedDb {

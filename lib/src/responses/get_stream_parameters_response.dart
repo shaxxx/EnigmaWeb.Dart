@@ -6,10 +6,7 @@ class GetStreamParametersResponse implements IGetStreamParametersResponse {
   final Duration _responseDuration;
 
   GetStreamParametersResponse(
-      this._streamUrl, this._m3uFileContent, this._responseDuration)
-      : assert(_streamUrl != null),
-        assert(_m3uFileContent != null),
-        assert(_responseDuration != null);
+      this._streamUrl, this._m3uFileContent, this._responseDuration);
 
   @override
   String get streamUrl => _streamUrl;

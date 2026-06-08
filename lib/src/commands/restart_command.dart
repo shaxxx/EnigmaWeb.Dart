@@ -12,13 +12,12 @@ class RestartCommand
   final IResponseParser<IRestartCommand, IResponse<IRestartCommand>> parser;
   @override
   final IProfile profile;
+
   RestartCommand(
     this.parser,
     IWebRequester requester,
     this.profile,
-  )   : assert(parser != null),
-        assert(profile != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<IResponse<IRestartCommand>> executeAsync() async {

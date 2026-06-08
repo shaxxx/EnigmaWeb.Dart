@@ -16,9 +16,7 @@ class SessionCommand extends EnigmaCommand<ISessionCommand, ISessionResponse>
     this.parser,
     IWebRequester requester,
     this.profile,
-  )   : assert(parser != null),
-        assert(profile != null),
-        super(requester);
+  ) : super(requester);
 
   @override
   Future<ISessionResponse> executeAsync() async {
