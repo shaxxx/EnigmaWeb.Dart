@@ -1,12 +1,4 @@
 import 'package:enigma_web/enigma_web.dart';
-import 'package:enigma_web/src/commands/command_exception.dart';
-import 'package:enigma_web/src/commands/enigma_command.dart';
-import 'package:enigma_web/src/commands/i_screenshot_command.dart';
-import 'package:enigma_web/src/enums.dart';
-import 'package:enigma_web/src/i_profile.dart';
-import 'package:enigma_web/src/known_exception.dart';
-import 'package:enigma_web/src/operation_cancelled_exception.dart';
-import 'package:enigma_web/src/responses/i_screenshot_response.dart';
 
 class ScreenshotCommand
     extends EnigmaCommand<IScreenshotCommand, IScreenshotResponse>
@@ -17,10 +9,10 @@ class ScreenshotCommand
   final ScreenshotType type;
 
   ScreenshotCommand(
-    IWebRequester requester,
+    super.requester,
     this.profile,
     this.type,
-  ) : super(requester);
+  );
 
   @override
   Future<IScreenshotResponse> executeAsync() async {
@@ -29,15 +21,15 @@ class ScreenshotCommand
       if (type == ScreenshotType.all) {
         url = profile.enigma == EnigmaType.enigma1
             ? 'body?mode=controlScreenShot&blendtype=2'
-            : 'grab?format=jpg&filename=/tmp/' + _unixTimeStamp() + '.jpg';
+            : 'grab?format=jpg&filename=/tmp/${_unixTimeStamp()}.jpg';
       } else if (type == ScreenshotType.picture) {
         url = profile.enigma == EnigmaType.enigma1
             ? 'body?mode=controlScreenShot'
-            : 'grab?format=jpg&v=&filename=/tmp/' + _unixTimeStamp() + '.jpg';
+            : 'grab?format=jpg&v=&filename=/tmp/${_unixTimeStamp()}.jpg';
       } else if (type == ScreenshotType.osd) {
         url = profile.enigma == EnigmaType.enigma1
             ? 'body?mode=controlFBShot'
-            : 'grab?format=jpg&o=&filename=/tmp/' + _unixTimeStamp() + '.jpg';
+            : 'grab?format=jpg&o=&filename=/tmp/${_unixTimeStamp()}.jpg';
       } else {
         throw Exception('Screenshot type not supported.');
       }

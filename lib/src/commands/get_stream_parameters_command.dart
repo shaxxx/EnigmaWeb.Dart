@@ -27,8 +27,8 @@ class GetStreamParametersCommand extends EnigmaCommand<
   @override
   Future<IGetStreamParametersResponse> executeAsync() async {
     var url = profile.enigma == EnigmaType.enigma1
-        ? 'video.m3u?ref=' + service.reference!
-        : 'web/video.m3u?sRef=' + Uri.encodeComponent(service.reference!);
+        ? 'video.m3u?ref=${service.reference!}'
+        : 'web/video.m3u?sRef=${Uri.encodeComponent(service.reference!)}';
 
     return await super.executeGenericAsync(
       profile,

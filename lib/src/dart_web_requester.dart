@@ -4,16 +4,6 @@ import 'dart:async';
 import 'package:cookie_jar/cookie_jar.dart';
 
 import 'package:enigma_web/enigma_web.dart';
-import 'package:enigma_web/src/enums.dart';
-import 'package:enigma_web/src/i_profile.dart';
-import 'package:enigma_web/src/i_web_requester.dart';
-import 'package:enigma_web/src/known_exception.dart';
-import 'package:enigma_web/src/responses/binary_response.dart';
-import 'package:enigma_web/src/responses/i_binary_response.dart';
-import 'package:enigma_web/src/responses/i_string_response.dart';
-import 'package:enigma_web/src/responses/string_response.dart';
-import 'package:enigma_web/src/string_helper.dart';
-import 'package:enigma_web/src/web_request_exception.dart';
 import 'package:logging/logging.dart';
 
 enum HttpResponseType {
@@ -49,9 +39,7 @@ class HttpClientError implements Exception {
 
   @override
   String toString() =>
-      'HttpClientError [$type]: ' +
-      (message ?? '') +
-      (stackTrace ?? '').toString();
+      'HttpClientError [$type]: ${message ?? ''}${stackTrace ?? ''}';
 
   /// Error stacktrace info
   StackTrace? stackTrace;
@@ -123,19 +111,18 @@ class DartWebRequester implements IWebRequester {
     var addressWithoutHttpPrefix =
         '${profile.address}:${profile.httpPort}/$url';
     if (profile.useSsl) {
-      return 'https://' + addressWithoutHttpPrefix;
+      return 'https://$addressWithoutHttpPrefix';
     } else {
-      return 'http://' + addressWithoutHttpPrefix;
+      return 'http://$addressWithoutHttpPrefix';
     }
   }
 
   static String _getBasicAuthHeader(String username, String password) {
-    return 'Basic ' + base64Encode(utf8.encode('$username:$password'));
+    return 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
   }
 
   Future<_ResponseWithDuration> _getResponse(
-      String url, IProfile profile, HttpResponseType responseType,
-      {bool authorize = false}) async {
+      String url, IProfile profile, HttpResponseType responseType) async {
     var completeUrl = _createUrl(url, profile);
     log.fine('Initializing request to $url');
     var uri = Uri.parse(completeUrl);
@@ -248,7 +235,7 @@ class DartWebRequester implements IWebRequester {
   static void _setHttpProxy(HttpClient client, String? proxy) {
     if (proxy != null) {
       client.findProxy = (uri) {
-        return 'PROXY ' + proxy;
+        return 'PROXY $proxy';
       };
     }
   }

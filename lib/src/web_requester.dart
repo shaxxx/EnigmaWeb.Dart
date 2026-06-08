@@ -6,18 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:enigma_web/enigma_web.dart';
-import 'package:enigma_web/src/enums.dart';
-import 'package:enigma_web/src/i_profile.dart';
-import 'package:enigma_web/src/i_web_requester.dart';
-import 'package:enigma_web/src/known_exception.dart';
-import 'package:enigma_web/src/operation_cancelled_exception.dart';
 import 'package:enigma_web/src/parsers/session_parser.dart';
-import 'package:enigma_web/src/responses/binary_response.dart';
-import 'package:enigma_web/src/responses/i_binary_response.dart';
-import 'package:enigma_web/src/responses/i_string_response.dart';
-import 'package:enigma_web/src/responses/string_response.dart';
-import 'package:enigma_web/src/string_helper.dart';
-import 'package:enigma_web/src/web_request_exception.dart';
 import 'package:logging/logging.dart';
 
 class WebRequester implements IWebRequester {
@@ -117,9 +106,9 @@ class WebRequester implements IWebRequester {
         '${profile.address}:${profile.httpPort}/$url';
     String completeUrl;
     if (profile.useSsl) {
-      completeUrl = 'https://' + addressWithoutHttpPrefix;
+      completeUrl = 'https://$addressWithoutHttpPrefix';
     } else {
-      completeUrl = 'http://' + addressWithoutHttpPrefix;
+      completeUrl = 'http://$addressWithoutHttpPrefix';
     }
     var sessionId = _sessionId;
     if (sessionId != null) {
@@ -132,9 +121,9 @@ class WebRequester implements IWebRequester {
     var addressWithoutHttpPrefix =
         '${profile.address}:${profile.httpPort}/web/session';
     if (profile.useSsl) {
-      return 'https://' + addressWithoutHttpPrefix;
+      return 'https://$addressWithoutHttpPrefix';
     } else {
-      return 'http://' + addressWithoutHttpPrefix;
+      return 'http://$addressWithoutHttpPrefix';
     }
   }
 
@@ -149,13 +138,12 @@ class WebRequester implements IWebRequester {
   }
 
   String _getBasicAuthHeader(String username, String password) {
-    return 'Basic ' + base64Encode(utf8.encode('$username:$password'));
+    return 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
   }
 
   Dio? _client;
   Future<_ResponseWithDuration> _getResponse(
-      String url, IProfile profile, ResponseType responseType,
-      {bool authorize = false}) async {
+      String url, IProfile profile, ResponseType responseType) async {
     _retried = 0;
     var completeUrl = _createUrl(url, profile);
     log.fine('Initializing request to $url');

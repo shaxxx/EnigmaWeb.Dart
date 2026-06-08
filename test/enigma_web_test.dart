@@ -8,14 +8,15 @@ void main() {
     expect(e1signal.calculatedDb, '14.00');
   });
 
-  test('default log is working', () {
+  test('default log is working', () async {
     var a = 'testing default log';
-    String b;
+    String? b;
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen((LogRecord rec) {
       b = rec.message;
     });
-    //f.log.finest(a);
+    Logger.root.finest(a);
+    await Future(() {});
     expect(b, a);
   });
 }

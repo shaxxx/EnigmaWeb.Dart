@@ -33,18 +33,18 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
   }
 
   SignalResponse parseE1(IStringResponse response) {
-    var searchFor = 'type=\"checkbox\" value=\"';
+    var searchFor = 'type="checkbox" value="';
     var responseString = response.responseString;
     var sLock = responseString
         .substring(responseString.indexOf(searchFor) + searchFor.length);
-    sLock = sLock.substring(0, sLock.indexOf('\"'));
+    sLock = sLock.substring(0, sLock.indexOf('"'));
     var locked = (sLock.toLowerCase() == 'on');
     var sSync = responseString
         .substring(responseString.indexOf(searchFor) + searchFor.length);
     sSync = sSync.substring(sSync.indexOf(searchFor) + searchFor.length);
-    sSync = sSync.substring(0, sSync.indexOf('\"'));
+    sSync = sSync.substring(0, sSync.indexOf('"'));
     var sync = (sSync.toLowerCase() == 'on');
-    searchFor = '<td align=\"center\">';
+    searchFor = '<td align="center">';
     responseString = responseString
         .substring(responseString.indexOf(searchFor) + searchFor.length);
     var snr = responseString.substring(0, responseString.indexOf('%'));

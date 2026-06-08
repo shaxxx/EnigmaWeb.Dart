@@ -7,10 +7,10 @@ class BouquetItemServiceE1 extends BouquetItemService
   final String? vlcParms;
 
   BouquetItemServiceE1({
-    String? reference,
-    String? name,
+    super.reference,
+    super.name,
     this.vlcParms,
-  }) : super(reference: reference, name: name);
+  });
 
   @override
   int get hashCode => name.hashCode ^ reference.hashCode ^ vlcParms.hashCode;
