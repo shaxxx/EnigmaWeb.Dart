@@ -133,7 +133,8 @@ class SignalParser implements IResponseParser<ISignalCommand, SignalResponse> {
   ) {
     var ds = '.';
     if (snr == null || db == null || acg == null || ber == null) {
-      return E2Signal(db: -1, snr: -1, acg: -1, ber: -1);
+      throw ParsingException(
+          'Failed to parse Enigma2 signal! snr=$snr db=$db acg=$acg ber=$ber');
     }
     String? realSnr;
     String? realDb;
