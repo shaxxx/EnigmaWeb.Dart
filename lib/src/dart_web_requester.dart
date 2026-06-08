@@ -39,9 +39,9 @@ class HttpClientError implements Exception {
   });
 
   /// Error descriptions.
-  String message;
+  String? message;
   _HttpClientErrorType type;
-  int statusCode;
+  int? statusCode;
 
   /// The original error/exception object; It's usually not null when `type`
   /// is DioErrorType.DEFAULT
@@ -54,13 +54,13 @@ class HttpClientError implements Exception {
       (stackTrace ?? '').toString();
 
   /// Error stacktrace info
-  StackTrace stackTrace;
+  StackTrace? stackTrace;
 }
 
 class DartWebRequester implements IWebRequester {
   final CookieJar _cookies;
   final String xRequestedWithHeader;
-  final String proxy;
+  final String? proxy;
   final Logger log;
   final HttpClient client;
 
@@ -69,8 +69,7 @@ class DartWebRequester implements IWebRequester {
     this.log, {
     this.xRequestedWithHeader = 'XMLHttpRequest',
     this.proxy,
-  })  : _cookies = CookieJar(),
-        assert(log != null);
+  }) : _cookies = DefaultCookieJar();
 
   @override
   Future<IBinaryResponse> getBinaryResponseAsync(
@@ -108,7 +107,7 @@ class DartWebRequester implements IWebRequester {
     Duration connectTimeOut = const Duration(seconds: 15),
     String userAgentHeader =
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
-    String proxy,
+    String? proxy,
   }) {
     var client = HttpClient();
     client.badCertificateCallback =
@@ -141,7 +140,7 @@ class DartWebRequester implements IWebRequester {
     log.fine('Initializing request to $url');
     var uri = Uri.parse(completeUrl);
     var st = Stopwatch();
-    dynamic response;
+    late dynamic response;
     try {
       st.start();
       HttpClientRequest clientRequest;
@@ -156,7 +155,7 @@ class DartWebRequester implements IWebRequester {
       _setBasicAuthHeader(clientRequest, profile);
       _setXRequestedWithHeader(clientRequest, xRequestedWithHeader);
       _setContentTypeHeader(clientRequest, profile);
-      clientRequest.cookies.addAll(_cookies.loadForRequest(uri));
+      clientRequest.cookies.addAll(await _cookies.loadForRequest(uri));
       HttpClientResponse clientResponse;
       try {
         clientResponse = await clientRequest.close();
@@ -182,29 +181,27 @@ class DartWebRequester implements IWebRequester {
       st.stop();
       log.fine('Request for $url took ${st.elapsedMilliseconds} ms');
       logResponse(response, url, responseType);
-      _cookies.saveFromResponse(uri, clientResponse.cookies);
+      await _cookies.saveFromResponse(uri, clientResponse.cookies);
     } on HttpClientError catch (e) {
       if (e.type == _HttpClientErrorType.CONNECT_TIMEOUT) {
         throw TimeOutException(
-          e.message,
+          e.message ?? '',
           url,
-          client.connectionTimeout,
+          client.connectionTimeout ?? Duration.zero,
           innerException: e,
         );
       } else if (e.type == _HttpClientErrorType.RESPONSE) {
         throw FailedStatusCodeException(
-          e.message,
+          e.message ?? '',
           e.statusCode,
           innerException: e,
         );
       }
-      throw WebRequestException(e.message, innerException: e);
+      throw WebRequestException(e.message ?? '', innerException: e);
     } on Exception catch (e) {
       if (e is KnownException) rethrow;
-      if (e is Exception) {
-        throw WebRequestException('Request for $completeUrl failed.',
-            innerException: e);
-      }
+      throw WebRequestException('Request for $completeUrl failed.',
+          innerException: e);
     }
     return _ResponseWithDuration(response, st.elapsed);
   }
@@ -238,6 +235,7 @@ class DartWebRequester implements IWebRequester {
       request.headers.add(
         'Authorization',
         _getBasicAuthHeader(profile.username, profile.password),
+        preserveHeaderCase: true,
       );
     }
   }
@@ -247,7 +245,7 @@ class DartWebRequester implements IWebRequester {
         (X509Certificate cert, String host, int port) => true;
   }
 
-  static void _setHttpProxy(HttpClient client, String proxy) {
+  static void _setHttpProxy(HttpClient client, String? proxy) {
     if (proxy != null) {
       client.findProxy = (uri) {
         return 'PROXY ' + proxy;
@@ -263,7 +261,8 @@ class DartWebRequester implements IWebRequester {
   static void _setXRequestedWithHeader(
       HttpClientRequest request, String xRequestedWithHeader) {
     if (StringHelper.stringIsNullOrEmpty(xRequestedWithHeader)) return;
-    request.headers.add('X-Requested-With', xRequestedWithHeader);
+    request.headers.add('X-Requested-With', xRequestedWithHeader,
+        preserveHeaderCase: true);
   }
 
   static void _setContentTypeHeader(
